@@ -37,6 +37,14 @@ void AEntity_Player::BeginPlay()
 		Player_HUD_Reference->AddToViewport();
 	}
 
+	// Setup Hitbox collisions
+	//BoxCollider->SetCollisionProfileName(TEXT("Trigger"));
+	//BoxCollider->SetGenerateOverlapEvents(true);
+	//BoxCollider->OnComponentBeginOverlap.AddDynamic(this, &AEntity_Player::OnOverlapBegin);
+	WeaponCollider->SetCollisionProfileName(TEXT("Trigger"));
+	WeaponCollider->SetGenerateOverlapEvents(true);
+	WeaponCollider->OnComponentBeginOverlap.AddDynamic(this, &AEntity_Player::OnOverlapBegin);
+
 	if (GEngine)
 		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Entity Spawned: Entity_Player"));
 }
@@ -80,6 +88,9 @@ void AEntity_Player::RotatePlayerTowardsMouse()
 	PlayerRotationTowardsMouseValue = FRotator(this->GetActorRotation().Pitch, LookAtRotation.Yaw, this->GetActorRotation().Roll);
 	CubeMesh->SetWorldRotation(PlayerRotationTowardsMouseValue);
 
+	// Update the actor's forward vector to match rotation
+	//RootComponent->MoveComponent(FVector::ZeroVector, PlayerRotationTowardsMouseValue, true);
+
 	//FString RollText = FString::SanitizeFloat(PlayerRotationTowardsMouseValue.Yaw);
 	//GEngine->AddOnScreenDebugMessage(-1, 0.05f, FColor::Green, TEXT("Entity Functions: Rotate Player Towards Cursor));
 }
@@ -104,18 +115,20 @@ void AEntity_Player::OpenMutuallyExclusiveMenu()
 
 void AEntity_Player::OpenPauseMenu()
 {
-	if (CurrentOpenMenuWidget->GetClass() == PauseMenu_Class) {
+	if (CurrentOpenMenuWidget && CurrentOpenMenuWidget->GetClass() == PauseMenu_Class) {
 		UGameplayStatics::SetGamePaused(GetWorld(), false);
 		CurrentOpenMenuWidget->RemoveFromParent();
 		CurrentOpenMenuWidget = NULL;
 	}
 	else if (!CurrentOpenMenuWidget){
 		//ChosenWidgetClass = UBaseClass_Widget_PauseMenu::StaticClass();
-
 		CurrentOpenMenuWidget = CreateWidget<UBaseClass_Widget_PauseMenu>(GetWorld(), PauseMenu_Class);
 
 		Cast<UBaseClass_Widget_PauseMenu>(CurrentOpenMenuWidget)->LocalPlayerReference = this;
 		CurrentOpenMenuWidget->AddToViewport();
 		UGameplayStatics::SetGamePaused(GetWorld(), true);
+	}
+	else {
+		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Entity Functions: OpenPauseMenu Error."));
 	}
 }

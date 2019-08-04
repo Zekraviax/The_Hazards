@@ -81,10 +81,12 @@ public:
 	UFUNCTION()
 	void MoveLeftRight(float AxisValue);
 
-// Menu Functions
+// Menu functions -------------------------
 	UFUNCTION()
 	void OpenMutuallyExclusiveMenu();
 
 	UFUNCTION()
 	void OpenPauseMenu();
+
+// Attack functions -------------------------
 };

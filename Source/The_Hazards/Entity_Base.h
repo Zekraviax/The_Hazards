@@ -6,6 +6,7 @@
 #include "GameFramework/Character.h"
 
 #include "Components/StaticMeshComponent.h"
+#include "Components/BoxComponent.h"
 #include "Camera/CameraComponent.h"
 #include "TheHazards_GameMode.h"
 
@@ -48,6 +49,15 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Components")
 	UStaticMeshComponent* CubeMesh;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Components")
+	UBoxComponent* BoxCollider;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Components")
+	UStaticMeshComponent* WeaponMesh;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Components")
+	UBoxComponent* WeaponCollider;
+
 // Timer Handles -------------------------
 	UPROPERTY()
 	FTimerHandle HealthRegenTimerHandle;
@@ -63,6 +73,10 @@ public:
 
 	UPROPERTY()
 	FTimerHandle StatusEffectTickTimerHandle;
+
+// Technical Variables -------------------------
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Technical Variables")
+	TArray<AEntity_Base*> AttackedEntitiesArray;
 
 // Functions
 // --------------------------------------------------
@@ -91,4 +105,8 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	void StopAuraRegenTick();
+
+// Attack functions
+	UFUNCTION()
+	void OnOverlapBegin(class UPrimitiveComponent* OverlappedComp, class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 };
