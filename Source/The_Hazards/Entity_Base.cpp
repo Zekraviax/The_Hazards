@@ -19,12 +19,17 @@ AEntity_Base::AEntity_Base()
 	BoxCollider = CreateDefaultSubobject<UBoxComponent>("BoxCollider");
 	WeaponMesh = CreateDefaultSubobject<UStaticMeshComponent>("WeaponMesh");
 	WeaponCollider = CreateDefaultSubobject<UBoxComponent>("WeaponCollider");
+	EntityDataWidgetComponent = CreateDefaultSubobject<UWidgetComponent>("EntityDataWidgetComponent");
 
 	// Attach components
 	CubeMesh->SetupAttachment(RootComponent);
 	BoxCollider->SetupAttachment(CubeMesh);
 	WeaponMesh->SetupAttachment(CubeMesh);
 	WeaponCollider->SetupAttachment(WeaponMesh);
+	EntityDataWidgetComponent->SetupAttachment(RootComponent);
+
+	//Initialize variables
+	MaximumInventorySize = 30;
 }
 
 // Called when the game starts or when spawned
@@ -33,11 +38,8 @@ void AEntity_Base::BeginPlay()
 	Super::BeginPlay();
 
 	// Setup Hitbox collisions
-	//BoxCollider->SetCollisionProfileName(TEXT("Trigger"));
-	//BoxCollider->SetGenerateOverlapEvents(true);
-	//BoxCollider->OnComponentBeginOverlap.AddDynamic(this, &AEntity_Base::OnOverlapBegin);
 	WeaponCollider->SetCollisionProfileName(TEXT("Trigger"));
-	WeaponCollider->SetGenerateOverlapEvents(true);
+	WeaponCollider->SetGenerateOverlapEvents(false);
 	WeaponCollider->OnComponentBeginOverlap.AddDynamic(this, &AEntity_Base::OnOverlapBegin);
 
 	// Start Timers
@@ -47,6 +49,14 @@ void AEntity_Base::BeginPlay()
 	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Black, TEXT("Test: Health and Aura Regen"));
 	BaseStats_Current.HealthPoints = 95;
 	BaseStats_Current.AuraPoints = 95;
+
+	// Get a reference to the EntityStats proper widget and set the variables
+	if(EntityDataWidgetComponent && EntityStatsWidgetComponent_Class) {
+		EntityStatsWidgetComponent_Reference = Cast<UBaseClass_WidgetComponent_Entity>(EntityDataWidgetComponent->GetUserWidgetObject());
+
+		if (EntityStatsWidgetComponent_Reference)
+			EntityStatsWidgetComponent_Reference->LinkedEntity = this;
+	}
 
 	if (GEngine)
 		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Entity Spawned: Entity_Base"));
@@ -75,6 +85,8 @@ void AEntity_Base::SetTimers()
 	GetWorldTimerManager().SetTimer(AuraRegenDelayTimerHandle, this, &AEntity_Base::StartAuraRegenTick, BaseStats_Current.AuraPoints_RegenStartDelay, false);
 
 	// Status Effect Tick timer
+
+	// Attacks timer
 
 	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, TEXT("Entity Function: Timers Set"));
 }
@@ -127,16 +139,41 @@ void AEntity_Base::StopAuraRegenTick()
 // Attack functions -------------------------
 void AEntity_Base::OnOverlapBegin(class UPrimitiveComponent* OverlappedComp, class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	if (OtherActor && OtherComp && (OtherActor != this) && (OverlappedComp->GetName().Contains("WeaponCollider") && (OtherComp->GetName().Contains("BoxCollider"))))
+	if (OtherActor && OtherComp && (OtherActor != this) && (Cast<AEntity_Base>(OtherActor)) && (OverlappedComp->GetName().Contains("WeaponCollider") && (OtherComp->GetName().Contains("BoxCollider")) 
+		&& !AttackedEntitiesArray.Contains(Cast<AEntity_Base>(OtherActor))))
 	{
 		GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Black, TEXT("Overlap Begin  /  Actor: " + this->GetName() + "  /  Other Actor: " + OtherActor->GetName()));
 		GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Black, TEXT("Overlapped Component: " + OverlappedComp->GetName() + "  /  Other Component: " + OtherComp->GetName()));
+
+		AttackedEntitiesArray.Add(Cast<AEntity_Base>(OtherActor));
+		Cast<AEntity_Base>(OtherActor)->EntityHit(20);
 	}
-	//if (OtherActor != this) {
-	//	//GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Black, TEXT("Actor: " + this->GetName()));
-	//	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Black, TEXT("Overlapped Actor: " + OtherActor->GetName()));
-	//}
-	//else {
-	//	GEngine->AddOnScreenDebugMessage(-1, 0.05f, FColor::Red, TEXT("Actor: " + this->GetName()));
-	//}
+}
+
+void AEntity_Base::AttackStart()
+{
+	if (!GetWorldTimerManager().IsTimerActive(AttackSwingTimerHandle)) {
+		WeaponCollider->SetGenerateOverlapEvents(true);
+		GetWorldTimerManager().SetTimer(AttackSwingTimerHandle, this, &AEntity_Base::AttackEnd, 1.5f, false);
+		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, TEXT("Attack Start"));
+	}
+	else {
+		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Attack Timer Counting Down"));
+	}
+}
+
+void AEntity_Base::AttackEnd()
+{
+	WeaponCollider->SetGenerateOverlapEvents(false);
+	GetWorldTimerManager().ClearTimer(AttackSwingTimerHandle);
+	AttackedEntitiesArray.Empty();
+	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, TEXT("Attack End"));
+}
+
+void AEntity_Base::EntityHit(int32 BaseAttackDamage)
+{
+	BaseStats_Current.HealthPoints -= BaseAttackDamage;
+	GetWorldTimerManager().ClearTimer(HealthRegenTimerHandle);
+	GetWorldTimerManager().SetTimer(HealthRegenDelayTimerHandle, this, &AEntity_Base::StartHealthRegenTick, BaseStats_Current.HealthPoints_RegenStartDelay, false);
+	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Entity Function: Damage Taken and Health Regen Stopped"));
 }

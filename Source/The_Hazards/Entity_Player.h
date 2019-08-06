@@ -7,6 +7,7 @@
 
 #include "BaseClass_Widget_PlayerHUD.h"
 #include "BaseClass_Widget_PauseMenu.h"
+#include "BaseClass_Widget_Inventory.h"
 
 #include "Entity_Player.generated.h"
 
@@ -37,19 +38,25 @@ public:
 // Base Variables
 // --------------------------------------------------
 
-// Components -------------------------
+// ------------------------- Components
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Components")
 	UCameraComponent* IsometricCamera;
 
-// Widgets -------------------------
+// ------------------------- Widgets
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Widgets")
 	UBaseClass_Widget_PlayerHUD* Player_HUD_Reference;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Widgets")
 	TSubclassOf<UBaseClass_Widget_PlayerHUD> Player_HUD_Class;
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Widgets")
+	UUserWidget* CurrentOpenMenuWidget;
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Widgets")
 	TSubclassOf<UBaseClass_Widget_PauseMenu> PauseMenu_Class;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Widgets")
+	TSubclassOf<UBaseClass_Widget_Inventory> Inventory_Class;
 
 // Technical Variables
 // --------------------------------------------------
@@ -62,31 +69,33 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Technical Variables")
 	TSubclassOf<UUserWidget> ChosenWidgetClass;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Technical Variables")
-	UUserWidget* CurrentOpenMenuWidget;
-
 // Functions
 // --------------------------------------------------
 
-// BeginPlay functions -------------------------
+// ------------------------- BeginPlay
 
-// Tick functions -------------------------
+// ------------------------- Tick
 	UFUNCTION()
 	void RotatePlayerTowardsMouse();
 
-// Movement functions -------------------------
+// ------------------------- Movement
 	UFUNCTION()
 	void MoveForwardBackward(float AxisValue);
 
 	UFUNCTION()
 	void MoveLeftRight(float AxisValue);
 
-// Menu functions -------------------------
-	UFUNCTION()
-	void OpenMutuallyExclusiveMenu();
+// ------------------------- Menus and Pause Screens
+	//UFUNCTION()
+	//void OpenMutuallyExclusiveMenu();
 
 	UFUNCTION()
 	void OpenPauseMenu();
 
-// Attack functions -------------------------
+	UFUNCTION()
+	void OpenInventory();
+
+// ------------------------- Attacks
+	//UFUNCTION()
+	//void PlayerAttack();
 };

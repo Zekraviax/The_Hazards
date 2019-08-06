@@ -11,6 +11,54 @@
 // Enums
 // --------------------------------------------------
 
+//------------------------- Base Items
+
+UENUM(BlueprintType)
+enum class E_Item_Supertypes : uint8
+{
+	E_Weapon,
+	E_Armour,
+	E_Consumable,
+	E_Ammo,
+	E_CustomPart,
+	E_Collectable,
+	E_Miscellaneous
+};
+
+//------------------------- Weapons
+
+//------------------------- Characters
+UENUM(BlueprintType)
+enum class E_Character_Races : uint8
+{
+	E_Chiropterrian				UMETA(DisplayName = "Chiropterrian"),
+	E_Labaredian				UMETA(DisplayName = "Labaredian"),
+	E_Detoling					UMETA(DisplayName = "Detoling"),
+	E_Frostine					UMETA(DisplayName = "Frostine"),
+	E_Celestial					UMETA(DisplayName = "Celestial"),
+	E_Human						UMETA(DisplayName = "Human"),
+};
+
+enum class E_Character_Elements : uint8
+{
+	E_Aer						UMETA(DisplayName = "Aer"),
+	E_Aqua						UMETA(DisplayName = "Aqua"),
+	E_Ignis						UMETA(DisplayName = "Ignis"),
+	E_Terra						UMETA(DisplayName = "Terra"),
+	E_Vita						UMETA(DisplayName = "Vita"),
+	E_Dynamo					UMETA(DisplayName = "Dynamo"),
+};
+
+enum class E_Character_Factions : uint8
+{
+	E_XRX						UMETA(DisplayName = "XRX"),
+	E_TimesEnd					UMETA(DisplayName = "Time's End"),
+	E_GaianGuardians			UMETA(DisplayName = "Gaian Guardians"),
+	E_AscendantsReach			UMETA(DisplayName = "Ascendant's Reach"),
+	E_GoldenGrasp				UMETA(DisplayName = "Golden Grasp"),
+	E_NA						UMETA(DisplayName = "N/A"),
+};
+
 // Structs
 // --------------------------------------------------
 
@@ -19,6 +67,8 @@ struct THE_HAZARDS_API FTestStruct
 {
 	GENERATED_BODY()
 };
+
+//------------------------- Entity Base structs
 
 USTRUCT(BlueprintType)
 struct THE_HAZARDS_API F_SecondaryStats_Struct
@@ -153,6 +203,55 @@ struct THE_HAZARDS_API F_BaseStats_Struct
 		Evasiveness = 10.f;
 		Status_Potency = 10.f;
 		Luck = 10.f;
+	}
+};
+
+// ------------------------- Items
+
+USTRUCT(BlueprintType)
+struct THE_HAZARDS_API F_Item_WeaponStruct
+{
+	GENERATED_BODY()
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Base")
+	float DamagePerShot;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Base")
+	float AttackSpeedMultiplier;
+
+	F_Item_WeaponStruct()
+	{
+		DamagePerShot = 1.f;
+		AttackSpeedMultiplier = 1.f;
+	}
+};
+
+USTRUCT(BlueprintType)
+struct THE_HAZARDS_API F_Item_BaseStruct
+{
+	GENERATED_BODY()
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Base")
+	FString Name;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Base")
+	E_Item_Supertypes Supertype;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Base")
+	int32 IndexInInventoryArray;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Base")
+	int32 Amount;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Supertypes")
+	F_Item_WeaponStruct Weapon;
+
+	F_Item_BaseStruct()
+	{
+		Name = "Default";
+		Supertype = E_Item_Supertypes::E_Miscellaneous;
+		IndexInInventoryArray = -1;
+		Amount = 0;
 	}
 };
 

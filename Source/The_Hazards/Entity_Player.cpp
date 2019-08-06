@@ -12,7 +12,7 @@
 // Functions
 // --------------------------------------------------
 
-// Base actor functions -------------------------
+// ------------------------- Base actor functions 
 
 // Sets default values
 AEntity_Player::AEntity_Player()
@@ -38,11 +38,8 @@ void AEntity_Player::BeginPlay()
 	}
 
 	// Setup Hitbox collisions
-	//BoxCollider->SetCollisionProfileName(TEXT("Trigger"));
-	//BoxCollider->SetGenerateOverlapEvents(true);
-	//BoxCollider->OnComponentBeginOverlap.AddDynamic(this, &AEntity_Player::OnOverlapBegin);
 	WeaponCollider->SetCollisionProfileName(TEXT("Trigger"));
-	WeaponCollider->SetGenerateOverlapEvents(true);
+	WeaponCollider->SetGenerateOverlapEvents(false);
 	WeaponCollider->OnComponentBeginOverlap.AddDynamic(this, &AEntity_Player::OnOverlapBegin);
 
 	if (GEngine)
@@ -66,14 +63,19 @@ void AEntity_Player::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 
 	// Action Bindings
+	// Menus
 	PlayerInputComponent->BindAction("PauseGame", IE_Released, this, &AEntity_Player::OpenPauseMenu).bExecuteWhenPaused = true;
+	PlayerInputComponent->BindAction("OpenInventory", IE_Released, this, &AEntity_Player::OpenInventory).bExecuteWhenPaused = true;
+
+	// Attacks
+	PlayerInputComponent->BindAction("PrimaryAttack", IE_Released, this, &AEntity_Player::AttackStart);
 
 	// Movement Bindings
 	PlayerInputComponent->BindAxis("MoveForwardBackward", this, &AEntity_Player::MoveForwardBackward);
 	PlayerInputComponent->BindAxis("MoveLeftRight", this, &AEntity_Player::MoveLeftRight);
 }
 
-// Tick functions -------------------------
+//  ------------------------- Tick
 void AEntity_Player::RotatePlayerTowardsMouse()
 {
 	if (!LocalPlayerControllerReference)
@@ -88,14 +90,11 @@ void AEntity_Player::RotatePlayerTowardsMouse()
 	PlayerRotationTowardsMouseValue = FRotator(this->GetActorRotation().Pitch, LookAtRotation.Yaw, this->GetActorRotation().Roll);
 	CubeMesh->SetWorldRotation(PlayerRotationTowardsMouseValue);
 
-	// Update the actor's forward vector to match rotation
-	//RootComponent->MoveComponent(FVector::ZeroVector, PlayerRotationTowardsMouseValue, true);
-
 	//FString RollText = FString::SanitizeFloat(PlayerRotationTowardsMouseValue.Yaw);
 	//GEngine->AddOnScreenDebugMessage(-1, 0.05f, FColor::Green, TEXT("Entity Functions: Rotate Player Towards Cursor));
 }
 
-// Movement functions -------------------------
+// ------------------------- Movement
 void AEntity_Player::MoveForwardBackward(float AxisValue)
 {
 	AddMovementInput(IsometricCamera->GetForwardVector(), AxisValue);
@@ -106,29 +105,53 @@ void AEntity_Player::MoveLeftRight(float AxisValue)
 	AddMovementInput(IsometricCamera->GetRightVector(), AxisValue);
 }
 
-// Menu functions -------------------------
-void AEntity_Player::OpenMutuallyExclusiveMenu()
-{
-	CurrentOpenMenuWidget->AddToViewport();
-	UGameplayStatics::SetGamePaused(GetWorld(), true);
-}
-
+// ------------------------- Menu and Pause Screens
 void AEntity_Player::OpenPauseMenu()
 {
-	if (CurrentOpenMenuWidget && CurrentOpenMenuWidget->GetClass() == PauseMenu_Class) {
+	if (CurrentOpenMenuWidget) {
+		// Close widget and resume game
+
 		UGameplayStatics::SetGamePaused(GetWorld(), false);
 		CurrentOpenMenuWidget->RemoveFromParent();
 		CurrentOpenMenuWidget = NULL;
 	}
-	else if (!CurrentOpenMenuWidget){
-		//ChosenWidgetClass = UBaseClass_Widget_PauseMenu::StaticClass();
+	else if (!CurrentOpenMenuWidget && PauseMenu_Class) {
+		// Create widget, add to viewport, and pause game
 		CurrentOpenMenuWidget = CreateWidget<UBaseClass_Widget_PauseMenu>(GetWorld(), PauseMenu_Class);
 
 		Cast<UBaseClass_Widget_PauseMenu>(CurrentOpenMenuWidget)->LocalPlayerReference = this;
 		CurrentOpenMenuWidget->AddToViewport();
 		UGameplayStatics::SetGamePaused(GetWorld(), true);
 	}
-	else {
-		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Entity Functions: OpenPauseMenu Error."));
+}
+
+void AEntity_Player::OpenInventory()
+{
+	if (CurrentOpenMenuWidget && CurrentOpenMenuWidget->GetClass() == Inventory_Class) {
+		// Close widget and resume game
+
+		UGameplayStatics::SetGamePaused(GetWorld(), false);
+		CurrentOpenMenuWidget->RemoveFromParent();
+		CurrentOpenMenuWidget = NULL;
+	}
+	else if (!CurrentOpenMenuWidget && Inventory_Class) {
+		// Create widget, add to viewport, and pause game
+
+		CurrentOpenMenuWidget = CreateWidget<UBaseClass_Widget_Inventory>(GetWorld(), Inventory_Class);
+		CurrentOpenMenuWidget->AddToViewport();
+		UGameplayStatics::SetGamePaused(GetWorld(), true);
+
+		// Inventory specific variables/functions
+		Cast<UBaseClass_Widget_Inventory>(CurrentOpenMenuWidget)->PlayerReference = this;
+		Cast<UBaseClass_Widget_Inventory>(CurrentOpenMenuWidget)->PopulateInventorySlots();
+	}
+	else if (CurrentOpenMenuWidget && CurrentOpenMenuWidget->GetClass() != Inventory_Class) {
+		// Do Nothing
 	}
 }
+
+// ------------------------- Attacks
+//void AEntity_Player::PlayerAttack()
+//{
+//	AttackStart();
+//}

@@ -7,7 +7,9 @@
 
 #include "Components/StaticMeshComponent.h"
 #include "Components/BoxComponent.h"
+#include "Components/WidgetComponent.h"
 #include "Camera/CameraComponent.h"
+#include "BaseClass_WidgetComponent_Entity.h"
 #include "TheHazards_GameMode.h"
 
 #include "Entity_Base.generated.h"
@@ -35,7 +37,7 @@ public:
 // Base Variables
 // --------------------------------------------------
 
-// Stats -------------------------
+// ------------------------- Stats
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Entity Data")
 	F_BaseStats_Struct BaseStats_Current;
 
@@ -45,7 +47,14 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Entity Data")
 	F_SecondaryStats_Struct SecondaryStats;
 
-// Components -------------------------
+// ------------------------- Inventory
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Inventory")
+	TArray<F_Item_BaseStruct> Inventory;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Inventory")
+	int32 MaximumInventorySize;
+
+// ------------------------- Components
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Components")
 	UStaticMeshComponent* CubeMesh;
 
@@ -58,7 +67,17 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Components")
 	UBoxComponent* WeaponCollider;
 
-// Timer Handles -------------------------
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Components")
+	UWidgetComponent* EntityDataWidgetComponent;
+
+// ------------------------- Widgets
+	UPROPERTY(visibleAnywhere, BlueprintReadOnly, Category = "Widgets")
+	UBaseClass_WidgetComponent_Entity* EntityStatsWidgetComponent_Reference;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Widgets")
+	TSubclassOf<UBaseClass_WidgetComponent_Entity> EntityStatsWidgetComponent_Class;
+
+// ------------------------- Timer Handles
 	UPROPERTY()
 	FTimerHandle HealthRegenTimerHandle;
 
@@ -74,20 +93,23 @@ public:
 	UPROPERTY()
 	FTimerHandle StatusEffectTickTimerHandle;
 
-// Technical Variables -------------------------
+	UPROPERTY()
+	FTimerHandle AttackSwingTimerHandle;
+
+// ------------------------- Technical Variables
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Technical Variables")
 	TArray<AEntity_Base*> AttackedEntitiesArray;
 
 // Functions
 // --------------------------------------------------
 
-// Movement functions -------------------------
+// ------------------------- Movement
 
-// Tick functions -------------------------
+// ------------------------- Tick
 	UFUNCTION()
 	void SetTimers();
 
-// Health and Aura functions -------------------------
+// ------------------------- Health and Aura
 	UFUNCTION(BlueprintCallable)
 	void HealthRegenTick();
 
@@ -106,7 +128,18 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void StopAuraRegenTick();
 
-// Attack functions
+// ------------------------- Attack functions
+	// Weapon hitbox overlap
 	UFUNCTION()
 	void OnOverlapBegin(class UPrimitiveComponent* OverlappedComp, class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+
+	UFUNCTION()
+	void AttackStart();
+
+	UFUNCTION()
+	void AttackEnd();
+
+	// Entity received damage function
+	UFUNCTION()
+	void EntityHit(int32 BaseAttackDamage);
 };

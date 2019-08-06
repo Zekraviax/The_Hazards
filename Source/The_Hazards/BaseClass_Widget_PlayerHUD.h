@@ -4,6 +4,9 @@
 
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
+
+#include "Runtime/UMG/Public/Components/ProgressBar.h"
+
 #include "BaseClass_Widget_PlayerHUD.generated.h"
 
 // Forward Declarations
