@@ -66,6 +66,8 @@ void AEntity_Player::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 	// Menus
 	PlayerInputComponent->BindAction("PauseGame", IE_Released, this, &AEntity_Player::OpenPauseMenu).bExecuteWhenPaused = true;
 	PlayerInputComponent->BindAction("OpenInventory", IE_Released, this, &AEntity_Player::OpenInventory).bExecuteWhenPaused = true;
+	PlayerInputComponent->BindAction("OpenCharacterSheet", IE_Released, this, &AEntity_Player::OpenCharacterSheet).bExecuteWhenPaused = true;
+	PlayerInputComponent->BindAction("OpenCharacterCreator", IE_Released, this, &AEntity_Player::OpenCharacterCreator).bExecuteWhenPaused = true;
 
 	// Attacks
 	PlayerInputComponent->BindAction("PrimaryAttack", IE_Released, this, &AEntity_Player::AttackStart);
@@ -127,27 +129,91 @@ void AEntity_Player::OpenPauseMenu()
 
 void AEntity_Player::OpenInventory()
 {
-	if (CurrentOpenMenuWidget && CurrentOpenMenuWidget->GetClass() == Inventory_Class) {
+	if (CurrentOpenMenuWidget) {
 		// Close widget and resume game
 
 		UGameplayStatics::SetGamePaused(GetWorld(), false);
 		CurrentOpenMenuWidget->RemoveFromParent();
 		CurrentOpenMenuWidget = NULL;
 	}
-	else if (!CurrentOpenMenuWidget && Inventory_Class) {
+
+	if (CharacterSheet_Class && CurrentOpenMenuWidget_Class != Inventory_Class) {
 		// Create widget, add to viewport, and pause game
 
 		CurrentOpenMenuWidget = CreateWidget<UBaseClass_Widget_Inventory>(GetWorld(), Inventory_Class);
+		CurrentOpenMenuWidget_Class = Inventory_Class;
 		CurrentOpenMenuWidget->AddToViewport();
 		UGameplayStatics::SetGamePaused(GetWorld(), true);
 
-		// Inventory specific variables/functions
+		// Inventory specific variables and functions
 		Cast<UBaseClass_Widget_Inventory>(CurrentOpenMenuWidget)->PlayerReference = this;
 		Cast<UBaseClass_Widget_Inventory>(CurrentOpenMenuWidget)->PopulateInventorySlots();
 	}
-	else if (CurrentOpenMenuWidget && CurrentOpenMenuWidget->GetClass() != Inventory_Class) {
-		// Do Nothing
+	else {
+		CurrentOpenMenuWidget_Class = NULL;
 	}
+	//else if (CurrentOpenMenuWidget && CurrentOpenMenuWidget->GetClass() != Inventory_Class) {
+	//	// Do Nothing
+	//}
+}
+
+void AEntity_Player::OpenCharacterSheet()
+{
+	if (CurrentOpenMenuWidget) {
+		// Close widget and resume game
+
+		UGameplayStatics::SetGamePaused(GetWorld(), false);
+		CurrentOpenMenuWidget->RemoveFromParent();
+		CurrentOpenMenuWidget = NULL;
+	}
+
+	if (CharacterSheet_Class && CurrentOpenMenuWidget_Class != CharacterSheet_Class) {
+		// Create widget, add to viewport, and pause game
+
+		CurrentOpenMenuWidget = CreateWidget<UBaseClass_Widget_CharacterSheet>(GetWorld(), CharacterSheet_Class);
+		CurrentOpenMenuWidget_Class = CharacterSheet_Class;
+		CurrentOpenMenuWidget->AddToViewport();
+		UGameplayStatics::SetGamePaused(GetWorld(), true);
+
+		// Character Sheet specific variables and functions
+		Cast<UBaseClass_Widget_CharacterSheet>(CurrentOpenMenuWidget)->PlayerReference = this;
+		Cast<UBaseClass_Widget_CharacterSheet>(CurrentOpenMenuWidget)->OpenCharacterSheet();
+	}
+	else {
+		CurrentOpenMenuWidget_Class = NULL;
+	}
+	//else if (CurrentOpenMenuWidget && CurrentOpenMenuWidget->GetClass() != Inventory_Class) {
+	//	// Do Nothing
+	//}
+}
+
+void AEntity_Player::OpenCharacterCreator()
+{
+	if (CurrentOpenMenuWidget) {
+		// Close widget and resume game
+
+		UGameplayStatics::SetGamePaused(GetWorld(), false);
+		CurrentOpenMenuWidget->RemoveFromParent();
+		CurrentOpenMenuWidget = NULL;
+	}
+
+	if (CharacterSheet_Class && CurrentOpenMenuWidget_Class != CharacterCreator_Class) {
+		// Create widget, add to viewport, and pause game
+
+		CurrentOpenMenuWidget = CreateWidget<UBaseClass_Widget_CharCreator>(GetWorld(), CharacterCreator_Class);
+		CurrentOpenMenuWidget_Class = CharacterCreator_Class;
+		CurrentOpenMenuWidget->AddToViewport();
+		UGameplayStatics::SetGamePaused(GetWorld(), true);
+
+		// Character Creator specific variables and functions
+		Cast<UBaseClass_Widget_CharCreator>(CurrentOpenMenuWidget)->PlayerReference = this;
+	}
+	else {
+		CurrentOpenMenuWidget_Class = NULL;
+	}
+	//else if (CurrentOpenMenuWidget && CurrentOpenMenuWidget->GetClass() != Inventory_Class) {
+	//	// Do Nothing
+	//}
 }
 
 // ------------------------- Attacks

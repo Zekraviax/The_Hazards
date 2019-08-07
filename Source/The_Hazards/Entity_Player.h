@@ -8,6 +8,8 @@
 #include "BaseClass_Widget_PlayerHUD.h"
 #include "BaseClass_Widget_PauseMenu.h"
 #include "BaseClass_Widget_Inventory.h"
+#include "BaseClass_Widget_CharacterSheet.h"
+#include "BaseClass_Widget_CharCreator.h"
 
 #include "Entity_Player.generated.h"
 
@@ -52,11 +54,20 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Widgets")
 	UUserWidget* CurrentOpenMenuWidget;
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Widgets")
+	TSubclassOf<UUserWidget> CurrentOpenMenuWidget_Class;
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Widgets")
 	TSubclassOf<UBaseClass_Widget_PauseMenu> PauseMenu_Class;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Widgets")
 	TSubclassOf<UBaseClass_Widget_Inventory> Inventory_Class;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Widgets")
+	TSubclassOf<UBaseClass_Widget_CharacterSheet> CharacterSheet_Class;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Widgets")
+	TSubclassOf<UBaseClass_Widget_CharCreator> CharacterCreator_Class;
 
 // Technical Variables
 // --------------------------------------------------
@@ -94,6 +105,12 @@ public:
 
 	UFUNCTION()
 	void OpenInventory();
+
+	UFUNCTION()
+	void OpenCharacterSheet();
+
+	UFUNCTION()
+	void OpenCharacterCreator();
 
 // ------------------------- Attacks
 	//UFUNCTION()

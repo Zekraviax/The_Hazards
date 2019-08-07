@@ -37,14 +37,18 @@ public:
 // Base Variables
 // --------------------------------------------------
 
+// ------------------------- Character
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Entity")
+	F_Entity_CharacterSheet CharacterSheet;
+
 // ------------------------- Stats
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Entity Data")
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Entity")
 	F_BaseStats_Struct BaseStats_Current;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Entity Data")
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Entity")
 	F_BaseStats_Struct BaseStats_Total;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Entity Data")
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Entity")
 	F_SecondaryStats_Struct SecondaryStats;
 
 // ------------------------- Inventory

@@ -39,6 +39,7 @@ enum class E_Character_Races : uint8
 	E_Human						UMETA(DisplayName = "Human"),
 };
 
+UENUM(BlueprintType)
 enum class E_Character_Elements : uint8
 {
 	E_Aer						UMETA(DisplayName = "Aer"),
@@ -49,6 +50,7 @@ enum class E_Character_Elements : uint8
 	E_Dynamo					UMETA(DisplayName = "Dynamo"),
 };
 
+UENUM(BlueprintType)
 enum class E_Character_Factions : uint8
 {
 	E_XRX						UMETA(DisplayName = "XRX"),
@@ -203,6 +205,32 @@ struct THE_HAZARDS_API F_BaseStats_Struct
 		Evasiveness = 10.f;
 		Status_Potency = 10.f;
 		Luck = 10.f;
+	}
+};
+
+USTRUCT(BlueprintType)
+struct THE_HAZARDS_API F_Entity_CharacterSheet
+{
+	GENERATED_BODY()
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Base")
+	FString Name;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Base")
+	E_Character_Races Race;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Base")
+	E_Character_Elements Element;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Base")
+	E_Character_Factions Faction;
+
+	F_Entity_CharacterSheet()
+	{
+		Name = "Default";
+		Race = E_Character_Races::E_Chiropterrian;
+		Element = E_Character_Elements::E_Aer;
+		Faction = E_Character_Factions::E_XRX;
 	}
 };
 
