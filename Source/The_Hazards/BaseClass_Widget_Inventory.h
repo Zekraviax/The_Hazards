@@ -21,24 +21,22 @@ class THE_HAZARDS_API UBaseClass_Widget_Inventory : public UUserWidget
 	GENERATED_BODY()
 
 public:
-	//virtual void NativeConstruct() override;
+// Base Variables
+// --------------------------------------------------
 
-	// Base Variables
-	// --------------------------------------------------
-
-	// ------------------------- Components
+// ------------------------- Components
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Components", meta = (BindWidget))
 	UImage* BackgroundImage;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Components")
 	TArray<USubWidget_InventorySlot*> InventorySlotsArray;
 
-	// ------------------------- Player-related Variables
+// ------------------------- Player-related Variables
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Player-Related")
 	AEntity_Base* PlayerReference;
 
-	// Functions
-	// --------------------------------------------------
+// Functions
+// --------------------------------------------------
 	UFUNCTION()
 	void PopulateInventorySlots();
 

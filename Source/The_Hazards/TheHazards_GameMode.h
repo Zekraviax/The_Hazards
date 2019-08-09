@@ -12,7 +12,6 @@
 // --------------------------------------------------
 
 //------------------------- Base Items
-
 UENUM(BlueprintType)
 enum class E_Item_Supertypes : uint8
 {
@@ -26,6 +25,13 @@ enum class E_Item_Supertypes : uint8
 };
 
 //------------------------- Weapons
+UENUM(BlueprintType)
+enum class E_Weapon_EquipSlot : uint8
+{
+	E_Primary,
+	E_Secondary,
+	E_Tertiary,
+};
 
 //------------------------- Characters
 UENUM(BlueprintType)
@@ -61,9 +67,20 @@ enum class E_Character_Factions : uint8
 	E_NA						UMETA(DisplayName = "N/A"),
 };
 
+//------------------------- Inventory
+UENUM(BlueprintType)
+enum class E_InventorySlot_EquipType : uint8
+{
+	E_Armour_Head,
+	E_Armour_Body,
+	E_Armour_Legs,
+	E_Weapon_Primary,
+	E_Weapon_Secondary,
+	E_Weapon_Tertiary,
+};
+
 // Structs
 // --------------------------------------------------
-
 USTRUCT()
 struct THE_HAZARDS_API FTestStruct
 {
@@ -71,7 +88,6 @@ struct THE_HAZARDS_API FTestStruct
 };
 
 //------------------------- Entity Base structs
-
 USTRUCT(BlueprintType)
 struct THE_HAZARDS_API F_SecondaryStats_Struct
 {
@@ -235,11 +251,13 @@ struct THE_HAZARDS_API F_Entity_CharacterSheet
 };
 
 // ------------------------- Items
-
 USTRUCT(BlueprintType)
 struct THE_HAZARDS_API F_Item_WeaponStruct
 {
 	GENERATED_BODY()
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Enum")
+	E_Weapon_EquipSlot EquipSlot;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Base")
 	float DamagePerShot;
@@ -249,6 +267,7 @@ struct THE_HAZARDS_API F_Item_WeaponStruct
 
 	F_Item_WeaponStruct()
 	{
+		EquipSlot = E_Weapon_EquipSlot::E_Primary;
 		DamagePerShot = 1.f;
 		AttackSpeedMultiplier = 1.f;
 	}

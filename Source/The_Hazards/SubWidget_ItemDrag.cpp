@@ -3,6 +3,7 @@
 
 #include "SubWidget_ItemDrag.h"
 
+#include "SubWidget_InventorySlot.h"
 
 void USubWidget_ItemDrag::NativeTick(const FGeometry& MyGeometry, float DeltaTime)
 {
@@ -13,5 +14,4 @@ void USubWidget_ItemDrag::SetPosition()
 {
 	UGameplayStatics::GetPlayerController(GetWorld(), 0)->GetMousePosition(MousePosX, MousePosY);
 	SetPositionInViewport(FVector2D(MousePosX + 10, MousePosY + 10), true);
-	GEngine->AddOnScreenDebugMessage(-1, 0.05f, FColor::White, TEXT("Mouse Pos " + FString::SanitizeFloat(MousePosX) + "  /  " + FString::SanitizeFloat(MousePosY)));
 }

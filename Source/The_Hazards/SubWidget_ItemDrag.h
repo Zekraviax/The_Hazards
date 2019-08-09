@@ -11,6 +11,8 @@
 
 #include "SubWidget_ItemDrag.generated.h"
 
+// Forward Declarations
+class USubWidget_InventorySlot;
 
 UCLASS()
 class THE_HAZARDS_API USubWidget_ItemDrag : public UUserWidget
@@ -24,6 +26,14 @@ public:
 // Base Variables
 // --------------------------------------------------
 
+// ------------------------- Item
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Item")
+	F_Item_BaseStruct ItemStruct;
+
+// ------------------------- Slot Reference
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Slot")
+	USubWidget_InventorySlot* SlotReference;
+
 // ------------------------- Position
 	UPROPERTY()
 	float MousePosX;
@@ -31,7 +41,7 @@ public:
 	UPROPERTY()
 	float MousePosY;
 
-// Base Variables
+// Functions
 // --------------------------------------------------
 	UFUNCTION(BlueprintCallable)
 	void SetPosition();

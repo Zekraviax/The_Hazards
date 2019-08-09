@@ -8,7 +8,11 @@
 #include "TheHazards_GameMode.h"
 #include "Components/Image.h"
 #include "Components/TextBlock.h"
+#include "Components/CanvasPanelSlot.h"
 #include "SubWidget_ItemDrag.h"
+#include "BaseClass_Widget_ItemDescription.h"
+#include "Runtime/Engine/Classes/Kismet/GameplayStatics.h"
+#include "Runtime/UMG/Public/Blueprint/WidgetLayoutLibrary.h"
 
 #include "SubWidget_InventorySlot.generated.h"
 
@@ -44,6 +48,9 @@ public:
 	E_InventorySlot_SlotType SlotType;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Slot")
+	E_InventorySlot_EquipType EquipmentSlotType;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Slot")
 	FString SlotDisplayName;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Slot")
@@ -53,11 +60,17 @@ public:
 	F_Item_BaseStruct ItemStruct;
 
 // ------------------------- ItemDrag Widget
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "ItemDrag Widget")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Item Widget")
 	TSubclassOf<USubWidget_ItemDrag> ItemDrag_Class;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "ItemDrag Widget")
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Item Widget")
 	USubWidget_ItemDrag* ItemDrag_Reference;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Item Widget")
+	TSubclassOf<UBaseClass_Widget_ItemDescription> ItemDescription_Class;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Item Widget")
+	UBaseClass_Widget_ItemDescription* ItemDescription_Reference;
 
 // Functions
 // --------------------------------------------------
@@ -66,4 +79,13 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	void OnMouseDown();
+
+	UFUNCTION(BlueprintCallable)
+	void OnMouseUp();
+
+	UFUNCTION(BlueprintCallable)
+	void OnMouseHoverBegin(FVector2D Coordinates);
+
+	UFUNCTION(BlueprintCallable)
+	void OnMouseHoverEnd();
 };
