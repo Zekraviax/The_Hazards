@@ -7,3 +7,11 @@ void USubWidget_InventorySlot::UpdateSlot()
 {
 	ItemAmountBind = ItemStruct.Amount;
 }
+
+void USubWidget_InventorySlot::OnMouseDown()
+{
+	if (ItemDrag_Class) {
+		ItemDrag_Reference = CreateWidget<USubWidget_ItemDrag>(GetWorld(), ItemDrag_Class);
+		ItemDrag_Reference->AddToViewport();
+	}
+}

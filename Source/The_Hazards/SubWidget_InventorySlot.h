@@ -5,9 +5,10 @@
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
 
+#include "TheHazards_GameMode.h"
 #include "Components/Image.h"
 #include "Components/TextBlock.h"
-#include "TheHazards_GameMode.h"
+#include "SubWidget_ItemDrag.h"
 
 #include "SubWidget_InventorySlot.generated.h"
 
@@ -27,18 +28,18 @@ class THE_HAZARDS_API USubWidget_InventorySlot : public UUserWidget
 	GENERATED_BODY()
 
 public:
-	// ------------------------- Components
+// ------------------------- Components
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components", meta = (BindWidget))
 	UImage* ItemImage;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components", meta = (BindWidget))
 	UTextBlock* AmountText;
 
-	// ------------------------- Bound variables
+// ------------------------- Bound variables
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Bound variables")
 	int32 ItemAmountBind;
 
-	// ------------------------- Slot variables
+// ------------------------- Slot
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Slot")
 	E_InventorySlot_SlotType SlotType;
 
@@ -51,8 +52,18 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Slot")
 	F_Item_BaseStruct ItemStruct;
 
-	// Functions
-	// --------------------------------------------------
+// ------------------------- ItemDrag Widget
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "ItemDrag Widget")
+	TSubclassOf<USubWidget_ItemDrag> ItemDrag_Class;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "ItemDrag Widget")
+	USubWidget_ItemDrag* ItemDrag_Reference;
+
+// Functions
+// --------------------------------------------------
 	UFUNCTION()
 	void UpdateSlot();
+
+	UFUNCTION(BlueprintCallable)
+	void OnMouseDown();
 };

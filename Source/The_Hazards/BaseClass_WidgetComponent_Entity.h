@@ -28,8 +28,6 @@ protected:
 	virtual void NativeTick(const FGeometry& MyGeometry, float DeltaTime) override;
 
 public:
-	//virtual TSharedRef<SWidget> RebuildWidget();
-
 	// ------------------------- Components
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Components", meta = (BindWidget))
 	UProgressBar* HealthBar;

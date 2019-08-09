@@ -46,7 +46,7 @@ void AEntity_Base::BeginPlay()
 	SetTimers();
 
 	// Health and Aura regen test
-	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Black, TEXT("Test: Health and Aura Regen"));
+	//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Black, TEXT("Test: Health and Aura Regen"));
 	BaseStats_Current.HealthPoints = 95;
 	BaseStats_Current.AuraPoints = 95;
 
@@ -58,8 +58,8 @@ void AEntity_Base::BeginPlay()
 			EntityStatsWidgetComponent_Reference->LinkedEntity = this;
 	}
 
-	if (GEngine)
-		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Entity Spawned: Entity_Base"));
+	//if (GEngine)
+	//	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Entity Spawned: Entity_Base"));
 
 }
 
@@ -88,7 +88,7 @@ void AEntity_Base::SetTimers()
 
 	// Attacks timer
 
-	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, TEXT("Entity Function: Timers Set"));
+	//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, TEXT("Entity Function: Timers Set"));
 }
 
 // Health and Aura functions -------------------------
@@ -112,28 +112,28 @@ void AEntity_Base::StartHealthRegenTick()
 {
 	GetWorldTimerManager().SetTimer(HealthRegenTimerHandle, this, &AEntity_Base::HealthRegenTick, 1.f, true);
 	GetWorldTimerManager().ClearTimer(HealthRegenDelayTimerHandle);
-	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, TEXT("Entity Function: Start Health Regen Ticks"));
+	//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, TEXT("Entity Function: Start Health Regen Ticks"));
 }
 
 void AEntity_Base::StartAuraRegenTick()
 {
 	GetWorldTimerManager().SetTimer(AuraRegenTimerHandle, this, &AEntity_Base::AuraRegenTick, 1.f, true);
 	GetWorldTimerManager().ClearTimer(AuraRegenDelayTimerHandle);
-	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, TEXT("Entity Function: Start Aura Regen Ticks"));
+	//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, TEXT("Entity Function: Start Aura Regen Ticks"));
 }
 
 void AEntity_Base::StopHealthRegenTick()
 {
 	GetWorldTimerManager().SetTimer(HealthRegenDelayTimerHandle, this, &AEntity_Base::StartHealthRegenTick, BaseStats_Current.HealthPoints_RegenStartDelay, false);
 	GetWorldTimerManager().ClearTimer(HealthRegenTimerHandle);
-	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, TEXT("Entity Function: Start Health Regen Delay"));
+	//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, TEXT("Entity Function: Start Health Regen Delay"));
 }
 
 void AEntity_Base::StopAuraRegenTick()
 {
 	GetWorldTimerManager().SetTimer(AuraRegenDelayTimerHandle, this, &AEntity_Base::StartAuraRegenTick, BaseStats_Current.AuraPoints_RegenStartDelay, false);
 	GetWorldTimerManager().ClearTimer(AuraRegenTimerHandle);
-	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, TEXT("Entity Function: Start Aura Regen Delay"));
+	//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, TEXT("Entity Function: Start Aura Regen Delay"));
 }
 
 // Attack functions -------------------------
@@ -175,5 +175,5 @@ void AEntity_Base::EntityHit(int32 BaseAttackDamage)
 	BaseStats_Current.HealthPoints -= BaseAttackDamage;
 	GetWorldTimerManager().ClearTimer(HealthRegenTimerHandle);
 	GetWorldTimerManager().SetTimer(HealthRegenDelayTimerHandle, this, &AEntity_Base::StartHealthRegenTick, BaseStats_Current.HealthPoints_RegenStartDelay, false);
-	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Entity Function: Damage Taken and Health Regen Stopped"));
+	//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Entity Function: Damage Taken and Health Regen Stopped"));
 }

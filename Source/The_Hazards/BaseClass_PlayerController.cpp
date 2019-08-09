@@ -13,6 +13,8 @@ void ABaseClass_PlayerController::SetupInputComponent()
 	Super::SetupInputComponent();
 
 	// Mouse Input
-	//bShowMouseCursor = true;
-	SetInputMode(FInputModeGameAndUI());
+	FInputModeGameAndUI InputMode;
+	InputMode.SetLockMouseToViewportBehavior(EMouseLockMode::LockOnCapture);
+	InputMode.SetHideCursorDuringCapture(true);
+	SetInputMode(InputMode);
 }

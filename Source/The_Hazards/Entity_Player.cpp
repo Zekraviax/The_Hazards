@@ -33,7 +33,7 @@ void AEntity_Player::BeginPlay()
 	if (Player_HUD_Class) {
 		Player_HUD_Reference = CreateWidget<UBaseClass_Widget_PlayerHUD>(GetWorld(), Player_HUD_Class);
 		Player_HUD_Reference->PlayerReference = this;
-		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, TEXT("Create Widget: PlayerHUD"));
+		//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, TEXT("Create Widget: PlayerHUD"));
 		Player_HUD_Reference->AddToViewport();
 	}
 
@@ -42,8 +42,8 @@ void AEntity_Player::BeginPlay()
 	WeaponCollider->SetGenerateOverlapEvents(false);
 	WeaponCollider->OnComponentBeginOverlap.AddDynamic(this, &AEntity_Player::OnOverlapBegin);
 
-	if (GEngine)
-		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Entity Spawned: Entity_Player"));
+	//if (GEngine)
+	//	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Entity Spawned: Entity_Player"));
 }
 
 // Called every frame
@@ -54,7 +54,7 @@ void AEntity_Player::Tick(float DeltaTime)
 	// Call Tick functions
 	RotatePlayerTowardsMouse();
 
-	GEngine->AddOnScreenDebugMessage(-1, 0.05f, FColor::Green, TEXT("Entity Functions: Tick Events"));
+	//GEngine->AddOnScreenDebugMessage(-1, 0.05f, FColor::Green, TEXT("Entity Functions: Tick Events"));
 }
 
 // Called to bind functionality to input
@@ -135,6 +135,9 @@ void AEntity_Player::OpenInventory()
 		UGameplayStatics::SetGamePaused(GetWorld(), false);
 		CurrentOpenMenuWidget->RemoveFromParent();
 		CurrentOpenMenuWidget = NULL;
+
+		//if ()) {
+		//}
 	}
 
 	if (CharacterSheet_Class && CurrentOpenMenuWidget_Class != Inventory_Class) {
@@ -148,6 +151,10 @@ void AEntity_Player::OpenInventory()
 		// Inventory specific variables and functions
 		Cast<UBaseClass_Widget_Inventory>(CurrentOpenMenuWidget)->PlayerReference = this;
 		Cast<UBaseClass_Widget_Inventory>(CurrentOpenMenuWidget)->PopulateInventorySlots();
+
+		// Set InputMode
+		//FInputModeUIOnly InputMode;
+		//UGameplayStatics::GetPlayerController(GetWorld(), 0)->SetInputMode(InputMode);
 	}
 	else {
 		CurrentOpenMenuWidget_Class = NULL;
