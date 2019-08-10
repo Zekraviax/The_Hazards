@@ -10,6 +10,13 @@ void USubWidget_ItemDrag::NativeTick(const FGeometry& MyGeometry, float DeltaTim
 	Super::NativeTick(MyGeometry, DeltaTime);
 }
 
+void USubWidget_ItemDrag::SetImage()
+{
+	if (ItemStruct.InventoryImage) {
+		ItemImage->SetBrushFromTexture(ItemStruct.InventoryImage, true);
+	}
+}
+
 void USubWidget_ItemDrag::SetPosition() 
 {
 	UGameplayStatics::GetPlayerController(GetWorld(), 0)->GetMousePosition(MousePosX, MousePosY);

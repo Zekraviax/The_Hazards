@@ -6,7 +6,18 @@
 void UBaseClass_Widget_ItemDescription::SetText()
 {
 	// Text Variables for Enums
+	FString ItemSupertype_String;
 	FString EquipSlot_String;
+
+	switch (ItemReference.Supertype)
+	{
+	case(E_Item_Supertypes::E_Weapon):
+		ItemSupertype_String = "Weapon";
+		break;
+	default:
+		ItemSupertype_String = "Error";
+		break;
+	}
 
 	if (ItemReference.Amount > 0) {
 		Name->SetText(FText::FromString(ItemReference.Name));
@@ -31,7 +42,8 @@ void UBaseClass_Widget_ItemDescription::SetText()
 				break;
 			}
 
-			Description->SetText(FText::FromString("Equip Slot: " + EquipSlot_String 
+			Description->SetText(FText::FromString("Item Type: " + ItemSupertype_String 
+				+ "\nEquip Slot: " + EquipSlot_String 
 				+ "\nDamage Per Shot: " + FString::SanitizeFloat(ItemReference.Weapon.DamagePerShot)
 				+ "\nAttack Speed Multiplier: " + FString::SanitizeFloat(ItemReference.Weapon.AttackSpeedMultiplier) + "x"));
 			break;

@@ -290,6 +290,9 @@ struct THE_HAZARDS_API F_Item_BaseStruct
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Base")
 	int32 Amount;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Base")
+	UTexture2D* InventoryImage;
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Supertypes")
 	F_Item_WeaponStruct Weapon;
 
@@ -299,6 +302,7 @@ struct THE_HAZARDS_API F_Item_BaseStruct
 		Supertype = E_Item_Supertypes::E_Miscellaneous;
 		IndexInInventoryArray = -1;
 		Amount = 0;
+		InventoryImage = NULL;
 	}
 };
 

@@ -39,4 +39,11 @@ void UBaseClass_Widget_Inventory::OnMouseUp()
 		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::White, TEXT("Found ItemDrag Widget"));
 		FoundWidget->RemoveFromParent();
 	}
+
+	// Reset inventory slot images
+	for (TObjectIterator<USubWidget_InventorySlot> Itr; Itr; ++Itr)
+	{
+		USubWidget_InventorySlot *FoundInventorySlot = *Itr;
+		FoundInventorySlot->UpdateSlot();
+	}
 }

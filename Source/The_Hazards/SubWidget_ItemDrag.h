@@ -26,6 +26,10 @@ public:
 // Base Variables
 // --------------------------------------------------
 
+// ------------------------- Components
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components", meta = (BindWidget))
+	UImage* ItemImage;
+
 // ------------------------- Item
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Item")
 	F_Item_BaseStruct ItemStruct;
@@ -45,4 +49,7 @@ public:
 // --------------------------------------------------
 	UFUNCTION(BlueprintCallable)
 	void SetPosition();
+
+	UFUNCTION()
+	void SetImage();
 };
