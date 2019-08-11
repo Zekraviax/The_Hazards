@@ -22,7 +22,7 @@ protected:
 
 public:
 
-// Bound Variables -------------------------
+// ------------------------- Bound Variables 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Bound Variables")
 	float PlayerHealth_Current;
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Bound Variables")
@@ -33,7 +33,7 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Bound Variables")
 	float PlayerAura_Maximum;
 
-// Player-Related variables -------------------------
+// ------------------------- Player-Related variables
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Player")
 	AEntity_Base* PlayerReference;
 };

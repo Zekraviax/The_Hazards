@@ -4,7 +4,6 @@
 #include "Entity_Player.h"
 
 #include "BaseClass_PlayerController.h"
-#include "EngineUtils.h"
 #include "Runtime/Engine/Classes/Kismet/KismetMathLibrary.h"
 #include "Runtime/Engine/Classes/Kismet/GameplayStatics.h"
 
@@ -22,6 +21,9 @@ AEntity_Player::AEntity_Player()
 
 	// Attach components
 	IsometricCamera->SetupAttachment(RootComponent);
+
+	// Initialize variables
+	UnspentSkillPoints = 3;
 }
 
 // Called when the game starts or when spawned
@@ -33,7 +35,6 @@ void AEntity_Player::BeginPlay()
 	if (Player_HUD_Class) {
 		Player_HUD_Reference = CreateWidget<UBaseClass_Widget_PlayerHUD>(GetWorld(), Player_HUD_Class);
 		Player_HUD_Reference->PlayerReference = this;
-		//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, TEXT("Create Widget: PlayerHUD"));
 		Player_HUD_Reference->AddToViewport();
 	}
 
@@ -42,8 +43,20 @@ void AEntity_Player::BeginPlay()
 	WeaponCollider->SetGenerateOverlapEvents(false);
 	WeaponCollider->OnComponentBeginOverlap.AddDynamic(this, &AEntity_Player::OnOverlapBegin);
 
-	//if (GEngine)
-	//	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Entity Spawned: Entity_Player"));
+	// Setup Skill Tree
+	if (SkillsFunctionLibrary_Reference) {
+		if (SkillsFunctionLibrary_Reference->SkillDataTable_Reference) {
+			FString ContextString;
+			F_Skill_Base* ElementBaseSkill = SkillsFunctionLibrary_Reference->SkillDataTable_Reference->FindRow<F_Skill_Base>(FName("AER"), ContextString);
+			ElementBaseSkill->CurrentLevel = 1;
+			KnownSkills.Add(*ElementBaseSkill);
+			//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Purple, TEXT("Get Aer Base Skill"));
+
+			if (ElementBaseSkill) {
+				SkillsFunctionLibrary_Reference->CallSkillFunction(ElementBaseSkill->SkillIndex);
+			}
+		}
+	}
 }
 
 // Called every frame
@@ -53,8 +66,6 @@ void AEntity_Player::Tick(float DeltaTime)
 
 	// Call Tick functions
 	RotatePlayerTowardsMouse();
-
-	//GEngine->AddOnScreenDebugMessage(-1, 0.05f, FColor::Green, TEXT("Entity Functions: Tick Events"));
 }
 
 // Called to bind functionality to input
@@ -68,6 +79,7 @@ void AEntity_Player::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 	PlayerInputComponent->BindAction("OpenInventory", IE_Released, this, &AEntity_Player::OpenInventory).bExecuteWhenPaused = true;
 	PlayerInputComponent->BindAction("OpenCharacterSheet", IE_Released, this, &AEntity_Player::OpenCharacterSheet).bExecuteWhenPaused = true;
 	PlayerInputComponent->BindAction("OpenCharacterCreator", IE_Released, this, &AEntity_Player::OpenCharacterCreator).bExecuteWhenPaused = true;
+	PlayerInputComponent->BindAction("OpenSkillTree", IE_Released, this, &AEntity_Player::OpenSkillTree).bExecuteWhenPaused = true;
 
 	// Attacks
 	PlayerInputComponent->BindAction("PrimaryAttack", IE_Released, this, &AEntity_Player::AttackStart);
@@ -91,9 +103,6 @@ void AEntity_Player::RotatePlayerTowardsMouse()
 
 	PlayerRotationTowardsMouseValue = FRotator(this->GetActorRotation().Pitch, LookAtRotation.Yaw, this->GetActorRotation().Roll);
 	CubeMesh->SetWorldRotation(PlayerRotationTowardsMouseValue);
-
-	//FString RollText = FString::SanitizeFloat(PlayerRotationTowardsMouseValue.Yaw);
-	//GEngine->AddOnScreenDebugMessage(-1, 0.05f, FColor::Green, TEXT("Entity Functions: Rotate Player Towards Cursor));
 }
 
 // ------------------------- Movement
@@ -135,9 +144,6 @@ void AEntity_Player::OpenInventory()
 		UGameplayStatics::SetGamePaused(GetWorld(), false);
 		CurrentOpenMenuWidget->RemoveFromParent();
 		CurrentOpenMenuWidget = NULL;
-
-		//if ()) {
-		//}
 	}
 
 	if (CharacterSheet_Class && CurrentOpenMenuWidget_Class != Inventory_Class) {
@@ -151,10 +157,6 @@ void AEntity_Player::OpenInventory()
 		// Inventory specific variables and functions
 		Cast<UBaseClass_Widget_Inventory>(CurrentOpenMenuWidget)->PlayerReference = this;
 		Cast<UBaseClass_Widget_Inventory>(CurrentOpenMenuWidget)->PopulateInventorySlots();
-
-		// Set InputMode
-		//FInputModeUIOnly InputMode;
-		//UGameplayStatics::GetPlayerController(GetWorld(), 0)->SetInputMode(InputMode);
 	}
 	else {
 		CurrentOpenMenuWidget_Class = NULL;
@@ -189,9 +191,6 @@ void AEntity_Player::OpenCharacterSheet()
 	else {
 		CurrentOpenMenuWidget_Class = NULL;
 	}
-	//else if (CurrentOpenMenuWidget && CurrentOpenMenuWidget->GetClass() != Inventory_Class) {
-	//	// Do Nothing
-	//}
 }
 
 void AEntity_Player::OpenCharacterCreator()
@@ -218,9 +217,32 @@ void AEntity_Player::OpenCharacterCreator()
 	else {
 		CurrentOpenMenuWidget_Class = NULL;
 	}
-	//else if (CurrentOpenMenuWidget && CurrentOpenMenuWidget->GetClass() != Inventory_Class) {
-	//	// Do Nothing
-	//}
+}
+
+void AEntity_Player::OpenSkillTree()
+{
+	if (CurrentOpenMenuWidget) {
+		// Close widget and resume game
+
+		UGameplayStatics::SetGamePaused(GetWorld(), false);
+		CurrentOpenMenuWidget->RemoveFromParent();
+		CurrentOpenMenuWidget = NULL;
+	}
+
+	if (CharacterSheet_Class && CurrentOpenMenuWidget_Class != SkillTree_Class) {
+		// Create widget, add to viewport, and pause game
+
+		CurrentOpenMenuWidget = CreateWidget<UBaseClass_Widget_SkillTree>(GetWorld(), SkillTree_Class);
+		CurrentOpenMenuWidget_Class = SkillTree_Class;
+		CurrentOpenMenuWidget->AddToViewport();
+		UGameplayStatics::SetGamePaused(GetWorld(), true);
+
+		// Character Creator specific variables and functions
+		Cast<UBaseClass_Widget_SkillTree>(CurrentOpenMenuWidget)->PlayerReference = this;
+	}
+	else {
+		CurrentOpenMenuWidget_Class = NULL;
+	}
 }
 
 // ------------------------- Attacks

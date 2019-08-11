@@ -46,9 +46,8 @@ void AEntity_Base::BeginPlay()
 	SetTimers();
 
 	// Health and Aura regen test
-	//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Black, TEXT("Test: Health and Aura Regen"));
-	BaseStats_Current.HealthPoints = 95;
-	BaseStats_Current.AuraPoints = 95;
+	CurrentStats.HealthPoints = 75;
+	CurrentStats.AuraPoints = 75;
 
 	// Get a reference to the EntityStats proper widget and set the variables
 	if(EntityDataWidgetComponent && EntityStatsWidgetComponent_Class) {
@@ -58,9 +57,20 @@ void AEntity_Base::BeginPlay()
 			EntityStatsWidgetComponent_Reference->LinkedEntity = this;
 	}
 
-	//if (GEngine)
-	//	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Entity Spawned: Entity_Base"));
+	// Spawn a SkillsFunctionLibrary actoir for this entity
+	if (SkillsFunctionLibrary_Class) {
+	FActorSpawnParameters SpawnInfo;
 
+	SkillsFunctionLibrary_Reference = GetWorld()->SpawnActor<AFunctionLibrary_Skills>(SkillsFunctionLibrary_Class, FVector::ZeroVector, FRotator::ZeroRotator, SpawnInfo);
+	SkillsFunctionLibrary_Reference->InitializeSkills();
+	SkillsFunctionLibrary_Reference->LinkedEntity = this;
+
+		//if (SkillsFunctionLibrary_Reference)
+		//	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, TEXT("Spawned singular SkillsFunctionLibrary Actor"));
+	}
+
+	// Set Stats
+	CalculateTotalStats();
 }
 
 // Called every frame
@@ -75,36 +85,32 @@ void AEntity_Base::SetupPlayerInputComponent(UInputComponent* PlayerInputCompone
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 }
 
-// Tick functions -------------------------
+// ------------------------- Tick
 void AEntity_Base::SetTimers()
 {
 	// Sprint Penalty timer
 
 	// Health and Aura Regen Delay timers
-	GetWorldTimerManager().SetTimer(HealthRegenDelayTimerHandle, this, &AEntity_Base::StartHealthRegenTick, BaseStats_Current.HealthPoints_RegenStartDelay, false);
-	GetWorldTimerManager().SetTimer(AuraRegenDelayTimerHandle, this, &AEntity_Base::StartAuraRegenTick, BaseStats_Current.AuraPoints_RegenStartDelay, false);
+	GetWorldTimerManager().SetTimer(HealthRegenDelayTimerHandle, this, &AEntity_Base::StartHealthRegenTick, CurrentStats.HealthPoints_RegenStartDelay, false);
+	GetWorldTimerManager().SetTimer(AuraRegenDelayTimerHandle, this, &AEntity_Base::StartAuraRegenTick, CurrentStats.AuraPoints_RegenStartDelay, false);
 
 	// Status Effect Tick timer
 
 	// Attacks timer
-
-	//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, TEXT("Entity Function: Timers Set"));
 }
 
-// Health and Aura functions -------------------------
+// ------------------------- Health and Aura
 void AEntity_Base::HealthRegenTick()
 {
-	if (BaseStats_Current.HealthPoints < BaseStats_Total.HealthPoints) {
-		BaseStats_Current.HealthPoints += BaseStats_Current.HealthPoints_RegenPerSecond;
-		//GEngine->AddOnScreenDebugMessage(-1, 1.5f, FColor::Green, TEXT("Entity Function: Health Regen Tick"));
+	if (CurrentStats.HealthPoints < BaseStats.HealthPoints) {
+		CurrentStats.HealthPoints += CurrentStats.HealthPoints_RegenPerSecond;
 	}
 }
 
 void AEntity_Base::AuraRegenTick()
 {
-	if (BaseStats_Current.AuraPoints < BaseStats_Total.AuraPoints) {
-		BaseStats_Current.AuraPoints += BaseStats_Current.AuraPoints_RegenPerSecond;
-		//GEngine->AddOnScreenDebugMessage(-1, 1.5f, FColor::Green, TEXT("Entity Function: Aura Regen Tick"));
+	if (CurrentStats.AuraPoints < BaseStats.AuraPoints) {
+		CurrentStats.AuraPoints += CurrentStats.AuraPoints_RegenPerSecond;
 	}
 }
 
@@ -112,31 +118,36 @@ void AEntity_Base::StartHealthRegenTick()
 {
 	GetWorldTimerManager().SetTimer(HealthRegenTimerHandle, this, &AEntity_Base::HealthRegenTick, 1.f, true);
 	GetWorldTimerManager().ClearTimer(HealthRegenDelayTimerHandle);
-	//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, TEXT("Entity Function: Start Health Regen Ticks"));
 }
 
 void AEntity_Base::StartAuraRegenTick()
 {
 	GetWorldTimerManager().SetTimer(AuraRegenTimerHandle, this, &AEntity_Base::AuraRegenTick, 1.f, true);
 	GetWorldTimerManager().ClearTimer(AuraRegenDelayTimerHandle);
-	//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, TEXT("Entity Function: Start Aura Regen Ticks"));
 }
 
 void AEntity_Base::StopHealthRegenTick()
 {
-	GetWorldTimerManager().SetTimer(HealthRegenDelayTimerHandle, this, &AEntity_Base::StartHealthRegenTick, BaseStats_Current.HealthPoints_RegenStartDelay, false);
+	GetWorldTimerManager().SetTimer(HealthRegenDelayTimerHandle, this, &AEntity_Base::StartHealthRegenTick, CurrentStats.HealthPoints_RegenStartDelay, false);
 	GetWorldTimerManager().ClearTimer(HealthRegenTimerHandle);
-	//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, TEXT("Entity Function: Start Health Regen Delay"));
 }
 
 void AEntity_Base::StopAuraRegenTick()
 {
-	GetWorldTimerManager().SetTimer(AuraRegenDelayTimerHandle, this, &AEntity_Base::StartAuraRegenTick, BaseStats_Current.AuraPoints_RegenStartDelay, false);
+	GetWorldTimerManager().SetTimer(AuraRegenDelayTimerHandle, this, &AEntity_Base::StartAuraRegenTick, CurrentStats.AuraPoints_RegenStartDelay, false);
 	GetWorldTimerManager().ClearTimer(AuraRegenTimerHandle);
-	//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, TEXT("Entity Function: Start Aura Regen Delay"));
 }
 
-// Attack functions -------------------------
+// ------------------------- Stats
+void AEntity_Base::CalculateTotalStats()
+{
+	// Set entity movespeed
+	GetCharacterMovement()->MaxWalkSpeed = (CurrentStats.Move_Speed * CurrentStats.SecondaryStats.MoveSpeed_Multiplier) * ((SkillStats.Move_Speed * SkillStats.SecondaryStats.MoveSpeed_Multiplier));
+
+	//GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Black, TEXT("Entity MoveSpeed: " + FString::SanitizeFloat(CurrentStats.Move_Speed * CurrentStats.SecondaryStats.MoveSpeed_Multiplier) + "  /  Skills Modifier: " + FString::SanitizeFloat(SkillStats.Move_Speed * SkillStats.SecondaryStats.MoveSpeed_Multiplier) + "  /  Total MoveSpeed: " + FString::SanitizeFloat(GetCharacterMovement()->MaxWalkSpeed)));
+}
+
+// ------------------------- Attack
 void AEntity_Base::OnOverlapBegin(class UPrimitiveComponent* OverlappedComp, class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
 	if (OtherActor && OtherComp && (OtherActor != this) && (Cast<AEntity_Base>(OtherActor)) && (OverlappedComp->GetName().Contains("WeaponCollider") && (OtherComp->GetName().Contains("BoxCollider")) 
@@ -172,8 +183,7 @@ void AEntity_Base::AttackEnd()
 
 void AEntity_Base::EntityHit(int32 BaseAttackDamage)
 {
-	BaseStats_Current.HealthPoints -= BaseAttackDamage;
+	CurrentStats.HealthPoints -= BaseAttackDamage;
 	GetWorldTimerManager().ClearTimer(HealthRegenTimerHandle);
-	GetWorldTimerManager().SetTimer(HealthRegenDelayTimerHandle, this, &AEntity_Base::StartHealthRegenTick, BaseStats_Current.HealthPoints_RegenStartDelay, false);
-	//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Entity Function: Damage Taken and Health Regen Stopped"));
+	GetWorldTimerManager().SetTimer(HealthRegenDelayTimerHandle, this, &AEntity_Base::StartHealthRegenTick, CurrentStats.HealthPoints_RegenStartDelay, false);
 }

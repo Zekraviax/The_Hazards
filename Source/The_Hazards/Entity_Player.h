@@ -10,6 +10,7 @@
 #include "BaseClass_Widget_Inventory.h"
 #include "BaseClass_Widget_CharacterSheet.h"
 #include "BaseClass_Widget_CharCreator.h"
+#include "BaseClass_Widget_SkillTree.h"
 
 #include "Entity_Player.generated.h"
 
@@ -69,6 +70,9 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Widgets")
 	TSubclassOf<UBaseClass_Widget_CharCreator> CharacterCreator_Class;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Widgets")
+	TSubclassOf<UBaseClass_Widget_SkillTree> SkillTree_Class;
+
 // Technical Variables
 // --------------------------------------------------
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Technical Variables")
@@ -111,6 +115,9 @@ public:
 
 	UFUNCTION()
 	void OpenCharacterCreator();
+
+	UFUNCTION()
+	void OpenSkillTree();
 
 // ------------------------- Attacks
 	//UFUNCTION()

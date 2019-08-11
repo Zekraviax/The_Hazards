@@ -9,7 +9,10 @@
 #include "Components/BoxComponent.h"
 #include "Components/WidgetComponent.h"
 #include "Camera/CameraComponent.h"
+#include "GameFramework/CharacterMovementComponent.h"
+#include "EngineUtils.h"
 #include "BaseClass_WidgetComponent_Entity.h"
+#include "FunctionLibrary_Skills.h"
 #include "TheHazards_GameMode.h"
 
 #include "Entity_Base.generated.h"
@@ -42,14 +45,22 @@ public:
 	F_Entity_CharacterSheet CharacterSheet;
 
 // ------------------------- Stats
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Entity")
-	F_BaseStats_Struct BaseStats_Current;
+	// Calculated from total base stats, known skills, equipped items, and status effects
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Entity")
+	F_BaseStats_Struct CurrentStats;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Entity")
-	F_BaseStats_Struct BaseStats_Total;
+	// Base stats that only change on level-up.
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Entity")
+	F_BaseStats_Struct BaseStats;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Entity")
-	F_SecondaryStats_Struct SecondaryStats;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Entity")
+	F_BaseStats_Struct SkillStats;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Entity")
+	F_BaseStats_Struct ItemStats;
+
+	//UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Entity")
+	//F_SecondaryStats_Struct SecondaryStats;
 
 // ------------------------- Inventory
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Inventory")
@@ -57,6 +68,19 @@ public:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Inventory")
 	int32 MaximumInventorySize;
+
+// ------------------------- Skills
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Skills")
+	TSubclassOf<AFunctionLibrary_Skills> SkillsFunctionLibrary_Class;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Skills")
+	AFunctionLibrary_Skills* SkillsFunctionLibrary_Reference;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Skills")
+	TArray<F_Skill_Base> KnownSkills;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Skills")
+	int32 UnspentSkillPoints;
 
 // ------------------------- Components
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Components")
@@ -131,6 +155,10 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	void StopAuraRegenTick();
+
+// ------------------------- Stats
+	UFUNCTION()
+	void CalculateTotalStats();
 
 // ------------------------- Attack functions
 	// Weapon hitbox overlap

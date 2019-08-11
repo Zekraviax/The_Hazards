@@ -4,6 +4,9 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/GameModeBase.h"
+
+#include "Engine/DataTable.h"
+
 #include "TheHazards_GameMode.generated.h"
 
 // --------------------------------------------------
@@ -79,6 +82,16 @@ enum class E_InventorySlot_EquipType : uint8
 	E_Weapon_Tertiary,
 };
 
+//------------------------- Skills
+UENUM(BlueprintType)
+enum class E_Skill_ActivationCondition : uint8
+{
+	E_Base,
+	E_Passive,
+	E_OnDamageDealt,
+	E_OnDamageTaken,
+};
+
 // Structs
 // --------------------------------------------------
 USTRUCT()
@@ -137,19 +150,19 @@ struct THE_HAZARDS_API F_SecondaryStats_Struct
 
 	F_SecondaryStats_Struct()
 	{
-		Maximum_HealthPoints_Multiplier = 100.f;
-		HealthPoints_Recovery_Multiplier = 100.0f;
-		PhysicalDefence_Multiplier = 100.f;
-		SpecialAttack_Multiplier = 100.f;
-		AttackSpeed_Multiplier = 100.f;
-		MoveSpeed_Multiplier = 100.0f;
-		IncomingDamage_Multiplier = 100.f;
-		OutgoingDamage_Multiplier = 100.f;
-		Lifesteal_Percentage = 0.f;
-		Armour_Value = 0.f;
-		StatusPotency_Multiplier = 100.f;
-		StatusDuration_Multiplier = 100.f;
-		ShopDiscount_Multiplier = 100.f;
+		Maximum_HealthPoints_Multiplier = 1.f;
+		HealthPoints_Recovery_Multiplier = 1.f;
+		PhysicalDefence_Multiplier = 1.f;
+		SpecialAttack_Multiplier = 1.f;
+		AttackSpeed_Multiplier = 1.f;
+		MoveSpeed_Multiplier = 1.f;
+		IncomingDamage_Multiplier = 1.f;
+		OutgoingDamage_Multiplier = 1.f;
+		Lifesteal_Percentage = 1.f;
+		Armour_Value = 1.f;
+		StatusPotency_Multiplier = 1.f;
+		StatusDuration_Multiplier = 1.f;
+		ShopDiscount_Multiplier = 1.f;
 		Maximum_Companion_Count = 1;
 	}
 };
@@ -204,6 +217,9 @@ struct THE_HAZARDS_API F_BaseStats_Struct
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Stats")
 		float Luck;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Stats")
+		F_SecondaryStats_Struct SecondaryStats;
+
 	F_BaseStats_Struct()
 	{
 		HealthPoints = 100.f;
@@ -217,7 +233,7 @@ struct THE_HAZARDS_API F_BaseStats_Struct
 		Elemental_Strength = 10.f;
 		Elemental_Defence = 10.f;
 		Attack_Speed = 10.f;
-		Move_Speed = 10.f;
+		Move_Speed = 500.f;
 		Evasiveness = 10.f;
 		Status_Potency = 10.f;
 		Luck = 10.f;
@@ -303,6 +319,49 @@ struct THE_HAZARDS_API F_Item_BaseStruct
 		IndexInInventoryArray = -1;
 		Amount = 0;
 		InventoryImage = NULL;
+	}
+};
+
+// ------------------------- Skills
+USTRUCT(BlueprintType)
+struct THE_HAZARDS_API F_Skill_Base : public FTableRowBase
+{
+	GENERATED_BODY()
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Base")
+	FString Name;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Base")
+	E_Character_Elements Element;
+
+	//UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Base")
+	//FString Description;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Stats")
+	int32 CurrentLevel;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Stats")
+	int32 MaximumLevel;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Display")
+	UTexture2D* SkillImage;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Function")
+	E_Skill_ActivationCondition ActivationCondition;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Function")
+	int32 SkillIndex;
+
+	F_Skill_Base()
+	{
+		Name = "Default";
+		Element = E_Character_Elements::E_Aer;
+		//Description = "Default.";
+		CurrentLevel = 0;
+		MaximumLevel = 1;
+		SkillImage = NULL;
+		ActivationCondition = E_Skill_ActivationCondition::E_Passive;
+		SkillIndex = 1;
 	}
 };
 
