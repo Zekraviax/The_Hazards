@@ -3,6 +3,8 @@
 
 #include "SubWidget_InventorySlot.h"
 
+#include "BaseClass_Widget_Inventory.h"
+
 void USubWidget_InventorySlot::UpdateSlot()
 {
 	ItemAmountBind = ItemStruct.Amount;
@@ -12,6 +14,11 @@ void USubWidget_InventorySlot::UpdateSlot()
 	}
 	else {
 		ItemImage->SetBrushFromTexture(NULL, true);
+	}
+
+	if (ItemDrag_Reference) {
+		ItemDrag_Reference->RemoveFromParent();
+		ItemDrag_Reference = NULL;
 	}
 }
 
@@ -39,67 +46,9 @@ void USubWidget_InventorySlot::OnMouseUp()
 			USubWidget_ItemDrag *FoundSlot = FoundInventorySlot->ItemDrag_Reference;
 			F_Item_BaseStruct TempItemVariable = FoundSlot->ItemStruct;
 
-			//switch (FoundSlot->ItemStruct.Supertype)
-			//{
-			//case(E_Item_Supertypes::E_Weapon):
-			//	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::White, TEXT("Weapon"));
-			//	break;
-			//case(E_Item_Supertypes::E_Armour):
-			//	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::White, TEXT("Armour"));
-			//	break;
-			//case(E_Item_Supertypes::E_Ammo):
-			//	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::White, TEXT("Ammo"));
-			//	break;
-			//case(E_Item_Supertypes::E_Collectable):
-			//	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::White, TEXT("Collectable"));
-			//	break;
-			//case(E_Item_Supertypes::E_Consumable):
-			//	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::White, TEXT("Consumable"));
-			//	break;
-			//case(E_Item_Supertypes::E_CustomPart):
-			//	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::White, TEXT("Custom Part"));
-			//	break;
-			//case(E_Item_Supertypes::E_Miscellaneous):
-			//	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::White, TEXT("Miscellaneous"));
-			//	break;
-			//default:
-			//	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::White, TEXT("Error"));
-			//	break;
-			//}
-
 			// Switch on slot type and item type in dragged slot
 			// Drag weapon onto weapon slot
 			if (SlotType == E_InventorySlot_SlotType::E_EquipmentSlot && FoundSlot->ItemStruct.Supertype == E_Item_Supertypes::E_Weapon) {
-				//switch (FoundSlot->ItemStruct.Weapon.EquipSlot)
-				//{
-				//case(E_Weapon_EquipSlot::E_Tertiary):
-				//	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::White, TEXT("Weapon Equip Slot: Tertiary"));
-				//	break;
-				//case(E_Weapon_EquipSlot::E_Primary):
-				//	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::White, TEXT("Weapon Equip Slot: Primary"));
-				//	break;
-				//case(E_Weapon_EquipSlot::E_Secondary):
-				//	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::White, TEXT("Weapon Equip Slot: Secondary"));
-				//	break;
-				//default:
-				//	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::White, TEXT("Weapon Equip Slot: Error"));
-				//	break;
-				//}
-				//switch (EquipmentSlotType)
-				//{
-				//case(E_InventorySlot_EquipType::E_Weapon_Tertiary):
-				//	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::White, TEXT("Inventory Equip Slot: Tertiary"));
-				//	break;
-				//case(E_InventorySlot_EquipType::E_Weapon_Primary):
-				//	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::White, TEXT("Inventory Equip Slot: Primary"));
-				//	break;
-				//case(E_InventorySlot_EquipType::E_Weapon_Secondary):
-				//	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::White, TEXT("Inventory Equip Slot: Secondary"));
-				//	break;
-				//default:
-				//	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::White, TEXT("Inventory Equip Slot: Error"));
-				//	break;
-				//}
 				if (EquipmentSlotType == E_InventorySlot_EquipType::E_Weapon_Primary && FoundSlot->ItemStruct.Weapon.EquipSlot == E_Weapon_EquipSlot::E_Primary ||
 					EquipmentSlotType == E_InventorySlot_EquipType::E_Weapon_Secondary && FoundSlot->ItemStruct.Weapon.EquipSlot == E_Weapon_EquipSlot::E_Secondary ||
 					EquipmentSlotType == E_InventorySlot_EquipType::E_Weapon_Tertiary && FoundSlot->ItemStruct.Weapon.EquipSlot == E_Weapon_EquipSlot::E_Tertiary) {
@@ -111,6 +60,8 @@ void USubWidget_InventorySlot::OnMouseUp()
 					UpdateSlot();
 				}
 			}
+
+			// Swap any item to a standard slot
 			else if (SlotType == E_InventorySlot_SlotType::E_StandardSlot) {
 				FoundSlot->SlotReference->ItemStruct = ItemStruct;
 				ItemStruct = TempItemVariable;
@@ -123,6 +74,13 @@ void USubWidget_InventorySlot::OnMouseUp()
 			FoundSlot->RemoveFromParent();
 		}
 	}
+
+	for (TObjectIterator<UBaseClass_Widget_Inventory> Itr; Itr; ++Itr)
+	{
+		UBaseClass_Widget_Inventory* FoundSlot = *Itr;
+		FoundSlot->OnMouseUp();
+	}
+
 }
 
 void USubWidget_InventorySlot::OnMouseHoverBegin(FVector2D Coordinates)
@@ -171,11 +129,4 @@ void USubWidget_InventorySlot::OnMouseHoverEnd()
 		ItemDescription_Reference->RemoveFromParent();
 		ItemDescription_Reference = NULL;
 	}
-
-	//for (TObjectIterator<UBaseClass_Widget_ItemDescription> Itr; Itr; ++Itr)
-	//{
-	//	UBaseClass_Widget_ItemDescription *FoundWidget = *Itr;
-	//	//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::White, TEXT("Found ItemDescription Widget"));
-	//	FoundWidget->RemoveFromParent();
-	//}
 }

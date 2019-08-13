@@ -5,6 +5,7 @@
 
 #include "Entity_Base.h"
 #include "SubWidget_ItemDrag.h"
+#include "test.h"
 
 
 void UBaseClass_Widget_Inventory::PopulateInventorySlots()
@@ -31,19 +32,42 @@ void UBaseClass_Widget_Inventory::PopulateInventorySlots()
 
 void UBaseClass_Widget_Inventory::OnMouseUp()
 {
-	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::White, TEXT("Mouse Up: Inventory"));
+	//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::White, TEXT("Mouse Up: Inventory"));
 
-	for (TObjectIterator<USubWidget_ItemDrag> Itr; Itr; ++Itr)
-	{
-		USubWidget_ItemDrag *FoundWidget = *Itr;
-		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::White, TEXT("Found ItemDrag Widget"));
-		FoundWidget->RemoveFromParent();
-	}
+	WidgetTree->ForEachWidget([&](UWidget* Widget) {
+		check(Widget);
+		if (Widget->IsA(USubWidget_ItemDrag::StaticClass())) {
+			USubWidget_ItemDrag* ItemDragWidget = Cast<USubWidget_ItemDrag>(Widget);
 
-	// Reset inventory slot images
-	for (TObjectIterator<USubWidget_InventorySlot> Itr; Itr; ++Itr)
-	{
-		USubWidget_InventorySlot *FoundInventorySlot = *Itr;
-		FoundInventorySlot->UpdateSlot();
-	}
+			if (ItemDragWidget)
+			{
+				//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::White, TEXT("Found ItemDrag Widget"));
+				ItemDragWidget->RemoveFromParent();
+			}
+		}
+	});
+
+	WidgetTree->ForEachWidget([&](UWidget* Widget) {
+		check(Widget);
+		if (Widget->IsA(USubWidget_InventorySlot::StaticClass())) {
+			USubWidget_InventorySlot* FoundSlot = Cast<USubWidget_InventorySlot>(Widget);
+
+			if (FoundSlot)
+				FoundSlot->UpdateSlot();
+			
+		}
+	});
+}
+
+void UBaseClass_Widget_Inventory::RunTest()
+{
+	WidgetTree->ForEachWidget([&](UWidget* Widget) {
+		check(Widget);
+		if (Widget->IsA(Utest::StaticClass())) {
+			Utest* FoundSlot = Cast<Utest>(Widget);
+
+			if (FoundSlot)
+				FoundSlot->ImageTest->SetBrushFromTexture(PlayerReference->Inventory[0].InventoryImage, true);
+		}
+	});
 }

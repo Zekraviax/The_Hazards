@@ -42,4 +42,7 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	void OnMouseUp();
+
+	UFUNCTION(BlueprintCallable)
+	void RunTest();
 };
