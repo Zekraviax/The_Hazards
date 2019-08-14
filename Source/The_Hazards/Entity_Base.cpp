@@ -58,9 +58,17 @@ void AEntity_Base::BeginPlay()
 			EntityStatsWidgetComponent_Reference->LinkedEntity = this;
 	}
 
-	//if (GEngine)
-	//	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Entity Spawned: Entity_Base"));
+	// Spawn a SkillsFunctionLibrary actoir for this entity
+	if (SkillsFunctionLibrary_Class) {
+		FActorSpawnParameters SpawnInfo;
 
+		SkillsFunctionLibrary_Reference = GetWorld()->SpawnActor<AFunctionLibrary_Skills>(SkillsFunctionLibrary_Class, FVector::ZeroVector, FRotator::ZeroRotator, SpawnInfo);
+		//SkillsFunctionLibrary_Reference->InitializeSkills();
+		SkillsFunctionLibrary_Reference->LinkedEntity = this;
+
+		//if (SkillsFunctionLibrary_Reference)
+		//	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, TEXT("Spawned singular SkillsFunctionLibrary Actor"));
+	}
 }
 
 // Called every frame

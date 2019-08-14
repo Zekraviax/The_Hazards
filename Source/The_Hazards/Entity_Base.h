@@ -10,6 +10,7 @@
 #include "Components/WidgetComponent.h"
 #include "Camera/CameraComponent.h"
 #include "BaseClass_WidgetComponent_Entity.h"
+#include "FunctionLibrary_Skills.h"
 #include "TheHazards_GameMode.h"
 
 #include "Entity_Base.generated.h"
@@ -57,6 +58,19 @@ public:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Inventory")
 	int32 MaximumInventorySize;
+
+// ------------------------- Skills
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Skills")
+	TSubclassOf<AFunctionLibrary_Skills> SkillsFunctionLibrary_Class;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Skills")
+	AFunctionLibrary_Skills* SkillsFunctionLibrary_Reference;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Skills")
+	TArray<F_Skill_Base> KnownSkills;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Skills")
+	int32 UnspentSkillPoints;
 
 // ------------------------- Components
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Components")

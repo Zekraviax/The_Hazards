@@ -13,6 +13,7 @@
 
 #include "BaseClass_Widget_Inventory.generated.h"
 
+// Forward Declarations
 class AEntity_Base;
 
 UCLASS()

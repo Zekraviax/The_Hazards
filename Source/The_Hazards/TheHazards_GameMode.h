@@ -4,6 +4,9 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/GameModeBase.h"
+
+#include "Engine/DataTable.h"
+
 #include "TheHazards_GameMode.generated.h"
 
 // --------------------------------------------------
@@ -77,6 +80,16 @@ enum class E_InventorySlot_EquipType : uint8
 	E_Weapon_Primary,
 	E_Weapon_Secondary,
 	E_Weapon_Tertiary,
+};
+
+//------------------------- Skills
+UENUM(BlueprintType)
+enum class E_Skill_ActivationCondition : uint8
+{
+	E_Base,
+	E_Passive,
+	E_OnDamageDealt,
+	E_OnDamageTaken,
 };
 
 // Structs
@@ -303,6 +316,53 @@ struct THE_HAZARDS_API F_Item_BaseStruct
 		IndexInInventoryArray = -1;
 		Amount = 0;
 		InventoryImage = NULL;
+	}
+};
+
+// ------------------------- Skills
+USTRUCT(BlueprintType)
+struct THE_HAZARDS_API F_Skill_Base : public FTableRowBase
+{
+	GENERATED_BODY()
+
+		UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Base")
+		FString Name;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Base")
+		E_Character_Elements Element;
+
+	//UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Base")
+	//FString Description;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Stats")
+		int32 CurrentLevel;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Stats")
+		int32 MaximumLevel;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Display")
+		UTexture2D* SkillImage;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Function")
+		E_Skill_ActivationCondition ActivationCondition;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Function")
+		int32 SkillIndex;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Technical")
+		int32 SlotNumber;
+
+	F_Skill_Base()
+	{
+		Name = "Default";
+		Element = E_Character_Elements::E_Aer;
+		//Description = "Default.";
+		CurrentLevel = 0;
+		MaximumLevel = 1;
+		SkillImage = NULL;
+		ActivationCondition = E_Skill_ActivationCondition::E_Passive;
+		SkillIndex = 1;
+		SlotNumber = 0;
 	}
 };
 

@@ -5,7 +5,7 @@
 
 #include "Entity_Base.h"
 #include "SubWidget_ItemDrag.h"
-#include "test.h"
+#include "SubWidget_SkillTreeSlot.h"
 
 
 void UBaseClass_Widget_Inventory::PopulateInventorySlots()
@@ -61,13 +61,5 @@ void UBaseClass_Widget_Inventory::OnMouseUp()
 
 void UBaseClass_Widget_Inventory::RunTest()
 {
-	WidgetTree->ForEachWidget([&](UWidget* Widget) {
-		check(Widget);
-		if (Widget->IsA(Utest::StaticClass())) {
-			Utest* FoundSlot = Cast<Utest>(Widget);
 
-			if (FoundSlot)
-				FoundSlot->ImageTest->SetBrushFromTexture(PlayerReference->Inventory[0].InventoryImage, true);
-		}
-	});
 }
