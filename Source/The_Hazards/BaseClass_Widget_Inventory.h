@@ -13,6 +13,7 @@
 
 #include "BaseClass_Widget_Inventory.generated.h"
 
+// Forward Declarations
 class AEntity_Base;
 
 UCLASS()
@@ -42,4 +43,7 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	void OnMouseUp();
+
+	UFUNCTION(BlueprintCallable)
+	void RunTest();
 };

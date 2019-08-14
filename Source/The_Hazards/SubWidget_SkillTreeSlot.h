@@ -14,12 +14,15 @@ UCLASS()
 class THE_HAZARDS_API USubWidget_SkillTreeSlot : public UUserWidget
 {
 	GENERATED_BODY()
-	
 public:
 // Base Variables
 // --------------------------------------------------
 
-// ------------------------- Components
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components", meta = (BindWidget))
+// ------------------------- Bound Widget Components
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget))
 	UImage* SkillImage;
+
+// ------------------------- Slot
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	int32 SlotNumber;
 };

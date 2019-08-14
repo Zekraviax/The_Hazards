@@ -20,9 +20,9 @@ class THE_HAZARDS_API AFunctionLibrary_Skills : public AActor
 {
 	GENERATED_BODY()
 
-public:	
-	// Sets default values for this actor's properties
-	//AFunctionLibrary_Skills();
+public:
+// Sets default values for this actor's properties
+//AFunctionLibrary_Skills();
 
 // Base Variables
 // --------------------------------------------------

@@ -45,22 +45,25 @@ public:
 	F_Entity_CharacterSheet CharacterSheet;
 
 // ------------------------- Stats
-	// Calculated from total base stats, known skills, equipped items, and status effects
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Entity")
+	// Combined totals of all other Stats variables, except CurrentStats.
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Stats")
+	F_BaseStats_Struct TotalStats;
+
+	// Total Stats combined with temporary stat changes (e.g status effects, buffs, etc.)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Stats")
 	F_BaseStats_Struct CurrentStats;
 
-	// Base stats that only change on level-up.
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Entity")
-	F_BaseStats_Struct BaseStats;
+	// Stats gained solely from leveling up.
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Stats")
+	F_BaseStats_Struct LevelStats;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Entity")
+	// Stats gained from levelling up skills. Must be re-calculated everytime a skill is leveled.
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Stats")
 	F_BaseStats_Struct SkillStats;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Entity")
+	// Stats gained from equipping items. Must be re-calculated everytine an item is equipped or unequipped.
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Stats")
 	F_BaseStats_Struct ItemStats;
-
-	//UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Entity")
-	//F_SecondaryStats_Struct SecondaryStats;
 
 // ------------------------- Inventory
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Inventory")

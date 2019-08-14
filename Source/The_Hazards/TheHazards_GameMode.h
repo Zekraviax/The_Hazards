@@ -352,6 +352,9 @@ struct THE_HAZARDS_API F_Skill_Base : public FTableRowBase
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Function")
 	int32 SkillIndex;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Technical")
+	int32 SlotNumber;
+
 	F_Skill_Base()
 	{
 		Name = "Default";
@@ -362,6 +365,7 @@ struct THE_HAZARDS_API F_Skill_Base : public FTableRowBase
 		SkillImage = NULL;
 		ActivationCondition = E_Skill_ActivationCondition::E_Passive;
 		SkillIndex = 1;
+		SlotNumber = 0;
 	}
 };
 

@@ -47,12 +47,12 @@ void AEntity_Player::BeginPlay()
 	if (SkillsFunctionLibrary_Reference) {
 		if (SkillsFunctionLibrary_Reference->SkillDataTable_Reference) {
 			FString ContextString;
-			F_Skill_Base* ElementBaseSkill = SkillsFunctionLibrary_Reference->SkillDataTable_Reference->FindRow<F_Skill_Base>(FName("AER"), ContextString);
-			ElementBaseSkill->CurrentLevel = 1;
-			KnownSkills.Add(*ElementBaseSkill);
-			//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Purple, TEXT("Get Aer Base Skill"));
+			F_Skill_Base* ElementBaseSkill = SkillsFunctionLibrary_Reference->SkillDataTable_Reference->FindRow<F_Skill_Base>(FName("AerBase"), ContextString);
 
 			if (ElementBaseSkill) {
+				//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Purple, TEXT("Get Aer Base Skill"));
+				ElementBaseSkill->CurrentLevel = 1;
+				KnownSkills.Add(*ElementBaseSkill);
 				SkillsFunctionLibrary_Reference->CallSkillFunction(ElementBaseSkill->SkillIndex);
 			}
 		}
@@ -77,6 +77,7 @@ void AEntity_Player::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 	// Menus
 	PlayerInputComponent->BindAction("PauseGame", IE_Released, this, &AEntity_Player::OpenPauseMenu).bExecuteWhenPaused = true;
 	PlayerInputComponent->BindAction("OpenInventory", IE_Released, this, &AEntity_Player::OpenInventory).bExecuteWhenPaused = true;
+	PlayerInputComponent->BindAction("OpenSkillTree", IE_Released, this, &AEntity_Player::OpenSkillTree).bExecuteWhenPaused = true;
 	PlayerInputComponent->BindAction("OpenCharacterSheet", IE_Released, this, &AEntity_Player::OpenCharacterSheet).bExecuteWhenPaused = true;
 	PlayerInputComponent->BindAction("OpenCharacterCreator", IE_Released, this, &AEntity_Player::OpenCharacterCreator).bExecuteWhenPaused = true;
 	PlayerInputComponent->BindAction("OpenSkillTree", IE_Released, this, &AEntity_Player::OpenSkillTree).bExecuteWhenPaused = true;
@@ -121,7 +122,6 @@ void AEntity_Player::OpenPauseMenu()
 {
 	if (CurrentOpenMenuWidget) {
 		// Close widget and resume game
-
 		UGameplayStatics::SetGamePaused(GetWorld(), false);
 		CurrentOpenMenuWidget->RemoveFromParent();
 		CurrentOpenMenuWidget = NULL;
@@ -140,7 +140,6 @@ void AEntity_Player::OpenInventory()
 {
 	if (CurrentOpenMenuWidget) {
 		// Close widget and resume game
-
 		UGameplayStatics::SetGamePaused(GetWorld(), false);
 		CurrentOpenMenuWidget->RemoveFromParent();
 		CurrentOpenMenuWidget = NULL;
@@ -148,7 +147,6 @@ void AEntity_Player::OpenInventory()
 
 	if (CharacterSheet_Class && CurrentOpenMenuWidget_Class != Inventory_Class) {
 		// Create widget, add to viewport, and pause game
-
 		CurrentOpenMenuWidget = CreateWidget<UBaseClass_Widget_Inventory>(GetWorld(), Inventory_Class);
 		CurrentOpenMenuWidget_Class = Inventory_Class;
 		CurrentOpenMenuWidget->AddToViewport();
@@ -161,16 +159,12 @@ void AEntity_Player::OpenInventory()
 	else {
 		CurrentOpenMenuWidget_Class = NULL;
 	}
-	//else if (CurrentOpenMenuWidget && CurrentOpenMenuWidget->GetClass() != Inventory_Class) {
-	//	// Do Nothing
-	//}
 }
 
 void AEntity_Player::OpenCharacterSheet()
 {
 	if (CurrentOpenMenuWidget) {
 		// Close widget and resume game
-
 		UGameplayStatics::SetGamePaused(GetWorld(), false);
 		CurrentOpenMenuWidget->RemoveFromParent();
 		CurrentOpenMenuWidget = NULL;
@@ -178,7 +172,6 @@ void AEntity_Player::OpenCharacterSheet()
 
 	if (CharacterSheet_Class && CurrentOpenMenuWidget_Class != CharacterSheet_Class) {
 		// Create widget, add to viewport, and pause game
-
 		CurrentOpenMenuWidget = CreateWidget<UBaseClass_Widget_CharacterSheet>(GetWorld(), CharacterSheet_Class);
 		CurrentOpenMenuWidget_Class = CharacterSheet_Class;
 		CurrentOpenMenuWidget->AddToViewport();
@@ -197,7 +190,6 @@ void AEntity_Player::OpenCharacterCreator()
 {
 	if (CurrentOpenMenuWidget) {
 		// Close widget and resume game
-
 		UGameplayStatics::SetGamePaused(GetWorld(), false);
 		CurrentOpenMenuWidget->RemoveFromParent();
 		CurrentOpenMenuWidget = NULL;
@@ -205,7 +197,6 @@ void AEntity_Player::OpenCharacterCreator()
 
 	if (CharacterSheet_Class && CurrentOpenMenuWidget_Class != CharacterCreator_Class) {
 		// Create widget, add to viewport, and pause game
-
 		CurrentOpenMenuWidget = CreateWidget<UBaseClass_Widget_CharCreator>(GetWorld(), CharacterCreator_Class);
 		CurrentOpenMenuWidget_Class = CharacterCreator_Class;
 		CurrentOpenMenuWidget->AddToViewport();
@@ -223,7 +214,6 @@ void AEntity_Player::OpenSkillTree()
 {
 	if (CurrentOpenMenuWidget) {
 		// Close widget and resume game
-
 		UGameplayStatics::SetGamePaused(GetWorld(), false);
 		CurrentOpenMenuWidget->RemoveFromParent();
 		CurrentOpenMenuWidget = NULL;
@@ -231,14 +221,14 @@ void AEntity_Player::OpenSkillTree()
 
 	if (CharacterSheet_Class && CurrentOpenMenuWidget_Class != SkillTree_Class) {
 		// Create widget, add to viewport, and pause game
-
 		CurrentOpenMenuWidget = CreateWidget<UBaseClass_Widget_SkillTree>(GetWorld(), SkillTree_Class);
 		CurrentOpenMenuWidget_Class = SkillTree_Class;
 		CurrentOpenMenuWidget->AddToViewport();
 		UGameplayStatics::SetGamePaused(GetWorld(), true);
 
-		// Character Creator specific variables and functions
+		// Skill Tree specific variables and functions
 		Cast<UBaseClass_Widget_SkillTree>(CurrentOpenMenuWidget)->PlayerReference = this;
+		Cast<UBaseClass_Widget_SkillTree>(CurrentOpenMenuWidget)->UpdateAllSkillSlots();
 	}
 	else {
 		CurrentOpenMenuWidget_Class = NULL;
@@ -246,7 +236,3 @@ void AEntity_Player::OpenSkillTree()
 }
 
 // ------------------------- Attacks
-//void AEntity_Player::PlayerAttack()
-//{
-//	AttackStart();
-//}

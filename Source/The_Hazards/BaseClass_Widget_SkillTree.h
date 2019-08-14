@@ -17,22 +17,17 @@ UCLASS()
 class THE_HAZARDS_API UBaseClass_Widget_SkillTree : public UUserWidget
 {
 	GENERATED_BODY()
-
-protected:
-	virtual void NativeTick(const FGeometry& MyGeometry, float DeltaTime) override;
-
+	
 public:
 // Base Variables
 // --------------------------------------------------
 
-// ------------------------- Components
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components", meta = (BindWidget))
-	UImage* BackgroundImage;
-
-// ------------------------- Bound variables
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Bound Variables")
+// ------------------------- Player-related Variables
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Player-Related")
 	AEntity_Base* PlayerReference;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Bound Variables")
-	int32 SkillPoints_Bind;
+// Functions
+// --------------------------------------------------
+	UFUNCTION(BlueprintCallable)
+	void UpdateAllSkillSlots();
 };

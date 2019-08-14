@@ -6,7 +6,7 @@
 // Functions
 // --------------------------------------------------
 
-// Base actor functions -------------------------
+// ------------------------- Base actor functions
 
 // Sets default values
 AEntity_Base::AEntity_Base()
@@ -59,18 +59,12 @@ void AEntity_Base::BeginPlay()
 
 	// Spawn a SkillsFunctionLibrary actoir for this entity
 	if (SkillsFunctionLibrary_Class) {
-	FActorSpawnParameters SpawnInfo;
+		FActorSpawnParameters SpawnInfo;
 
-	SkillsFunctionLibrary_Reference = GetWorld()->SpawnActor<AFunctionLibrary_Skills>(SkillsFunctionLibrary_Class, FVector::ZeroVector, FRotator::ZeroRotator, SpawnInfo);
-	SkillsFunctionLibrary_Reference->InitializeSkills();
-	SkillsFunctionLibrary_Reference->LinkedEntity = this;
-
-		//if (SkillsFunctionLibrary_Reference)
-		//	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, TEXT("Spawned singular SkillsFunctionLibrary Actor"));
+		SkillsFunctionLibrary_Reference = GetWorld()->SpawnActor<AFunctionLibrary_Skills>(SkillsFunctionLibrary_Class, FVector::ZeroVector, FRotator::ZeroRotator, SpawnInfo);
+		SkillsFunctionLibrary_Reference->InitializeSkills();
+		SkillsFunctionLibrary_Reference->LinkedEntity = this;
 	}
-
-	// Set Stats
-	CalculateTotalStats();
 }
 
 // Called every frame
@@ -102,14 +96,14 @@ void AEntity_Base::SetTimers()
 // ------------------------- Health and Aura
 void AEntity_Base::HealthRegenTick()
 {
-	if (CurrentStats.HealthPoints < BaseStats.HealthPoints) {
+	if (CurrentStats.HealthPoints < TotalStats.HealthPoints) {
 		CurrentStats.HealthPoints += CurrentStats.HealthPoints_RegenPerSecond;
 	}
 }
 
 void AEntity_Base::AuraRegenTick()
 {
-	if (CurrentStats.AuraPoints < BaseStats.AuraPoints) {
+	if (CurrentStats.AuraPoints < TotalStats.AuraPoints) {
 		CurrentStats.AuraPoints += CurrentStats.AuraPoints_RegenPerSecond;
 	}
 }

@@ -11,10 +11,10 @@ void UBaseClass_Widget_PlayerHUD::NativeTick(const FGeometry& MyGeometry, float 
 
 	if (PlayerReference) {
 		PlayerHealth_Current = PlayerReference->CurrentStats.HealthPoints;
-		PlayerHealth_Maximum = PlayerReference->BaseStats.HealthPoints;
+		PlayerHealth_Maximum = PlayerReference->TotalStats.HealthPoints;
 
 		PlayerAura_Current = PlayerReference->CurrentStats.AuraPoints;
-		PlayerAura_Maximum = PlayerReference->BaseStats.AuraPoints;
+		PlayerAura_Maximum = PlayerReference->TotalStats.AuraPoints;
 	}
 
 }

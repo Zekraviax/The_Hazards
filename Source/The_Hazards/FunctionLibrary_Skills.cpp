@@ -13,8 +13,6 @@
 void AFunctionLibrary_Skills::InitializeSkills()
 {
 	SkillFunctions[AER_BASE] = &AFunctionLibrary_Skills::AER_Base;
-
-	//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::White, TEXT("Initialize Skills"));
 }
 
 // ------------------------- AER Skills
@@ -33,7 +31,6 @@ void AFunctionLibrary_Skills::AER_Base()
 	MoveSpeedBonusPercentage = MoveSpeedBonusPercentage / 100;
 
 	LinkedEntity->SkillStats.Move_Speed += (MoveSpeedBonusPercentage);
-	//GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::White, TEXT("Aer Base Skill  /  MovesSpeed Bonus Percentage: " + FString::SanitizeFloat(LinkedEntity->SkillStats.Move_Speed)));
 	LinkedEntity->CalculateTotalStats();
 }
 
