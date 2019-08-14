@@ -9,6 +9,7 @@
 #include "Components/BoxComponent.h"
 #include "Components/WidgetComponent.h"
 #include "Camera/CameraComponent.h"
+#include "GameFramework/CharacterMovementComponent.h"
 #include "BaseClass_WidgetComponent_Entity.h"
 #include "FunctionLibrary_Skills.h"
 #include "TheHazards_GameMode.h"
@@ -43,14 +44,25 @@ public:
 	F_Entity_CharacterSheet CharacterSheet;
 
 // ------------------------- Stats
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Entity")
-	F_BaseStats_Struct BaseStats_Current;
+	// Combined totals of all other Stats variables, except CurrentStats.
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Stats")
+	F_BaseStats_Struct TotalStats;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Entity")
-	F_BaseStats_Struct BaseStats_Total;
+	// Total Stats combined with temporary stat changes (e.g status effects, buffs, etc.)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Stats")
+	F_BaseStats_Struct CurrentStats;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Entity")
-	F_SecondaryStats_Struct SecondaryStats;
+	// Stats gained solely from leveling up.
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Stats")
+	F_BaseStats_Struct LevelStats;
+
+	// Stats gained from levelling up skills. Must be re-calculated everytime a skill is leveled.
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Stats")
+	F_BaseStats_Struct SkillStats;
+
+	// Stats gained from equipping items. Must be re-calculated everytine an item is equipped or unequipped.
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Stats")
+	F_BaseStats_Struct ItemStats;
 
 // ------------------------- Inventory
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Inventory")
@@ -145,6 +157,10 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	void StopAuraRegenTick();
+
+// ------------------------- Stats
+	UFUNCTION()
+	void CalculateTotalStats();
 
 // ------------------------- Attack functions
 	// Weapon hitbox overlap

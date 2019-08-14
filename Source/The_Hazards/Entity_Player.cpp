@@ -48,19 +48,13 @@ void AEntity_Player::BeginPlay()
 	if (SkillsFunctionLibrary_Reference) {
 		if (SkillsFunctionLibrary_Reference->SkillDataTable_Reference) {
 			FString ContextString;
-			F_Skill_Base* ElementBaseSkill;
+			F_Skill_Base* ElementBaseSkill = SkillsFunctionLibrary_Reference->SkillDataTable_Reference->FindRow<F_Skill_Base>(FName("AerBase"), ContextString);
 
-			for (FName Name : SkillsFunctionLibrary_Reference->SkillDataTable_Reference->GetRowNames()) {
-				GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Purple, TEXT("Skill: " + Name.ToString()));
-				ElementBaseSkill = SkillsFunctionLibrary_Reference->SkillDataTable_Reference->FindRow<F_Skill_Base>(Name, ContextString, true);
-				if (ElementBaseSkill) {
-					//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Purple, TEXT("Get Aer Skill"));
-					ElementBaseSkill->CurrentLevel = 1;
-					KnownSkills.Add(*ElementBaseSkill);
-				}
-				//else {
-				//	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Purple, TEXT("Skill Error"));
-				//}
+			if (ElementBaseSkill) {
+				//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Purple, TEXT("Get Aer Base Skill"));
+				ElementBaseSkill->CurrentLevel = 1;
+				KnownSkills.Add(*ElementBaseSkill);
+				SkillsFunctionLibrary_Reference->CallSkillFunction(ElementBaseSkill->SkillIndex);
 			}
 		}
 	}

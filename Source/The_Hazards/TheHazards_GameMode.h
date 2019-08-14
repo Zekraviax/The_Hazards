@@ -150,19 +150,19 @@ struct THE_HAZARDS_API F_SecondaryStats_Struct
 
 	F_SecondaryStats_Struct()
 	{
-		Maximum_HealthPoints_Multiplier = 100.f;
-		HealthPoints_Recovery_Multiplier = 100.0f;
-		PhysicalDefence_Multiplier = 100.f;
-		SpecialAttack_Multiplier = 100.f;
-		AttackSpeed_Multiplier = 100.f;
-		MoveSpeed_Multiplier = 100.0f;
-		IncomingDamage_Multiplier = 100.f;
-		OutgoingDamage_Multiplier = 100.f;
-		Lifesteal_Percentage = 0.f;
-		Armour_Value = 0.f;
-		StatusPotency_Multiplier = 100.f;
-		StatusDuration_Multiplier = 100.f;
-		ShopDiscount_Multiplier = 100.f;
+		Maximum_HealthPoints_Multiplier = 1.f;
+		HealthPoints_Recovery_Multiplier = 1.f;
+		PhysicalDefence_Multiplier = 1.f;
+		SpecialAttack_Multiplier = 1.f;
+		AttackSpeed_Multiplier = 1.f;
+		MoveSpeed_Multiplier = 1.f;
+		IncomingDamage_Multiplier = 1.f;
+		OutgoingDamage_Multiplier = 1.f;
+		Lifesteal_Percentage = 1.f;
+		Armour_Value = 1.f;
+		StatusPotency_Multiplier = 1.f;
+		StatusDuration_Multiplier = 1.f;
+		ShopDiscount_Multiplier = 1.f;
 		Maximum_Companion_Count = 1;
 	}
 };
@@ -217,6 +217,9 @@ struct THE_HAZARDS_API F_BaseStats_Struct
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Stats")
 		float Luck;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Stats")
+		F_SecondaryStats_Struct SecondaryStats;
+
 	F_BaseStats_Struct()
 	{
 		HealthPoints = 100.f;
@@ -230,7 +233,7 @@ struct THE_HAZARDS_API F_BaseStats_Struct
 		Elemental_Strength = 10.f;
 		Elemental_Defence = 10.f;
 		Attack_Speed = 10.f;
-		Move_Speed = 10.f;
+		Move_Speed = 500.f;
 		Evasiveness = 10.f;
 		Status_Potency = 10.f;
 		Luck = 10.f;
