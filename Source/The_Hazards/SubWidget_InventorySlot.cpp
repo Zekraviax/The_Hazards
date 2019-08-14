@@ -92,7 +92,7 @@ void USubWidget_InventorySlot::OnMouseHoverBegin(FVector2D Coordinates)
 	float ViewportScaledValueX;
 	float ViewportScaledValueY;
 
-	ItemDescription_Reference = CreateWidget<UBaseClass_Widget_ItemDescription>(GetWorld(), ItemDescription_Class);
+	ItemDescription_Reference = CreateWidget<UBaseClass_Widget_OnHoverDescription>(GetWorld(), ItemDescription_Class);
 
 	UGameplayStatics::GetPlayerController(GetWorld(), 0)->GetViewportSize(ViewportSizeX, ViewportSizeY);
 
@@ -114,12 +114,14 @@ void USubWidget_InventorySlot::OnMouseHoverBegin(FVector2D Coordinates)
 	if (ItemStruct.Amount > 0 && ItemDescription_Class) {
 		ItemDescription_Reference->SetPositionInViewport(FVector2D(PosX + 0.f, PosY + 0.f), false);
 		ItemDescription_Reference->ItemReference = ItemStruct;
-		ItemDescription_Reference->SetText();
+		ItemDescription_Reference->SetText(E_Description_Supertypes::E_Item);
 		ItemDescription_Reference->AddToViewport();
 	}
 	else {
-		ItemDescription_Reference->RemoveFromParent();
-		ItemDescription_Reference = NULL;
+		if (ItemDescription_Reference) {
+			ItemDescription_Reference->RemoveFromParent();
+			ItemDescription_Reference = NULL;
+		}
 	}
 }
 

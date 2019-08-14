@@ -6,6 +6,14 @@
 #include "Entity_Base.h"
 
 
+void UBaseClass_Widget_SkillTree::NativeTick(const FGeometry& MyGeometry, float DeltaTime)
+{
+	Super::NativeTick(MyGeometry, DeltaTime);
+
+	// Update bound variables
+	UnspentSkillPointsBind = PlayerReference->UnspentSkillPoints;
+}
+
 void UBaseClass_Widget_SkillTree::UpdateAllSkillSlots()
 {
 	WidgetTree->ForEachWidget([&](UWidget* Widget) {
@@ -16,11 +24,11 @@ void UBaseClass_Widget_SkillTree::UpdateAllSkillSlots()
 			if (FoundSlot) {
 				for (int i = 0; i < PlayerReference->KnownSkills.Num(); i++) {
 					if (PlayerReference->KnownSkills[i].SlotNumber == FoundSlot->SlotNumber) {
+						FoundSlot->SkillReference = PlayerReference->KnownSkills[i];
 						FoundSlot->SkillImage->SetBrushFromTexture(PlayerReference->KnownSkills[i].SkillImage, true);
 					}
 				}
 			}
-			//FoundSlot->SkillImage->SetBrushFromTexture(PlayerReference->Inventory[0].InventoryImage, true);
 		}
 	});
 }

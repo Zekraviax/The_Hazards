@@ -8,11 +8,18 @@
 #include "TheHazards_GameMode.h"
 #include "Components/TextBlock.h"
 
-#include "BaseClass_Widget_ItemDescription.generated.h"
+#include "BaseClass_Widget_OnHoverDescription.generated.h"
 
+
+UENUM(BlueprintType)
+enum class E_Description_Supertypes : uint8
+{
+	E_Item,
+	E_Skill
+};
 
 UCLASS()
-class THE_HAZARDS_API UBaseClass_Widget_ItemDescription : public UUserWidget
+class THE_HAZARDS_API UBaseClass_Widget_OnHoverDescription : public UUserWidget
 {
 	GENERATED_BODY()
 
@@ -28,11 +35,14 @@ public:
 	UTextBlock* Description;
 
 // ------------------------- Item
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Item")
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Bound Variables")
 	F_Item_BaseStruct ItemReference;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Bound Variables")
+	F_Skill_Base SkillReference;
 
 // Functions
 // --------------------------------------------------
 	UFUNCTION(BlueprintCallable)
-	void SetText();
+	void SetText(E_Description_Supertypes Supertype);
 };

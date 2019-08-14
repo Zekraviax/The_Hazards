@@ -10,7 +10,7 @@
 #include "Components/TextBlock.h"
 #include "Components/CanvasPanelSlot.h"
 #include "SubWidget_ItemDrag.h"
-#include "BaseClass_Widget_ItemDescription.h"
+#include "BaseClass_Widget_OnHoverDescription.h"
 #include "Runtime/Engine/Classes/Kismet/GameplayStatics.h"
 #include "Runtime/UMG/Public/Blueprint/WidgetLayoutLibrary.h"
 
@@ -67,10 +67,10 @@ public:
 	USubWidget_ItemDrag* ItemDrag_Reference;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Item Widget")
-	TSubclassOf<UBaseClass_Widget_ItemDescription> ItemDescription_Class;
+	TSubclassOf<UBaseClass_Widget_OnHoverDescription> ItemDescription_Class;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Item Widget")
-	UBaseClass_Widget_ItemDescription* ItemDescription_Reference;
+	UBaseClass_Widget_OnHoverDescription* ItemDescription_Reference;
 
 // Functions
 // --------------------------------------------------
