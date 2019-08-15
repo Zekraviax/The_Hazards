@@ -30,7 +30,7 @@ void AFunctionLibrary_Skills::AER_Base()
 
 	MoveSpeedBonusPercentage = MoveSpeedBonusPercentage / 100;
 
-	LinkedEntity->SkillStats.Move_Speed += (MoveSpeedBonusPercentage);
+	LinkedEntity->SkillStats.SecondaryStats.MoveSpeed_Multiplier += (MoveSpeedBonusPercentage);
 	LinkedEntity->CalculateTotalStats();
 }
 

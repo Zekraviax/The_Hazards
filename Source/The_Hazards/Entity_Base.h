@@ -66,6 +66,10 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Stats")
 	F_BaseStats_Struct ItemStats;
 
+	// Temporary stat changes (e.g status effects, buffs, etc.) Must be recalculated constantly.
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Stats")
+	F_BaseStats_Struct TemporaryStats;
+
 // ------------------------- Inventory
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Inventory")
 	TArray<F_Item_BaseStruct> Inventory;

@@ -5,19 +5,20 @@
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
 
-#include "TheHazards_GameMode.h"
 #include "Components/TextBlock.h"
-#include "SubWidget_StatBreakdown.h"
 
-#include "BaseClass_Widget_CharacterSheet.generated.h"
+#include "SubWidget_StatBreakdown.generated.h"
 
-// Forward Declaration
+// Forward Declarations
 class AEntity_Base;
 
 UCLASS()
-class THE_HAZARDS_API UBaseClass_Widget_CharacterSheet : public UUserWidget
+class THE_HAZARDS_API USubWidget_StatBreakdown : public UUserWidget
 {
 	GENERATED_BODY()
+
+protected:
+	virtual void NativeTick(const FGeometry& MyGeometry, float DeltaTime) override;
 
 public:
 // Variables
@@ -29,29 +30,20 @@ public:
 
 // ------------------------- Components
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components", meta = (BindWidget))
-	UTextBlock* Name_Text;
+	UTextBlock* StatsNames;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components", meta = (BindWidget))
-	UTextBlock* Race_Text;
+	UTextBlock* LevelupStatsColumn;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components", meta = (BindWidget))
-	UTextBlock* Element_Text;
+	UTextBlock* SkillsStatsColumn;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components", meta = (BindWidget))
-	UTextBlock* Faction_Text;
+	UTextBlock* ItemsStatsColumn;
 
-// ------------------------- StatBreakdown Widget
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "StatBreakdown Widget")
-	TSubclassOf<USubWidget_StatBreakdown> StatBreakdown_Class;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components", meta = (BindWidget))
+	UTextBlock* TemporaryStatsColumn;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "StatBreakdown Widget")
-	USubWidget_StatBreakdown* StatBreakdown_Reference;
-
-// Functions
-// --------------------------------------------------
-	UFUNCTION(BlueprintCallable)
-	void OpenCharacterSheet();
-
-	UFUNCTION(BlueprintCallable)
-	void OpenStatBreakdown();
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components", meta = (BindWidget))
+	UTextBlock* TotalStatsColumn;
 };

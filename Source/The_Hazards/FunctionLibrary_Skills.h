@@ -28,7 +28,7 @@ public:
 // --------------------------------------------------
 
 // ------------------------- Entity
-	UPROPERTY()
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	AEntity_Base* LinkedEntity;
 
 // ------------------------- Skill Tree DataTable

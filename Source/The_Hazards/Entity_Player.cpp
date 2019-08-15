@@ -13,7 +13,6 @@
 // --------------------------------------------------
 
 // ------------------------- Base actor functions 
-
 // Sets default values
 AEntity_Player::AEntity_Player()
 {
@@ -50,17 +49,22 @@ void AEntity_Player::BeginPlay()
 
 			FString ContextString;
 			TArray<FName> RowNames = SkillsFunctionLibrary_Reference->SkillDataTable_Reference->GetRowNames();
-
 			for (auto& Row : SkillsFunctionLibrary_Reference->SkillDataTable_Reference->GetRowMap()) {
 				F_Skill_Base* Skill = (F_Skill_Base*)(Row.Value);
 
 				if (Skill->SkillIndex == 101) {
-					Skill->CurrentLevel++;
-					SkillsFunctionLibrary_Reference->CallSkillFunction(Skill->SkillIndex);
+					Skill->CurrentLevel += 1;
 				}
 
 				KnownSkills.Add(*Skill);
 			}
+		}
+	}
+
+	// Call Base Skill
+	for (F_Skill_Base Skill : KnownSkills) {
+		if (Skill.SkillIndex == 101) {
+			SkillsFunctionLibrary_Reference->CallSkillFunction(Skill.SkillIndex);
 		}
 	}
 }
@@ -72,11 +76,6 @@ void AEntity_Player::Tick(float DeltaTime)
 
 	// Call Tick functions
 	RotatePlayerTowardsMouse();
-
-	//if (CurrentOpenMenuWidget_Class) 
-	//	GEngine->AddOnScreenDebugMessage(-1, 0.1f, FColor::White, TEXT("CurrentOpenMenuWidget_Class: " + CurrentOpenMenuWidget_Class->GetName()));
-	//else 
-	//	GEngine->AddOnScreenDebugMessage(-1, 0.1f, FColor::White, TEXT("CurrentOpenMenuWidget_Class = NULL"));
 }
 
 // Called to bind functionality to input

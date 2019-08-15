@@ -110,7 +110,13 @@ struct THE_HAZARDS_API F_SecondaryStats_Struct
 		float Maximum_HealthPoints_Multiplier;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Health")
+		float Maximum_AuraPoints_Multiplier;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Health")
 		float HealthPoints_Recovery_Multiplier;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Health")
+		float AuraPoints_Recovery_Multiplier;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Base Stats")
 		float PhysicalDefence_Multiplier;
@@ -151,7 +157,9 @@ struct THE_HAZARDS_API F_SecondaryStats_Struct
 	F_SecondaryStats_Struct()
 	{
 		Maximum_HealthPoints_Multiplier = 1.f;
+		Maximum_AuraPoints_Multiplier = 1.f;
 		HealthPoints_Recovery_Multiplier = 1.f;
+		AuraPoints_Recovery_Multiplier = 1.f;
 		PhysicalDefence_Multiplier = 1.f;
 		SpecialAttack_Multiplier = 1.f;
 		AttackSpeed_Multiplier = 1.f;

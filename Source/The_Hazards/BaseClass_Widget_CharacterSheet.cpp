@@ -4,6 +4,7 @@
 #include "BaseClass_Widget_CharacterSheet.h"
 
 #include "Entity_Base.h"
+#include "Entity_Player.h"
 
 void UBaseClass_Widget_CharacterSheet::OpenCharacterSheet()
 {
@@ -82,5 +83,17 @@ void UBaseClass_Widget_CharacterSheet::OpenCharacterSheet()
 			Faction_Text->SetText(FText::FromString(TEXT("N/A")));
 			break;
 		}
+	}
+}
+
+void UBaseClass_Widget_CharacterSheet::OpenStatBreakdown()
+{
+	if (StatBreakdown_Class && PlayerReference) {
+		StatBreakdown_Reference = CreateWidget<USubWidget_StatBreakdown>(GetWorld(), StatBreakdown_Class);
+		StatBreakdown_Reference->PlayerReference = PlayerReference;
+		StatBreakdown_Reference->AddToViewport();
+
+		Cast<AEntity_Player>(PlayerReference)->CurrentOpenMenuWidget = StatBreakdown_Reference;
+		Cast<AEntity_Player>(PlayerReference)->CurrentOpenMenuWidget_Class = StatBreakdown_Class;
 	}
 }

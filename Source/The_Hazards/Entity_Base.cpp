@@ -136,9 +136,8 @@ void AEntity_Base::StopAuraRegenTick()
 void AEntity_Base::CalculateTotalStats()
 {
 	// Set entity movespeed
-	GetCharacterMovement()->MaxWalkSpeed = (CurrentStats.Move_Speed * CurrentStats.SecondaryStats.MoveSpeed_Multiplier) * ((SkillStats.Move_Speed * SkillStats.SecondaryStats.MoveSpeed_Multiplier));
-
-	//GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Black, TEXT("Entity MoveSpeed: " + FString::SanitizeFloat(CurrentStats.Move_Speed * CurrentStats.SecondaryStats.MoveSpeed_Multiplier) + "  /  Skills Modifier: " + FString::SanitizeFloat(SkillStats.Move_Speed * SkillStats.SecondaryStats.MoveSpeed_Multiplier) + "  /  Total MoveSpeed: " + FString::SanitizeFloat(GetCharacterMovement()->MaxWalkSpeed)));
+	TotalStats.Move_Speed = (CurrentStats.Move_Speed * CurrentStats.SecondaryStats.MoveSpeed_Multiplier) * ((SkillStats.Move_Speed * SkillStats.SecondaryStats.MoveSpeed_Multiplier));
+	GetCharacterMovement()->MaxWalkSpeed = TotalStats.Move_Speed;
 }
 
 // ------------------------- Attack
