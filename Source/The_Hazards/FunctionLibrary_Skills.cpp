@@ -28,16 +28,15 @@ void AFunctionLibrary_Skills::AER_Base()
 		}
 	}
 
-	MoveSpeedBonusPercentage = MoveSpeedBonusPercentage / 100;
+	MoveSpeedBonusPercentage = MoveSpeedBonusPercentage;
 
 	LinkedEntity->SkillStats.SecondaryStats.MoveSpeed_Multiplier += (MoveSpeedBonusPercentage);
-	LinkedEntity->CalculateTotalStats();
 }
 
 // Call skills
 void AFunctionLibrary_Skills::CallSkillFunction(int32 SkillIndex)
 {
-	if (SkillIndex < 0)
+	if (SkillIndex != 101)
 		return;
 
 	(this->* (SkillFunctions[SkillIndex]))();

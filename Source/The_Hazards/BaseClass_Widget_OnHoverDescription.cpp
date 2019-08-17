@@ -72,6 +72,30 @@ void UBaseClass_Widget_OnHoverDescription::SetText(E_Description_Supertypes Supe
 						+ "\nDamage Per Shot: " + FString::SanitizeFloat(ItemReference.Weapon.DamagePerShot)
 						+ "\nAttack Speed Multiplier: " + FString::SanitizeFloat(ItemReference.Weapon.AttackSpeedMultiplier) + "x"));
 					break;
+
+
+				case(E_Item_Supertypes::E_Armour):
+					switch (ItemReference.Armour.EquipSlot)
+					{
+					case(E_Armour_EquipSlot::E_Head):
+						EquipSlot_String = "Head";
+						break;
+					case(E_Armour_EquipSlot::E_Body):
+						EquipSlot_String = "Body";
+						break;
+					case(E_Armour_EquipSlot::E_Legs):
+						EquipSlot_String = "Legs";
+						break;
+					default:
+						EquipSlot_String = "Error";
+						break;
+					}
+
+					Name->SetText(FText::FromString(ItemReference.Name));
+					Description->SetText(FText::FromString("Item Type: " + ItemSupertype_String
+						+ "\nEquip Slot: " + EquipSlot_String
+						+ "\nArmour Value: " + FString::SanitizeFloat(ItemReference.Armour.ArmourValue)));
+					break;
 				}
 			}
 		}

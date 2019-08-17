@@ -4,6 +4,7 @@
 #include "SubWidget_InventorySlot.h"
 
 #include "BaseClass_Widget_Inventory.h"
+#include "Entity_Base.h"
 
 void USubWidget_InventorySlot::UpdateSlot()
 {
@@ -58,6 +59,42 @@ void USubWidget_InventorySlot::OnMouseUp()
 
 					FoundSlot->SlotReference->UpdateSlot();
 					UpdateSlot();
+
+					if (PlayerReference) {
+						for (F_Item_BaseStruct& Item : PlayerReference->Inventory) {
+							if (Item.IndexInInventoryArray == FoundSlot->ItemStruct.IndexInInventoryArray) {
+								Item.IndexInInventoryArray = InventorySlotIndex;
+								break;
+							}
+						}
+
+						PlayerReference->CalculateTotalStats();
+					}
+				}
+			}
+
+			// Drag equipment onto armour slot
+			if (SlotType == E_InventorySlot_SlotType::E_EquipmentSlot && FoundSlot->ItemStruct.Supertype == E_Item_Supertypes::E_Armour) {
+				if (EquipmentSlotType == E_InventorySlot_EquipType::E_Armour_Head && FoundSlot->ItemStruct.Armour.EquipSlot == E_Armour_EquipSlot::E_Head || 
+					EquipmentSlotType == E_InventorySlot_EquipType::E_Armour_Body && FoundSlot->ItemStruct.Armour.EquipSlot == E_Armour_EquipSlot::E_Body || 
+					EquipmentSlotType == E_InventorySlot_EquipType::E_Armour_Legs && FoundSlot->ItemStruct.Armour.EquipSlot == E_Armour_EquipSlot::E_Legs) 
+				{
+					FoundSlot->SlotReference->ItemStruct = ItemStruct;
+					ItemStruct = TempItemVariable;
+
+					FoundSlot->SlotReference->UpdateSlot();
+					UpdateSlot();
+
+					if (PlayerReference) {
+						for (F_Item_BaseStruct& Item : PlayerReference->Inventory) {
+							if (Item.IndexInInventoryArray == FoundSlot->ItemStruct.IndexInInventoryArray) {
+								Item.IndexInInventoryArray = InventorySlotIndex;
+								break;
+							}
+						}
+
+						PlayerReference->CalculateTotalStats();
+					}
 				}
 			}
 
@@ -68,6 +105,17 @@ void USubWidget_InventorySlot::OnMouseUp()
 
 				FoundSlot->SlotReference->UpdateSlot();
 				UpdateSlot();
+
+				if (PlayerReference) {
+					for (F_Item_BaseStruct& Item : PlayerReference->Inventory) {
+						if (Item.IndexInInventoryArray == FoundSlot->ItemStruct.IndexInInventoryArray) {
+							Item.IndexInInventoryArray = InventorySlotIndex;
+							break;
+						}
+					}
+
+					PlayerReference->CalculateTotalStats();
+				}
 			}
 
 			FoundSlot->SlotReference->ItemDrag_Reference = NULL;

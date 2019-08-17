@@ -17,6 +17,15 @@
 // Forward Declarations
 class ABaseClass_PlayerController;
 
+// Exclusive enums
+UENUM(BlueprintType)
+enum class E_MenuWidgetTypes : uint8
+{
+	E_CharacterCreator,
+	E_CharacterSheet,
+	E_Inventory,
+	E_SkillTree,
+};
 
 UCLASS()
 class THE_HAZARDS_API AEntity_Player : public AEntity_Base
@@ -101,8 +110,8 @@ public:
 	void MoveLeftRight(float AxisValue);
 
 // ------------------------- Menus and Pause Screens
-	//UFUNCTION()
-	//void OpenMutuallyExclusiveMenu();
+	UFUNCTION()
+	void OpenMenuWidget(E_MenuWidgetTypes MenuType);
 
 	UFUNCTION()
 	void OpenPauseMenu();

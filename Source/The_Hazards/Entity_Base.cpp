@@ -93,7 +93,7 @@ void AEntity_Base::SetTimers()
 	// Attacks timer
 }
 
-// ------------------------- Health and Aura
+// ------------------------- Health and Aura Timers
 void AEntity_Base::HealthRegenTick()
 {
 	if (CurrentStats.HealthPoints < TotalStats.HealthPoints) {
@@ -135,8 +135,56 @@ void AEntity_Base::StopAuraRegenTick()
 // ------------------------- Stats
 void AEntity_Base::CalculateTotalStats()
 {
+	// Step 1: Reset Skill, Item, Temporary Stats
+	SkillStats = F_BaseStats_Struct();
+	ItemStats = F_BaseStats_Struct();
+	TemporaryStats = F_BaseStats_Struct();
+
+	// Step 2: Get all stat changes from Skills
+	if (KnownSkills.Num() > 0) {
+		for (int i = 0; i < KnownSkills.Num(); i++) {
+			if (SkillsFunctionLibrary_Reference && KnownSkills[i].CurrentLevel > 0 && KnownSkills[i].ActivationCondition == E_Skill_ActivationCondition::E_Passive) {
+				SkillsFunctionLibrary_Reference->CallSkillFunction(KnownSkills[i].SkillIndex);
+			}
+		}
+	}
+
+	SkillStats.SecondaryStats.MoveSpeed_Multiplier = (SkillStats.SecondaryStats.MoveSpeed_Multiplier / 100) + 1;
+
+	// Step 3: Get all stat changes from Items
+	for (F_Item_BaseStruct& Item : Inventory) {
+		if (Item.Amount > 0 && Item.IndexInInventoryArray < -10) {
+			switch (Item.Supertype) {
+			case(E_Item_Supertypes::E_Weapon):
+				ItemStats.Move_Speed += Item.Weapon.StatModifiers.Move_Speed;
+
+				ItemStats.SecondaryStats.MoveSpeed_Multiplier += Item.Weapon.StatModifiers.SecondaryStats.MoveSpeed_Multiplier;
+				break;
+			case(E_Item_Supertypes::E_Armour):
+				ItemStats.Move_Speed += Item.Armour.StatModifiers.Move_Speed;
+
+				ItemStats.SecondaryStats.MoveSpeed_Multiplier += Item.Armour.StatModifiers.SecondaryStats.MoveSpeed_Multiplier;
+				break;
+			}
+			//GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Yellow, TEXT("Item Bonus Movespeed: " + FString::SanitizeFloat(ItemStats.SecondaryStats.MoveSpeed_Multiplier)));
+		}
+	}
+
+	ItemStats.SecondaryStats.MoveSpeed_Multiplier = (ItemStats.SecondaryStats.MoveSpeed_Multiplier / 100) + 1;
+
+	// Step 4: Get all stat changes from Temporary sources
+
+	// Step 5: Set (Total = Level * Skill * Item) Stats
+
 	// Set entity movespeed
-	TotalStats.Move_Speed = (CurrentStats.Move_Speed * CurrentStats.SecondaryStats.MoveSpeed_Multiplier) * ((SkillStats.Move_Speed * SkillStats.SecondaryStats.MoveSpeed_Multiplier));
+	TotalStats.Move_Speed = ((LevelStats.Move_Speed * LevelStats.SecondaryStats.MoveSpeed_Multiplier) +
+		(SkillStats.Move_Speed * SkillStats.SecondaryStats.MoveSpeed_Multiplier) +
+		(ItemStats.Move_Speed * ItemStats.SecondaryStats.MoveSpeed_Multiplier));
+
+	// Step 6: Set (Current = Total * Temporary) Stats
+	CurrentStats.Move_Speed = (TotalStats.Move_Speed + (TemporaryStats.Move_Speed * TemporaryStats.SecondaryStats.MoveSpeed_Multiplier));
+
+	// Step 7: Assign Variables such as MaxWalkSpeed
 	GetCharacterMovement()->MaxWalkSpeed = TotalStats.Move_Speed;
 }
 
@@ -146,8 +194,8 @@ void AEntity_Base::OnOverlapBegin(class UPrimitiveComponent* OverlappedComp, cla
 	if (OtherActor && OtherComp && (OtherActor != this) && (Cast<AEntity_Base>(OtherActor)) && (OverlappedComp->GetName().Contains("WeaponCollider") && (OtherComp->GetName().Contains("BoxCollider")) 
 		&& !AttackedEntitiesArray.Contains(Cast<AEntity_Base>(OtherActor))))
 	{
-		GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Black, TEXT("Overlap Begin  /  Actor: " + this->GetName() + "  /  Other Actor: " + OtherActor->GetName()));
-		GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Black, TEXT("Overlapped Component: " + OverlappedComp->GetName() + "  /  Other Component: " + OtherComp->GetName()));
+		GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Yellow, TEXT("Overlap Begin  /  Actor: " + this->GetName() + "  /  Other Actor: " + OtherActor->GetName()));
+		GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Yellow, TEXT("Overlapped Component: " + OverlappedComp->GetName() + "  /  Other Component: " + OtherComp->GetName()));
 
 		AttackedEntitiesArray.Add(Cast<AEntity_Base>(OtherActor));
 		Cast<AEntity_Base>(OtherActor)->EntityHit(20);

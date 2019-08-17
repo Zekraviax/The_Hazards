@@ -62,11 +62,11 @@ void AEntity_Player::BeginPlay()
 	}
 
 	// Call Base Skill
-	for (F_Skill_Base Skill : KnownSkills) {
-		if (Skill.SkillIndex == 101) {
-			SkillsFunctionLibrary_Reference->CallSkillFunction(Skill.SkillIndex);
-		}
-	}
+	//for (F_Skill_Base Skill : KnownSkills) {
+	//	if (Skill.SkillIndex == 101) {
+	//		CalculateTotalStats();
+	//	}
+	//}
 }
 
 // Called every frame
@@ -257,4 +257,20 @@ void AEntity_Player::OpenSkillTree()
 		CurrentOpenMenuWidget_Class = NULL;
 	}
 }
+
+void AEntity_Player::OpenMenuWidget(E_MenuWidgetTypes MenuType)
+{
+	//Widget MenuClass;
+	//TSubclassOf<UUserWidget> MenuSubClass;
+
+	////switch (MenuType) 
+	////{
+	////case(E_MenuWidgetTypes::E_CharacterCreator):
+	////	MenuClass = UBaseClass_Widget_CharacterSheet;
+	////	break;
+	////}
+
+	//CurrentOpenMenuWidget = CreateWidget<MenuClass>(GetWorld(), MenuSubClass);
+}
+
 // ------------------------- Attacks

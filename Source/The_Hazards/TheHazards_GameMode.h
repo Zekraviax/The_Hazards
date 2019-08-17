@@ -36,6 +36,15 @@ enum class E_Weapon_EquipSlot : uint8
 	E_Tertiary,
 };
 
+//------------------------- Armour
+UENUM(BlueprintType)
+enum class E_Armour_EquipSlot : uint8
+{
+	E_Head,
+	E_Body,
+	E_Legs,
+};
+
 //------------------------- Characters
 UENUM(BlueprintType)
 enum class E_Character_Races : uint8
@@ -156,22 +165,22 @@ struct THE_HAZARDS_API F_SecondaryStats_Struct
 
 	F_SecondaryStats_Struct()
 	{
-		Maximum_HealthPoints_Multiplier = 1.f;
-		Maximum_AuraPoints_Multiplier = 1.f;
-		HealthPoints_Recovery_Multiplier = 1.f;
-		AuraPoints_Recovery_Multiplier = 1.f;
-		PhysicalDefence_Multiplier = 1.f;
-		SpecialAttack_Multiplier = 1.f;
-		AttackSpeed_Multiplier = 1.f;
-		MoveSpeed_Multiplier = 1.f;
-		IncomingDamage_Multiplier = 1.f;
-		OutgoingDamage_Multiplier = 1.f;
-		Lifesteal_Percentage = 1.f;
-		Armour_Value = 1.f;
-		StatusPotency_Multiplier = 1.f;
-		StatusDuration_Multiplier = 1.f;
-		ShopDiscount_Multiplier = 1.f;
-		Maximum_Companion_Count = 1;
+		Maximum_HealthPoints_Multiplier = 0.f;
+		Maximum_AuraPoints_Multiplier = 0.f;
+		HealthPoints_Recovery_Multiplier = 0.f;
+		AuraPoints_Recovery_Multiplier = 0.f;
+		PhysicalDefence_Multiplier = 0.f;
+		SpecialAttack_Multiplier = 0.f;
+		AttackSpeed_Multiplier = 0.f;
+		MoveSpeed_Multiplier = 0.f;
+		IncomingDamage_Multiplier = 0.f;
+		OutgoingDamage_Multiplier = 0.f;
+		Lifesteal_Percentage = 0.f;
+		Armour_Value = 0.f;
+		StatusPotency_Multiplier = 0.f;
+		StatusDuration_Multiplier = 0.f;
+		ShopDiscount_Multiplier = 0.f;
+		Maximum_Companion_Count = 0;
 	}
 };
 
@@ -230,21 +239,21 @@ struct THE_HAZARDS_API F_BaseStats_Struct
 
 	F_BaseStats_Struct()
 	{
-		HealthPoints = 100.f;
-		HealthPoints_RegenPerSecond = 1.f;
-		HealthPoints_RegenStartDelay = 5.f;
-		AuraPoints = 100.f;
-		AuraPoints_RegenPerSecond = 1.f;
-		AuraPoints_RegenStartDelay = 5.f;
-		Physical_Strength = 10.f;
-		Physical_Defence = 10.f;
-		Elemental_Strength = 10.f;
-		Elemental_Defence = 10.f;
-		Attack_Speed = 10.f;
-		Move_Speed = 500.f;
-		Evasiveness = 10.f;
-		Status_Potency = 10.f;
-		Luck = 10.f;
+		HealthPoints = 0.f;
+		HealthPoints_RegenPerSecond = 0.f;
+		HealthPoints_RegenStartDelay = 0.f;
+		AuraPoints = 0.f;
+		AuraPoints_RegenPerSecond = 0.f;
+		AuraPoints_RegenStartDelay = 0.f;
+		Physical_Strength = 0.f;
+		Physical_Defence = 0.f;
+		Elemental_Strength = 0.f;
+		Elemental_Defence = 0.f;
+		Attack_Speed = 0.f;
+		Move_Speed = 0.f;
+		Evasiveness = 0.f;
+		Status_Potency = 0.f;
+		Luck = 0.f;
 	}
 };
 
@@ -289,11 +298,35 @@ struct THE_HAZARDS_API F_Item_WeaponStruct
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Base")
 	float AttackSpeedMultiplier;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Stats")
+	F_BaseStats_Struct StatModifiers;
+
 	F_Item_WeaponStruct()
 	{
 		EquipSlot = E_Weapon_EquipSlot::E_Primary;
 		DamagePerShot = 1.f;
 		AttackSpeedMultiplier = 1.f;
+	}
+};
+
+USTRUCT(BlueprintType)
+struct THE_HAZARDS_API F_Item_ArmourStruct
+{
+	GENERATED_BODY()
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Enum")
+	E_Armour_EquipSlot EquipSlot;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Base")
+	int32 ArmourValue;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Stats")
+	F_BaseStats_Struct StatModifiers;
+
+	F_Item_ArmourStruct()
+	{
+		EquipSlot = E_Armour_EquipSlot::E_Head;
+		ArmourValue = 0;
 	}
 };
 
@@ -319,6 +352,9 @@ struct THE_HAZARDS_API F_Item_BaseStruct
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Supertypes")
 	F_Item_WeaponStruct Weapon;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Supertypes")
+	F_Item_ArmourStruct Armour;
 
 	F_Item_BaseStruct()
 	{

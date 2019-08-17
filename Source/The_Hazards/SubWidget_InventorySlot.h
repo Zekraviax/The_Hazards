@@ -17,6 +17,9 @@
 #include "SubWidget_InventorySlot.generated.h"
 
 
+// Forward Declarations
+class AEntity_Base;
+
 // ------------------------- Class-specific Enums
 UENUM(BlueprintType)
 enum class E_InventorySlot_SlotType : uint8
@@ -39,9 +42,12 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components", meta = (BindWidget))
 	UTextBlock* AmountText;
 
-// ------------------------- Bound variables
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Bound variables")
+// ------------------------- Bound Variables
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Bound Variables")
 	int32 ItemAmountBind;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Bound Variables")
+		AEntity_Base* PlayerReference;
 
 // ------------------------- Slot
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Slot")
