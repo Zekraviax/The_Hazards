@@ -6,6 +6,13 @@
 #include "BaseClass_Widget_Inventory.h"
 #include "Entity_Base.h"
 
+void USubWidget_InventorySlot::NativeTick(const FGeometry& MyGeometry, float DeltaTime)
+{
+	Super::NativeTick(MyGeometry, DeltaTime);
+
+	Item_TextBind();
+}
+
 void USubWidget_InventorySlot::UpdateSlot()
 {
 	ItemAmountBind = ItemStruct.Amount;
@@ -178,5 +185,15 @@ void USubWidget_InventorySlot::OnMouseHoverEnd()
 	if (ItemDescription_Reference) {
 		ItemDescription_Reference->RemoveFromParent();
 		ItemDescription_Reference = NULL;
+	}
+}
+
+void USubWidget_InventorySlot::Item_TextBind()
+{
+	if (SlotType == E_InventorySlot_SlotType::E_EquipmentSlot) {
+		AmountText->SetText(FText::FromString(SlotDisplayName));
+	}
+	else if (SlotType == E_InventorySlot_SlotType::E_StandardSlot) {
+		AmountText->SetText(FText::FromString(FString::FromInt(ItemStruct.Amount)));
 	}
 }

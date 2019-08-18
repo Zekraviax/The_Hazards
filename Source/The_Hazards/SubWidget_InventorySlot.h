@@ -34,7 +34,13 @@ class THE_HAZARDS_API USubWidget_InventorySlot : public UUserWidget
 {
 	GENERATED_BODY()
 
+protected:
+	virtual void NativeTick(const FGeometry& MyGeometry, float DeltaTime) override;
+
 public:
+// Base Variables
+// --------------------------------------------------
+
 // ------------------------- Components
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components", meta = (BindWidget))
 	UImage* ItemImage;
@@ -94,4 +100,7 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	void OnMouseHoverEnd();
+
+	UFUNCTION()
+	void Item_TextBind();
 };

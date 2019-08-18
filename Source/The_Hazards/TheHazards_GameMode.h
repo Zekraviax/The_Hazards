@@ -115,29 +115,50 @@ struct THE_HAZARDS_API F_SecondaryStats_Struct
 {
 	GENERATED_BODY()
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Health")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Health and Aura")
 		float Maximum_HealthPoints_Multiplier;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Health")
-		float Maximum_AuraPoints_Multiplier;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Health")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Health and Aura")
 		float HealthPoints_Recovery_Multiplier;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Health")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Health and Aura")
+		float HealthPoints_Delay_Multiplier;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Health and Aura")
+		float Maximum_AuraPoints_Multiplier;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Health and Aura")
 		float AuraPoints_Recovery_Multiplier;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Health and Aura")
+		float AuraPoints_Delay_Multiplier;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Base Stats")
+		float PhysicalStrength_Multiplier;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Base Stats")
 		float PhysicalDefence_Multiplier;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Base Stats")
-		float SpecialAttack_Multiplier;
+		float ElementalStrength_Multiplier;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Base Stats")
+		float ElementalDefence_Multiplier;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Base Stats")
 		float AttackSpeed_Multiplier;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Base Stats")
 		float MoveSpeed_Multiplier;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Base Stats")
+		float Evasiveness_Multiplier;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Base Stats")
+		float StatusPotency_Multiplier;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Base Stats")
+		float Luck_Multiplier;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Other")
 		float IncomingDamage_Multiplier;
@@ -151,10 +172,7 @@ struct THE_HAZARDS_API F_SecondaryStats_Struct
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Other")
 		float Armour_Value;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Base Stats")
-		float StatusPotency_Multiplier;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Base Stats")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Other")
 		float StatusDuration_Multiplier;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Other")
@@ -166,18 +184,24 @@ struct THE_HAZARDS_API F_SecondaryStats_Struct
 	F_SecondaryStats_Struct()
 	{
 		Maximum_HealthPoints_Multiplier = 0.f;
-		Maximum_AuraPoints_Multiplier = 0.f;
 		HealthPoints_Recovery_Multiplier = 0.f;
+		HealthPoints_Delay_Multiplier = 0.f;
+		Maximum_AuraPoints_Multiplier = 0.f;
 		AuraPoints_Recovery_Multiplier = 0.f;
+		AuraPoints_Delay_Multiplier = 0.f;
+		PhysicalStrength_Multiplier = 0.f;
 		PhysicalDefence_Multiplier = 0.f;
-		SpecialAttack_Multiplier = 0.f;
+		ElementalStrength_Multiplier = 0.f;
+		ElementalDefence_Multiplier = 0.f;
 		AttackSpeed_Multiplier = 0.f;
 		MoveSpeed_Multiplier = 0.f;
+		Evasiveness_Multiplier = 0.f;
+		StatusPotency_Multiplier = 0.f;
+		Luck_Multiplier = 0.f;
 		IncomingDamage_Multiplier = 0.f;
 		OutgoingDamage_Multiplier = 0.f;
 		Lifesteal_Percentage = 0.f;
 		Armour_Value = 0.f;
-		StatusPotency_Multiplier = 0.f;
 		StatusDuration_Multiplier = 0.f;
 		ShopDiscount_Multiplier = 0.f;
 		Maximum_Companion_Count = 0;

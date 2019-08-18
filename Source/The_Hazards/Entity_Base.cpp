@@ -156,17 +156,82 @@ void AEntity_Base::CalculateTotalStats()
 		if (Item.Amount > 0 && Item.IndexInInventoryArray < -10) {
 			switch (Item.Supertype) {
 			case(E_Item_Supertypes::E_Weapon):
+				ItemStats.HealthPoints += Item.Weapon.StatModifiers.HealthPoints;
+				ItemStats.HealthPoints_RegenPerSecond += Item.Weapon.StatModifiers.HealthPoints_RegenPerSecond;
+				ItemStats.HealthPoints_RegenStartDelay += Item.Weapon.StatModifiers.HealthPoints_RegenStartDelay;
+				ItemStats.AuraPoints += Item.Weapon.StatModifiers.AuraPoints;
+				ItemStats.AuraPoints_RegenPerSecond += Item.Weapon.StatModifiers.AuraPoints_RegenPerSecond;
+				ItemStats.AuraPoints_RegenStartDelay += Item.Weapon.StatModifiers.AuraPoints_RegenStartDelay;
+				ItemStats.Physical_Strength += Item.Weapon.StatModifiers.Physical_Strength;
+				ItemStats.Physical_Defence += Item.Weapon.StatModifiers.Physical_Defence;
+				ItemStats.Elemental_Strength += Item.Weapon.StatModifiers.Elemental_Strength;
+				ItemStats.Elemental_Defence += Item.Weapon.StatModifiers.Elemental_Defence;
+				ItemStats.Attack_Speed += Item.Weapon.StatModifiers.Attack_Speed;
 				ItemStats.Move_Speed += Item.Weapon.StatModifiers.Move_Speed;
+				ItemStats.Evasiveness += Item.Weapon.StatModifiers.Evasiveness;
+				ItemStats.Status_Potency += Item.Weapon.StatModifiers.Status_Potency;
+				ItemStats.Luck += Item.Weapon.StatModifiers.Luck;
 
+				ItemStats.SecondaryStats.Maximum_HealthPoints_Multiplier += Item.Weapon.StatModifiers.SecondaryStats.Maximum_HealthPoints_Multiplier;
+				ItemStats.SecondaryStats.HealthPoints_Recovery_Multiplier += Item.Weapon.StatModifiers.SecondaryStats.HealthPoints_Recovery_Multiplier;
+				ItemStats.SecondaryStats.HealthPoints_Delay_Multiplier += Item.Weapon.StatModifiers.SecondaryStats.HealthPoints_Delay_Multiplier;
+				ItemStats.SecondaryStats.Maximum_AuraPoints_Multiplier += Item.Weapon.StatModifiers.SecondaryStats.Maximum_AuraPoints_Multiplier;
+				ItemStats.SecondaryStats.AuraPoints_Recovery_Multiplier += Item.Weapon.StatModifiers.SecondaryStats.AuraPoints_Recovery_Multiplier;
+				ItemStats.SecondaryStats.AuraPoints_Delay_Multiplier += Item.Weapon.StatModifiers.SecondaryStats.AuraPoints_Delay_Multiplier;
+				ItemStats.SecondaryStats.PhysicalStrength_Multiplier += Item.Weapon.StatModifiers.SecondaryStats.PhysicalStrength_Multiplier;
+				ItemStats.SecondaryStats.PhysicalDefence_Multiplier += Item.Weapon.StatModifiers.SecondaryStats.PhysicalDefence_Multiplier;
+				ItemStats.SecondaryStats.ElementalStrength_Multiplier += Item.Weapon.StatModifiers.SecondaryStats.ElementalStrength_Multiplier;
+				ItemStats.SecondaryStats.AttackSpeed_Multiplier += Item.Weapon.StatModifiers.SecondaryStats.AttackSpeed_Multiplier;
 				ItemStats.SecondaryStats.MoveSpeed_Multiplier += Item.Weapon.StatModifiers.SecondaryStats.MoveSpeed_Multiplier;
+				ItemStats.SecondaryStats.Evasiveness_Multiplier += Item.Weapon.StatModifiers.SecondaryStats.Evasiveness_Multiplier;
+				ItemStats.SecondaryStats.StatusPotency_Multiplier += Item.Weapon.StatModifiers.SecondaryStats.StatusPotency_Multiplier;
+				ItemStats.SecondaryStats.Luck_Multiplier += Item.Weapon.StatModifiers.SecondaryStats.Luck_Multiplier;
+				ItemStats.SecondaryStats.IncomingDamage_Multiplier += Item.Weapon.StatModifiers.SecondaryStats.IncomingDamage_Multiplier;
+				ItemStats.SecondaryStats.OutgoingDamage_Multiplier += Item.Weapon.StatModifiers.SecondaryStats.OutgoingDamage_Multiplier;
+				ItemStats.SecondaryStats.Lifesteal_Percentage += Item.Weapon.StatModifiers.SecondaryStats.Lifesteal_Percentage;
+				ItemStats.SecondaryStats.StatusDuration_Multiplier += Item.Weapon.StatModifiers.SecondaryStats.StatusDuration_Multiplier;
+				ItemStats.SecondaryStats.ShopDiscount_Multiplier += Item.Weapon.StatModifiers.SecondaryStats.ShopDiscount_Multiplier;
+				ItemStats.SecondaryStats.Maximum_Companion_Count += Item.Weapon.StatModifiers.SecondaryStats.Maximum_Companion_Count;
 				break;
 			case(E_Item_Supertypes::E_Armour):
+				ItemStats.HealthPoints += Item.Armour.StatModifiers.HealthPoints;
+				ItemStats.HealthPoints_RegenPerSecond += Item.Armour.StatModifiers.HealthPoints_RegenPerSecond;
+				ItemStats.HealthPoints_RegenStartDelay += Item.Armour.StatModifiers.HealthPoints_RegenStartDelay;
+				ItemStats.AuraPoints += Item.Armour.StatModifiers.AuraPoints;
+				ItemStats.AuraPoints_RegenPerSecond += Item.Armour.StatModifiers.AuraPoints_RegenPerSecond;
+				ItemStats.AuraPoints_RegenStartDelay += Item.Armour.StatModifiers.AuraPoints_RegenStartDelay;
+				ItemStats.Physical_Strength += Item.Armour.StatModifiers.Physical_Strength;
+				ItemStats.Physical_Defence += Item.Armour.StatModifiers.Physical_Defence;
+				ItemStats.Elemental_Strength += Item.Armour.StatModifiers.Elemental_Strength;
+				ItemStats.Elemental_Defence += Item.Armour.StatModifiers.Elemental_Defence;
+				ItemStats.Attack_Speed += Item.Armour.StatModifiers.Attack_Speed;
 				ItemStats.Move_Speed += Item.Armour.StatModifiers.Move_Speed;
+				ItemStats.Evasiveness += Item.Armour.StatModifiers.Evasiveness;
+				ItemStats.Status_Potency += Item.Armour.StatModifiers.Status_Potency;
+				ItemStats.Luck += Item.Armour.StatModifiers.Luck;
 
+				ItemStats.SecondaryStats.Maximum_HealthPoints_Multiplier += Item.Armour.StatModifiers.SecondaryStats.Maximum_HealthPoints_Multiplier;
+				ItemStats.SecondaryStats.HealthPoints_Recovery_Multiplier += Item.Armour.StatModifiers.SecondaryStats.HealthPoints_Recovery_Multiplier;
+				ItemStats.SecondaryStats.HealthPoints_Delay_Multiplier += Item.Armour.StatModifiers.SecondaryStats.HealthPoints_Delay_Multiplier;
+				ItemStats.SecondaryStats.Maximum_AuraPoints_Multiplier += Item.Armour.StatModifiers.SecondaryStats.Maximum_AuraPoints_Multiplier;
+				ItemStats.SecondaryStats.AuraPoints_Recovery_Multiplier += Item.Armour.StatModifiers.SecondaryStats.AuraPoints_Recovery_Multiplier;
+				ItemStats.SecondaryStats.AuraPoints_Delay_Multiplier += Item.Armour.StatModifiers.SecondaryStats.AuraPoints_Delay_Multiplier;
+				ItemStats.SecondaryStats.PhysicalStrength_Multiplier += Item.Armour.StatModifiers.SecondaryStats.PhysicalStrength_Multiplier;
+				ItemStats.SecondaryStats.PhysicalDefence_Multiplier += Item.Armour.StatModifiers.SecondaryStats.PhysicalDefence_Multiplier;
+				ItemStats.SecondaryStats.ElementalStrength_Multiplier += Item.Armour.StatModifiers.SecondaryStats.ElementalStrength_Multiplier;
+				ItemStats.SecondaryStats.AttackSpeed_Multiplier += Item.Armour.StatModifiers.SecondaryStats.AttackSpeed_Multiplier;
 				ItemStats.SecondaryStats.MoveSpeed_Multiplier += Item.Armour.StatModifiers.SecondaryStats.MoveSpeed_Multiplier;
+				ItemStats.SecondaryStats.Evasiveness_Multiplier += Item.Armour.StatModifiers.SecondaryStats.Evasiveness_Multiplier;
+				ItemStats.SecondaryStats.StatusPotency_Multiplier += Item.Armour.StatModifiers.SecondaryStats.StatusPotency_Multiplier;
+				ItemStats.SecondaryStats.Luck_Multiplier += Item.Armour.StatModifiers.SecondaryStats.Luck_Multiplier;
+				ItemStats.SecondaryStats.IncomingDamage_Multiplier += Item.Armour.StatModifiers.SecondaryStats.IncomingDamage_Multiplier;
+				ItemStats.SecondaryStats.OutgoingDamage_Multiplier += Item.Armour.StatModifiers.SecondaryStats.OutgoingDamage_Multiplier;
+				ItemStats.SecondaryStats.Lifesteal_Percentage += Item.Armour.StatModifiers.SecondaryStats.Lifesteal_Percentage;
+				ItemStats.SecondaryStats.StatusDuration_Multiplier += Item.Armour.StatModifiers.SecondaryStats.StatusDuration_Multiplier;
+				ItemStats.SecondaryStats.ShopDiscount_Multiplier += Item.Armour.StatModifiers.SecondaryStats.ShopDiscount_Multiplier;
+				ItemStats.SecondaryStats.Maximum_Companion_Count += Item.Armour.StatModifiers.SecondaryStats.Maximum_Companion_Count;
 				break;
 			}
-			//GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Yellow, TEXT("Item Bonus Movespeed: " + FString::SanitizeFloat(ItemStats.SecondaryStats.MoveSpeed_Multiplier)));
 		}
 	}
 
