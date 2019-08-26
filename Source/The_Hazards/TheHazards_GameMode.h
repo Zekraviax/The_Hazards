@@ -101,6 +101,15 @@ enum class E_Skill_ActivationCondition : uint8
 	E_OnDamageTaken,
 };
 
+//------------------------- NPC
+UENUM(BlueprintType)
+enum class E_Conversation_NextActionInConversation : uint8
+{
+	E_OpenNextDialogueline,
+	E_OpenShop,
+	E_CloseDialogue,
+};
+
 // Structs
 // --------------------------------------------------
 USTRUCT()
@@ -109,7 +118,7 @@ struct THE_HAZARDS_API FTestStruct
 	GENERATED_BODY()
 };
 
-//------------------------- Entity Base structs
+//------------------------- Entity Base
 USTRUCT(BlueprintType)
 struct THE_HAZARDS_API F_SecondaryStats_Struct
 {
@@ -402,8 +411,8 @@ struct THE_HAZARDS_API F_Skill_Base : public FTableRowBase
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Base")
 	E_Character_Elements Element;
 
-	//UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Base")
-	//FString Description;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Base")
+	FString Description;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Stats")
 	int32 CurrentLevel;
@@ -427,13 +436,40 @@ struct THE_HAZARDS_API F_Skill_Base : public FTableRowBase
 	{
 		Name = "Default";
 		Element = E_Character_Elements::E_Aer;
-		//Description = "Default.";
+		Description = "Default.";
 		CurrentLevel = 0;
 		MaximumLevel = 1;
 		SkillImage = NULL;
 		ActivationCondition = E_Skill_ActivationCondition::E_Passive;
 		SkillIndex = 1;
 		SlotNumber = 0;
+	}
+};
+
+// ------------------------- NPC Conversation
+USTRUCT(BlueprintType)
+struct THE_HAZARDS_API F_Dialogue_Entry
+{
+	GENERATED_BODY()
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Dialogue")
+	FString DialogueLine;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Technical")
+	int32 NextLineIndex;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Speaker")
+	FString SpeakerName;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Speaker")
+	UTexture2D* SpeakerImage;
+
+	F_Dialogue_Entry()
+	{
+		DialogueLine = "Default.";
+		NextLineIndex = -1;
+		SpeakerName = "Default";
+		SpeakerImage = NULL;
 	}
 };
 

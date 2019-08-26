@@ -7,6 +7,8 @@
 #include "BaseClass_Widget_OnHoverDescription.h"
 #include "Runtime/Engine/Classes/Kismet/KismetMathLibrary.h"
 #include "Runtime/Engine/Classes/Kismet/GameplayStatics.h"
+#include "DrawDebugHelpers.h"
+#include "Entity_NPC.h"
 
 
 // Functions
@@ -24,6 +26,7 @@ AEntity_Player::AEntity_Player()
 
 	// Initialize variables
 	UnspentSkillPoints = 3;
+	Money = 9999999;
 }
 
 // Called when the game starts or when spawned
@@ -93,6 +96,9 @@ void AEntity_Player::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 
 	// Attacks
 	PlayerInputComponent->BindAction("PrimaryAttack", IE_Released, this, &AEntity_Player::AttackStart);
+
+	// Other
+	PlayerInputComponent->BindAction("Interact", IE_Released, this, &AEntity_Player::Interact);
 
 	// Movement Bindings
 	PlayerInputComponent->BindAxis("MoveForwardBackward", this, &AEntity_Player::MoveForwardBackward);
@@ -271,6 +277,27 @@ void AEntity_Player::OpenMenuWidget(E_MenuWidgetTypes MenuType)
 	////}
 
 	//CurrentOpenMenuWidget = CreateWidget<MenuClass>(GetWorld(), MenuSubClass);
+}
+
+// ------------------------- Non-Player Characters
+void AEntity_Player::Interact()
+{
+	// Sphere trace for interactable NPCs
+	FHitResult HitResult;
+	TArray<FHitResult> HitResults;
+	FVector Location = this->GetActorLocation();
+	ECollisionChannel TraceChannel = ECollisionChannel::ECC_GameTraceChannel1;
+	FCollisionShape SphereShape = FCollisionShape::MakeSphere(200.f);
+
+	//DrawDebugSphere(GetWorld(), Location, SphereShape.GetSphereRadius(), 50, FColor::Red, false, 2.5f);
+	GetWorld()->SweepMultiByChannel(HitResults, Location, FVector(Location.X, Location.Y, Location.Z + 0.01), FQuat(0, 0, 0, 0), TraceChannel, SphereShape);
+
+	for (int i = 0; i < HitResults.Num(); i++) {
+		if (HitResults[i].GetActor()->IsA(AEntity_NPC::StaticClass())) {
+			Cast<AEntity_NPC>(HitResults[i].GetActor())->PlayerInteract();
+			break;
+		}
+	}
 }
 
 // ------------------------- Attacks

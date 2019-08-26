@@ -128,6 +128,10 @@ public:
 	UFUNCTION()
 	void OpenSkillTree();
 
+// ------------------------- Non-Player Characters
+	UFUNCTION()
+	void Interact();
+
 // ------------------------- Attacks
 	//UFUNCTION()
 	//void PlayerAttack();

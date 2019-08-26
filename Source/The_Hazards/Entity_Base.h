@@ -45,6 +45,15 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Entity")
 	F_Entity_CharacterSheet CharacterSheet;
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Entity")
+	int32 Level;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Entity")
+	int32 Money;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Entity")
+	int32 Scrap;
+
 // ------------------------- Stats
 	// Combined totals of all other Stats variables, except CurrentStats.
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Stats")
