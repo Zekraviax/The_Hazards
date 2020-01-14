@@ -29,7 +29,6 @@ void AFunctionLibrary_Skills::AER_Base()
 	}
 
 	MoveSpeedBonusPercentage = MoveSpeedBonusPercentage;
-
 	LinkedEntity->SkillStats.SecondaryStats.MoveSpeed_Multiplier += (MoveSpeedBonusPercentage);
 }
 

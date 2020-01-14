@@ -5,6 +5,7 @@
 
 #include "Entity_Base.h"
 
+
 void UBaseClass_WidgetComponent_Entity::NativeConstruct()
 {
 	Super::NativeConstruct();

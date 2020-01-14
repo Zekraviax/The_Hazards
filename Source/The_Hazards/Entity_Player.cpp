@@ -52,6 +52,7 @@ void AEntity_Player::BeginPlay()
 
 			FString ContextString;
 			TArray<FName> RowNames = SkillsFunctionLibrary_Reference->SkillDataTable_Reference->GetRowNames();
+
 			for (auto& Row : SkillsFunctionLibrary_Reference->SkillDataTable_Reference->GetRowMap()) {
 				F_Skill_Base* Skill = (F_Skill_Base*)(Row.Value);
 

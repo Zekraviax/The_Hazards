@@ -6,9 +6,7 @@
 #include "GameFramework/PlayerController.h"
 #include "BaseClass_PlayerController.generated.h"
 
-/**
- * 
- */
+
 UCLASS()
 class THE_HAZARDS_API ABaseClass_PlayerController : public APlayerController
 {

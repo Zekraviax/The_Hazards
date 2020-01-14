@@ -28,14 +28,17 @@ protected:
 	virtual void NativeTick(const FGeometry& MyGeometry, float DeltaTime) override;
 
 public:
-	// ------------------------- Components
+// Base Variables
+// --------------------------------------------------
+
+// ------------------------- Components
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Components", meta = (BindWidget))
 	UProgressBar* HealthBar;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Components", meta = (BindWidget))
 	UProgressBar* AuraBar;
 
-	// ------------------------- Entity variables
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Entity Variables")
+// ------------------------- Entity variables
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Entity")
 	AEntity_Base* LinkedEntity;
 };

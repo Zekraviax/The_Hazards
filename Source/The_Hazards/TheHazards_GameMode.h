@@ -446,7 +446,7 @@ struct THE_HAZARDS_API F_Skill_Base : public FTableRowBase
 	}
 };
 
-// ------------------------- NPC Conversation
+// ------------------------- NPC
 USTRUCT(BlueprintType)
 struct THE_HAZARDS_API F_Dialogue_Entry
 {
@@ -470,6 +470,34 @@ struct THE_HAZARDS_API F_Dialogue_Entry
 		NextLineIndex = -1;
 		SpeakerName = "Default";
 		SpeakerImage = NULL;
+	}
+};
+
+USTRUCT(BlueprintType)
+struct THE_HAZARDS_API F_Dialogue_Shop
+{
+	GENERATED_BODY()
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Technical")
+	int32 IndexInConversation;
+
+	F_Dialogue_Shop()
+	{
+		IndexInConversation = -1;
+	}
+};
+
+USTRUCT(BlueprintType)
+struct THE_HAZARDS_API F_Dialogue_Branch
+{
+	GENERATED_BODY()
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Technical")
+	int32 IndexInConversation;
+
+	F_Dialogue_Branch()
+	{
+		IndexInConversation = -1;
 	}
 };
 
