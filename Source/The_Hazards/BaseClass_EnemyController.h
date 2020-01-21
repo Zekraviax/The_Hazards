@@ -32,7 +32,8 @@ public:
 // --------------------------------------------------
 
 // ------------------------- Artificial Intelligence
-
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Artificial Intelligence")
+	TMap<FString, int> AttacksAndRangesMap;
 
 // Functions
 // --------------------------------------------------

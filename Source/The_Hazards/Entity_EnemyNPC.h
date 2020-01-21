@@ -25,14 +25,17 @@ class THE_HAZARDS_API AEntity_EnemyNPC : public AEntity_Base
 private:
 
 public:
+// Variables
+// --------------------------------------------------
+
+// ------------------------- Artificial Intelligence
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Artificial Intelligence")
+	class UBehaviorTree* BehaviorTree;
+
+// Functions
+// --------------------------------------------------
 	AEntity_EnemyNPC(const class FObjectInitializer& ObjectInitializer);
 
-	//UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "AI")
-	//UBlackboardComponent* BlackboardComponent;
+// ------------------------- Artificial Intelligence
 
-	//UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "AI")
-	//UBehaviorTreeComponent* BehaviorTreeComponent;
-
-	UPROPERTY(EditDefaultsOnly, Category = "AI")
-	class UBehaviorTree* BehaviorTree;
 };

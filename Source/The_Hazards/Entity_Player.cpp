@@ -64,13 +64,6 @@ void AEntity_Player::BeginPlay()
 			}
 		}
 	}
-
-	// Call Base Skill
-	//for (F_Skill_Base Skill : KnownSkills) {
-	//	if (Skill.SkillIndex == 101) {
-	//		CalculateTotalStats();
-	//	}
-	//}
 }
 
 // Called every frame

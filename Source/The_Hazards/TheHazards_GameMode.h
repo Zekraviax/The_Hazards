@@ -110,6 +110,25 @@ enum class E_Conversation_NextActionInConversation : uint8
 	E_CloseDialogue,
 };
 
+//------------------------- Artificial Intelligence
+UENUM(BlueprintType)
+enum class E_Behaviours_Archetypes : uint8
+{
+	E_Defensive,
+};
+
+UENUM(BlueprintType)
+enum class E_Behaviours_Passive : uint8
+{
+	E_Sleep,
+};
+
+UENUM(BlueprintType)
+enum class E_Behaviours_Agressive : uint8
+{
+	E_Feral,
+};
+
 // Structs
 // --------------------------------------------------
 USTRUCT()
@@ -498,6 +517,29 @@ struct THE_HAZARDS_API F_Dialogue_Branch
 	F_Dialogue_Branch()
 	{
 		IndexInConversation = -1;
+	}
+};
+
+// ------------------------- Artificial Intelligence
+USTRUCT(BlueprintType)
+struct THE_HAZARDS_API F_AI_Behaviours
+{
+	GENERATED_BODY()
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	E_Behaviours_Archetypes ArchetypeBehaviour;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	E_Behaviours_Passive PassiveBehaviour;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	E_Behaviours_Agressive AgressiveBehaviour;
+
+	F_AI_Behaviours()
+	{
+		ArchetypeBehaviour = E_Behaviours_Archetypes::E_Defensive;
+		PassiveBehaviour = E_Behaviours_Passive::E_Sleep;
+		AgressiveBehaviour = E_Behaviours_Agressive::E_Feral;
 	}
 };
 

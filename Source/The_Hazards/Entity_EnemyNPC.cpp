@@ -22,7 +22,6 @@ void AEntity_EnemyNPC::Tick(float DeltaSeconds)
 	AEntity_Player* PlayerTarget = nullptr;
 
 	for (TObjectIterator<AEntity_Player> Itr; Itr; ++Itr) {
-		//AEntity_Player *FoundPlayer = *Itr;
 		PlayerTarget = *Itr;
 	}
 

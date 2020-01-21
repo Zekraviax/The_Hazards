@@ -4,11 +4,15 @@
 
 #include "CoreMinimal.h"
 #include "BehaviorTree/BTTaskNode.h"
-#include "BTTask_Test.generated.h"
+
+#include "Entity_Base.h"
+#include "AIController.h"
+
+#include "BTTask_MeleeAttack.generated.h"
 
 
 UCLASS()
-class THE_HAZARDS_API UBTTask_Test : public UBTTaskNode
+class THE_HAZARDS_API UBTTask_MeleeAttack : public UBTTaskNode
 {
 	GENERATED_UCLASS_BODY()
 	

@@ -4,13 +4,16 @@
 
 #include "CoreMinimal.h"
 #include "BehaviorTree/BTTaskNode.h"
-#include "BTTask_Test.generated.h"
+
+#include "BaseClass_EnemyController.h"
+
+#include "BTTask_Feral_ChooseAttack.generated.h"
 
 
 UCLASS()
-class THE_HAZARDS_API UBTTask_Test : public UBTTaskNode
+class THE_HAZARDS_API UBTTask_Feral_ChooseAttack : public UBTTaskNode
 {
 	GENERATED_UCLASS_BODY()
-	
+
 	virtual EBTNodeResult::Type ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory) override;
 };
