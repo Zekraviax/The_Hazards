@@ -21,6 +21,18 @@ void UBaseClass_Widget_OnHoverDescription::SetText(E_Description_Supertypes Supe
 				case(E_Character_Elements::E_Aer):
 					SkillElementType_String = "Aer";
 					break;
+				case(E_Character_Elements::E_Aqua):
+					SkillElementType_String = "Aqua";
+					break;
+				case(E_Character_Elements::E_Ignis):
+					SkillElementType_String = "Ignis";
+					break;
+				case(E_Character_Elements::E_Terra):
+					SkillElementType_String = "Terra";
+					break;
+				case(E_Character_Elements::E_Vita):
+					SkillElementType_String = "Vita";
+					break;
 				default:
 					SkillElementType_String = "Error";
 					break;

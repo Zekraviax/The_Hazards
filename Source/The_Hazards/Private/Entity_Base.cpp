@@ -1,7 +1,7 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
-
 #include "Entity_Base.h"
+
+#include "Entity_Player.h"
+#include "SubWidget_StatusEffectIcon.h"
 
 
 // Functions
@@ -20,17 +20,29 @@ AEntity_Base::AEntity_Base()
 	BoxCollider = CreateDefaultSubobject<UBoxComponent>("BoxCollider");
 	WeaponMesh = CreateDefaultSubobject<UStaticMeshComponent>("WeaponMesh");
 	WeaponCollider = CreateDefaultSubobject<UBoxComponent>("WeaponCollider");
+	RotatingCore = CreateDefaultSubobject<USceneComponent>("RotatingCore");
 	EntityDataWidgetComponent = CreateDefaultSubobject<UWidgetComponent>("EntityDataWidgetComponent");
+
+	// Construct Timeline
+	const ConstructorHelpers::FObjectFinder<UCurveFloat> Curve(TEXT("CurveFloat'/Game/DataCurves/Melee_Swing_Curve.Melee_Swing_Curve'"));
+	if (Curve.Object)
+		AttackAnimationFloatCurve = Curve.Object;
 
 	// Attach components
 	CubeMesh->SetupAttachment(RootComponent);
 	BoxCollider->SetupAttachment(CubeMesh);
-	WeaponMesh->SetupAttachment(CubeMesh);
+	RotatingCore->SetupAttachment(CubeMesh);
+	WeaponMesh->SetupAttachment(RotatingCore);
 	WeaponCollider->SetupAttachment(WeaponMesh);
 	EntityDataWidgetComponent->SetupAttachment(RootComponent);
 
 	//Initialize variables
 	MaximumInventorySize = 30;
+
+	// Set Stats
+	SkillStats.Move_Speed = 1;
+	ItemStats.Move_Speed = 1;
+	TemporaryStats.Move_Speed = 1;
 }
 
 // Called when the game starts or when spawned
@@ -46,6 +58,27 @@ void AEntity_Base::BeginPlay()
 	// Start Timers
 	SetTimers();
 
+	// Finish creating timelines
+	if (AttackAnimationFloatCurve != NULL) {
+		// Variables
+		FOnTimelineFloat PlayFunction;
+		FOnTimelineEventStatic FinishFunction;
+
+		AttackAnimationTimeline = NewObject<UTimelineComponent>(this, FName("AttackTimelineAnimationComponent"));
+
+		AttackAnimationTimeline->SetLooping(false);
+		AttackAnimationTimeline->SetTimelineLength(1.f);
+		AttackAnimationTimeline->SetPlaybackPosition(0.f, false);
+		AttackAnimationTimeline->SetPlayRate(0.5f);
+
+		PlayFunction.BindUFunction(this, "PlayAttackAnimation");
+		FinishFunction.BindUFunction(this, "FinishAttackAnimation");
+		AttackAnimationTimeline->AddInterpFloat(AttackAnimationFloatCurve, PlayFunction);
+		//AttackAnimationTimeline->SetTimelineFinishedFunc(FinishAttackAnimation);
+
+		AttackAnimationTimeline->RegisterComponent();
+	}
+
 	// Health and Aura regen test
 	CurrentStats.HealthPoints = 75;
 	CurrentStats.AuraPoints = 75;
@@ -58,7 +91,7 @@ void AEntity_Base::BeginPlay()
 			EntityStatsWidgetComponent_Reference->LinkedEntity = this;
 	}
 
-	// Spawn a SkillsFunctionLibrary actoir for this entity
+	// Spawn a SkillsFunctionLibrary actor for this entity
 	if (SkillsFunctionLibrary_Class) {
 		FActorSpawnParameters SpawnInfo;
 
@@ -72,6 +105,41 @@ void AEntity_Base::BeginPlay()
 void AEntity_Base::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+
+	// Tick Timelines
+	if (AttackAnimationTimeline != NULL) {
+		AttackAnimationTimeline->TickComponent(DeltaTime, ELevelTick::LEVELTICK_TimeOnly, NULL);
+	}
+
+	//GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Yellow, FString::Printf(TEXT("Delta Time: %f"), DeltaTime));
+
+	// Tick Status Effects
+	if (StatusEffectsArray.Num() > 0) {
+		for (int i = 0; i < StatusEffectsArray.Num(); i++) {
+			//GEngine->AddOnScreenDebugMessage(-1, 0.15f, FColor::Yellow, FString::Printf(TEXT("Update Status Time: %f"), StatusEffectsArray[i].CurrentTime));
+
+			// Increment Time
+			StatusEffectsArray[i].CurrentTime -= DeltaTime;
+
+			// If time has reach 1 or move, remove a Stack
+			if (StatusEffectsArray[i].CurrentTime <= 0) {
+				StatusEffectsArray[i].CurrentTime = 1;
+				StatusEffectsArray[i].CurrentStackCount--;
+			}
+
+			// if this is a Player, update the Player's Widgets
+			if (Cast<AEntity_Player>(this)) {
+				Cast<AEntity_Player>(this)->UpdateStatusEffectWidgets();
+			}
+
+			// If Stacks have reached 0, remove Status Effect
+			if (StatusEffectsArray[i].CurrentStackCount <= 0) {
+				StatusEffectsArray.RemoveAt(i);
+			}
+		}
+	}
+
+	// Add force if Dodging
 }
 
 // Called to bind functionality to input
@@ -80,21 +148,21 @@ void AEntity_Base::SetupPlayerInputComponent(UInputComponent* PlayerInputCompone
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 }
 
-// ------------------------- Tick
+// ------------------------- Tick and Timers
 void AEntity_Base::SetTimers()
 {
 	// Sprint Penalty timer
 
 	// Health and Aura Regen Delay timers
-	GetWorldTimerManager().SetTimer(HealthRegenDelayTimerHandle, this, &AEntity_Base::StartHealthRegenTick, CurrentStats.HealthPoints_RegenStartDelay, false);
-	GetWorldTimerManager().SetTimer(AuraRegenDelayTimerHandle, this, &AEntity_Base::StartAuraRegenTick, CurrentStats.AuraPoints_RegenStartDelay, false);
+	GetWorldTimerManager().SetTimer(HealthRegenDelayTimerHandle, this, &AEntity_Base::StopHealthRegenTick, CurrentStats.HealthPoints_RegenStartDelay, false);
+	GetWorldTimerManager().SetTimer(AuraRegenDelayTimerHandle, this, &AEntity_Base::StopAuraRegenTick, CurrentStats.AuraPoints_RegenStartDelay, false);
 
 	// Status Effect Tick timer
 
 	// Attacks timer
 }
 
-// ------------------------- Health and Aura Timers
+// Health and Aura Timers
 void AEntity_Base::HealthRegenTick()
 {
 	if (CurrentStats.HealthPoints < TotalStats.HealthPoints) {
@@ -131,6 +199,22 @@ void AEntity_Base::StopAuraRegenTick()
 {
 	GetWorldTimerManager().SetTimer(AuraRegenDelayTimerHandle, this, &AEntity_Base::StartAuraRegenTick, CurrentStats.AuraPoints_RegenStartDelay, false);
 	GetWorldTimerManager().ClearTimer(AuraRegenTimerHandle);
+}
+
+// Sprint Penalty Timer
+void::AEntity_Base::SprintPenaltyTick()
+{
+	if (CurrentStats.AuraPoints > 0) {
+		CurrentStats.AuraPoints -= 0.5;
+	} else {
+		Sprint();
+	}
+}
+
+void AEntity_Base::DodgeTick()
+{
+	GetWorldTimerManager().ClearTimer(DodgeTimerHandle);
+	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, TEXT("Dodge Tick"));
 }
 
 // ------------------------- Stats
@@ -241,24 +325,124 @@ void AEntity_Base::CalculateTotalStats()
 	// Step 4: Get all stat changes from Temporary sources
 
 	// Step 5: Set (Total = Level * Skill * Item) Stats
-
-	// Set entity movespeed
-	TotalStats.Move_Speed = ((LevelStats.Move_Speed * LevelStats.SecondaryStats.MoveSpeed_Multiplier) +
-		(SkillStats.Move_Speed * SkillStats.SecondaryStats.MoveSpeed_Multiplier) +
+	// Health
+	TotalStats.HealthPoints = ((LevelStats.HealthPoints * LevelStats.SecondaryStats.Maximum_HealthPoints_Multiplier) *
+		(SkillStats.HealthPoints * SkillStats.SecondaryStats.Maximum_HealthPoints_Multiplier) *
+		(ItemStats.HealthPoints * ItemStats.SecondaryStats.Maximum_HealthPoints_Multiplier));
+	TotalStats.HealthPoints_RegenPerSecond = LevelStats.HealthPoints_RegenPerSecond * SkillStats.HealthPoints_RegenPerSecond * ItemStats.HealthPoints_RegenPerSecond;
+	TotalStats.HealthPoints_RegenStartDelay = ((LevelStats.HealthPoints_RegenStartDelay * LevelStats.SecondaryStats.HealthPoints_Delay_Multiplier) *
+		(SkillStats.HealthPoints_RegenStartDelay * SkillStats.SecondaryStats.HealthPoints_Delay_Multiplier) *
+		(ItemStats.HealthPoints_RegenStartDelay * ItemStats.SecondaryStats.HealthPoints_Delay_Multiplier));
+	// Aura
+	TotalStats.AuraPoints = ((LevelStats.AuraPoints * LevelStats.SecondaryStats.Maximum_AuraPoints_Multiplier) *
+		(SkillStats.AuraPoints * SkillStats.SecondaryStats.Maximum_AuraPoints_Multiplier) *
+		(ItemStats.AuraPoints * ItemStats.SecondaryStats.Maximum_AuraPoints_Multiplier));
+	TotalStats.AuraPoints_RegenPerSecond = LevelStats.AuraPoints_RegenPerSecond * SkillStats.AuraPoints_RegenPerSecond * ItemStats.AuraPoints_RegenPerSecond;
+	TotalStats.AuraPoints_RegenStartDelay = ((LevelStats.AuraPoints_RegenStartDelay * LevelStats.SecondaryStats.AuraPoints_Delay_Multiplier) *
+		(SkillStats.AuraPoints_RegenStartDelay * SkillStats.SecondaryStats.AuraPoints_Delay_Multiplier) *
+		(ItemStats.AuraPoints_RegenStartDelay * ItemStats.SecondaryStats.AuraPoints_Delay_Multiplier));
+	// Stats
+	TotalStats.Physical_Strength = ((LevelStats.Physical_Strength * LevelStats.SecondaryStats.PhysicalStrength_Multiplier) *
+		(SkillStats.Physical_Strength * SkillStats.SecondaryStats.PhysicalStrength_Multiplier) *
+		(ItemStats.Physical_Strength * ItemStats.SecondaryStats.PhysicalStrength_Multiplier));
+	TotalStats.Physical_Defence = ((LevelStats.Physical_Defence * LevelStats.SecondaryStats.PhysicalDefence_Multiplier) *
+		(SkillStats.Physical_Defence * SkillStats.SecondaryStats.PhysicalDefence_Multiplier) *
+		(ItemStats.Physical_Defence * ItemStats.SecondaryStats.PhysicalDefence_Multiplier));
+	TotalStats.Elemental_Strength = ((LevelStats.Elemental_Strength * LevelStats.SecondaryStats.ElementalStrength_Multiplier) *
+		(SkillStats.Elemental_Strength * SkillStats.SecondaryStats.ElementalStrength_Multiplier) *
+		(ItemStats.Elemental_Strength * ItemStats.SecondaryStats.ElementalStrength_Multiplier));
+	TotalStats.Elemental_Defence = ((LevelStats.Elemental_Defence * LevelStats.SecondaryStats.ElementalDefence_Multiplier) *
+		(SkillStats.Elemental_Defence * SkillStats.SecondaryStats.ElementalDefence_Multiplier) *
+		(ItemStats.Elemental_Defence * ItemStats.SecondaryStats.ElementalDefence_Multiplier));
+	TotalStats.Attack_Speed = ((LevelStats.Attack_Speed * LevelStats.SecondaryStats.AttackSpeed_Multiplier) *
+		(SkillStats.Attack_Speed * SkillStats.SecondaryStats.AttackSpeed_Multiplier) *
+		(ItemStats.Attack_Speed * ItemStats.SecondaryStats.AttackSpeed_Multiplier));
+	TotalStats.Move_Speed = ((LevelStats.Move_Speed * LevelStats.SecondaryStats.MoveSpeed_Multiplier) *
+		(SkillStats.Move_Speed * SkillStats.SecondaryStats.MoveSpeed_Multiplier) *
 		(ItemStats.Move_Speed * ItemStats.SecondaryStats.MoveSpeed_Multiplier));
+	TotalStats.Evasiveness = ((LevelStats.Evasiveness * LevelStats.SecondaryStats.Evasiveness_Multiplier) *
+		(SkillStats.Evasiveness * SkillStats.SecondaryStats.Evasiveness_Multiplier) *
+		(ItemStats.Evasiveness * ItemStats.SecondaryStats.Evasiveness_Multiplier));
+	TotalStats.Status_Potency = ((LevelStats.Status_Potency * LevelStats.SecondaryStats.StatusPotency_Multiplier) *
+		(SkillStats.Status_Potency * SkillStats.SecondaryStats.StatusPotency_Multiplier) *
+		(ItemStats.Status_Potency * ItemStats.SecondaryStats.StatusPotency_Multiplier));
+	TotalStats.Luck = ((LevelStats.Luck * LevelStats.SecondaryStats.Luck_Multiplier) *
+		(SkillStats.Luck * SkillStats.SecondaryStats.Luck_Multiplier) *
+		(ItemStats.Luck * ItemStats.SecondaryStats.Luck_Multiplier));
 
 	// Step 6: Set (Current = Total * Temporary) Stats
-	CurrentStats.Move_Speed = (TotalStats.Move_Speed + (TemporaryStats.Move_Speed * TemporaryStats.SecondaryStats.MoveSpeed_Multiplier));
+	//CurrentStats.HealthPoints = (TotalStats.HealthPoints * (TemporaryStats.HealthPoints * TemporaryStats.SecondaryStats.Maximum_HealthPoints_Multiplier));
+	CurrentStats.Move_Speed = (TotalStats.Move_Speed * (TemporaryStats.Move_Speed * TemporaryStats.SecondaryStats.MoveSpeed_Multiplier));
 
-	// Step 7: Assign Variables such as MaxWalkSpeed
-	GetCharacterMovement()->MaxWalkSpeed = TotalStats.Move_Speed;
+	// Step 7: Assign Unreal Engine Variables such as MaxWalkSpeed
+	// (Multiply by x2 or x.5 if Sneaking or Sprinting)
+	if (IsSprinting)
+		GetCharacterMovement()->MaxWalkSpeed = TotalStats.Move_Speed * 2;
+	else if (IsSneaking)
+		GetCharacterMovement()->MaxWalkSpeed = TotalStats.Move_Speed * 0.5;
+	else
+		GetCharacterMovement()->MaxWalkSpeed = TotalStats.Move_Speed;
+}
+
+// ------------------------- Movement
+void AEntity_Base::Sprint()
+{
+	if (IsSneaking)
+		IsSneaking = false;
+
+	IsSprinting = !IsSprinting;
+
+	// Start Sprinting
+	if (IsSprinting) {
+		GetWorldTimerManager().SetTimer(SprintPenaltyTimerHandle, this, &AEntity_Base::SprintPenaltyTick, 1.f, true);
+		// Stop Aura Regen while sprinting
+		GetWorldTimerManager().ClearTimer(AuraRegenTimerHandle);
+	} else {
+		GetWorldTimerManager().SetTimer(AuraRegenDelayTimerHandle, this, &AEntity_Base::StartAuraRegenTick, CurrentStats.AuraPoints_RegenStartDelay, false);
+		GetWorldTimerManager().ClearTimer(SprintPenaltyTimerHandle);
+	}
+
+	CalculateTotalStats();
+}
+
+void AEntity_Base::Sneak()
+{
+	if (IsSprinting)
+		IsSprinting = false;
+
+	IsSneaking = !IsSneaking;
+	CalculateTotalStats();
+}
+
+void AEntity_Base::Dodge()
+{
+	GetWorldTimerManager().SetTimer(DodgeTimerHandle, this, &AEntity_Base::DodgeTick, 1.f, true);
+
+	if (StatusEffectsDataTable_Reference) {
+		FString ContextString;
+		F_StatusEffect_Base* DodgeStatus = StatusEffectsDataTable_Reference->FindRow<F_StatusEffect_Base>(FName(TEXT("Dodge")), ContextString, true);
+		AddStatusEffect(*DodgeStatus);
+	}
+}
+
+// ------------------------- Status Effects
+void AEntity_Base::AddStatusEffect(F_StatusEffect_Base StatusEffect)
+{
+	AEntity_Player* PlayerCast = Cast<AEntity_Player>(this);
+
+	// If this is a player, create a status effect icon
+	if (PlayerCast) {
+		PlayerCast->StatusEffectsArray.Add(StatusEffect);
+		PlayerCast->CreateStatusEffectWidget(StatusEffect);
+	} else {
+		StatusEffectsArray.Add(StatusEffect);
+	}
 }
 
 // ------------------------- Attack
 void AEntity_Base::OnOverlapBegin(class UPrimitiveComponent* OverlappedComp, class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	if (OtherActor && OtherComp && (OtherActor != this) && (Cast<AEntity_Base>(OtherActor)) && (OverlappedComp->GetName().Contains("WeaponCollider") && (OtherComp->GetName().Contains("BoxCollider")) 
-		&& !AttackedEntitiesArray.Contains(Cast<AEntity_Base>(OtherActor))))
+	if (OtherActor && OtherComp && (OtherActor != this) && (Cast<AEntity_Base>(OtherActor)) && (OverlappedComp->GetName().Contains("WeaponCollider") && (OtherComp->GetName().Contains("BoxCollider")) && !AttackedEntitiesArray.Contains(Cast<AEntity_Base>(OtherActor))))
 	{
 		GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Yellow, TEXT("Overlap Begin  /  Actor: " + this->GetName() + "  /  Other Actor: " + OtherActor->GetName()));
 		GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Yellow, TEXT("Overlapped Component: " + OverlappedComp->GetName() + "  /  Other Component: " + OtherComp->GetName()));
@@ -272,7 +456,13 @@ void AEntity_Base::AttackStart()
 {
 	if (!GetWorldTimerManager().IsTimerActive(AttackSwingTimerHandle)) {
 		WeaponCollider->SetGenerateOverlapEvents(true);
-		GetWorldTimerManager().SetTimer(AttackSwingTimerHandle, this, &AEntity_Base::AttackEnd, 1.5f, false);
+		GetWorldTimerManager().SetTimer(AttackSwingTimerHandle, this, &AEntity_Base::AttackEnd, 1.f, false);
+
+		if (AttackAnimationTimeline != NULL) {
+			//AttackAnimationTimeline->SetPlayRate(0.5);
+			AttackAnimationTimeline->PlayFromStart();
+		}
+
 		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, TEXT("Attack Start"));
 	}
 	else {
@@ -286,6 +476,18 @@ void AEntity_Base::AttackEnd()
 	GetWorldTimerManager().ClearTimer(AttackSwingTimerHandle);
 	AttackedEntitiesArray.Empty();
 	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, TEXT("Attack End"));
+}
+
+void AEntity_Base::PlayAttackAnimation(float Value)
+{
+	float OriginalYaw = 0;
+	//UE_LOG(LogTemp, Warning, TEXT("Play Attack Animation  /  Yaw Value: %f  /  Timeline Value: %f  /  Calculated Yaw: %f  /  Original Yaw: %f"), RotatingCore->RelativeRotation.Yaw, Value, (OriginalYaw - Value), OriginalYaw);
+	RotatingCore->SetRelativeRotation(FRotator(0, Value, 0).Quaternion());
+}
+
+void AEntity_Base::FinishAttackAnimation()
+{
+	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, TEXT("Finish Attack Animation"));
 }
 
 void AEntity_Base::EntityHit(int32 BaseAttackDamage)

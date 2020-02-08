@@ -11,6 +11,7 @@
 #include "BaseClass_Widget_CharacterSheet.h"
 #include "BaseClass_Widget_CharCreator.h"
 #include "BaseClass_Widget_SkillTree.h"
+#include "SubWidget_StatusEffectIcon.h"
 
 #include "Entity_Player.generated.h"
 
@@ -82,6 +83,9 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Widgets")
 	TSubclassOf<UBaseClass_Widget_SkillTree> SkillTree_Class;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Widgets")
+	TSubclassOf<USubWidget_StatusEffectIcon> StatusEffectIcon_Class;
+
 // Technical Variables
 // --------------------------------------------------
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Technical Variables")
@@ -127,6 +131,13 @@ public:
 
 	UFUNCTION()
 	void OpenSkillTree();
+
+// ------------------------- Widgets
+	UFUNCTION()
+	void CreateStatusEffectWidget(F_StatusEffect_Base StatusEffect);
+
+	UFUNCTION()
+	void UpdateStatusEffectWidgets();
 
 // ------------------------- Non-Player Characters
 	UFUNCTION()

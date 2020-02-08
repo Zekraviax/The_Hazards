@@ -56,12 +56,14 @@ void AEntity_Player::BeginPlay()
 			for (auto& Row : SkillsFunctionLibrary_Reference->SkillDataTable_Reference->GetRowMap()) {
 				F_Skill_Base* Skill = (F_Skill_Base*)(Row.Value);
 
-				if (Skill->SkillIndex == 101) {
-					Skill->CurrentLevel += 1;
-				}
+				//if (Skill->SkillIndex == 101) {
+				//	Skill->CurrentLevel += 1;
+				//}
 
 				KnownSkills.Add(*Skill);
 			}
+
+			CalculateTotalStats();
 		}
 	}
 }
@@ -70,6 +72,8 @@ void AEntity_Player::BeginPlay()
 void AEntity_Player::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+
+	//GEngine->AddOnScreenDebugMessage(-1, DeltaTime, FColor::Black, TEXT("Player Tick"));
 
 	// Call Tick functions
 	RotatePlayerTowardsMouse();
@@ -94,9 +98,14 @@ void AEntity_Player::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 	// Other
 	PlayerInputComponent->BindAction("Interact", IE_Released, this, &AEntity_Player::Interact);
 
-	// Movement Bindings
+	// Movement 
 	PlayerInputComponent->BindAxis("MoveForwardBackward", this, &AEntity_Player::MoveForwardBackward);
 	PlayerInputComponent->BindAxis("MoveLeftRight", this, &AEntity_Player::MoveLeftRight);
+	PlayerInputComponent->BindAction("Sprint", IE_Pressed, this, &AEntity_Player::Sprint);
+	PlayerInputComponent->BindAction("Sprint", IE_Released, this, &AEntity_Player::Sprint);
+	PlayerInputComponent->BindAction("Sneak", IE_Pressed, this, &AEntity_Player::Sneak);
+	PlayerInputComponent->BindAction("Sneak", IE_Released, this, &AEntity_Player::Sneak);
+	PlayerInputComponent->BindAction("Dodge", IE_Pressed, this, &AEntity_Player::Dodge);
 }
 
 //  ------------------------- Tick
@@ -263,14 +272,43 @@ void AEntity_Player::OpenMenuWidget(E_MenuWidgetTypes MenuType)
 	//Widget MenuClass;
 	//TSubclassOf<UUserWidget> MenuSubClass;
 
-	////switch (MenuType) 
-	////{
-	////case(E_MenuWidgetTypes::E_CharacterCreator):
-	////	MenuClass = UBaseClass_Widget_CharacterSheet;
-	////	break;
-	////}
+	//switch (MenuType) 
+	//{
+	//case(E_MenuWidgetTypes::E_CharacterCreator):
+	//	MenuClass = UBaseClass_Widget_CharacterSheet;
+	//	break;
+	//}
 
 	//CurrentOpenMenuWidget = CreateWidget<MenuClass>(GetWorld(), MenuSubClass);
+}
+// ------------------------- HUD
+void AEntity_Player::CreateStatusEffectWidget(F_StatusEffect_Base StatusEffect)
+{
+	if (Player_HUD_Reference->StatusEffects_ScrollBox->IsValidLowLevel()) {
+		USubWidget_StatusEffectIcon* StatusEffectIcon = CreateWidget<USubWidget_StatusEffectIcon>(GetWorld(), StatusEffectIcon_Class);
+		StatusEffectIcon->UpdateStatusEffectData(StatusEffect);
+		StatusEffectIcon->StatusEffectIcon->SetBrushFromTexture(StatusEffect.StatusEffectImage, true);
+		Player_HUD_Reference->StatusEffects_ScrollBox->AddChild(StatusEffectIcon);
+
+		GEngine->AddOnScreenDebugMessage(-1, 15.f, FColor::Orange, FString::Printf(TEXT("Update Status Effects: %d"), Player_HUD_Reference->StatusEffects_ScrollBox->GetChildrenCount()));
+	}
+}
+
+void AEntity_Player::UpdateStatusEffectWidgets()
+{
+	// Tick Status Effect Widgets
+	for (int i = 0; i < StatusEffectsArray.Num(); i++) {
+		for (int j = 0; j < Player_HUD_Reference->StatusEffects_ScrollBox->GetChildrenCount(); j++) {
+			if (j == i) {
+				Cast<USubWidget_StatusEffectIcon>(Player_HUD_Reference->StatusEffects_ScrollBox->GetChildAt(j))->UpdateStatusEffectData(StatusEffectsArray[i]);
+
+				if (Cast<USubWidget_StatusEffectIcon>(Player_HUD_Reference->StatusEffects_ScrollBox->GetChildAt(j))->StatusEffectData.CurrentStackCount <= 0) {
+					GEngine->AddOnScreenDebugMessage(-1, 15.f, FColor::Red, TEXT("Remove Icon"));
+					Player_HUD_Reference->StatusEffects_ScrollBox->RemoveChildAt(i);
+				}
+			}
+		}
+	}
 }
 
 // ------------------------- Non-Player Characters
@@ -283,7 +321,7 @@ void AEntity_Player::Interact()
 	ECollisionChannel TraceChannel = ECollisionChannel::ECC_GameTraceChannel1;
 	FCollisionShape SphereShape = FCollisionShape::MakeSphere(200.f);
 
-	//DrawDebugSphere(GetWorld(), Location, SphereShape.GetSphereRadius(), 50, FColor::Red, false, 2.5f);
+	DrawDebugSphere(GetWorld(), Location, SphereShape.GetSphereRadius(), 50, FColor::Red, false, 2.5f);
 	GetWorld()->SweepMultiByChannel(HitResults, Location, FVector(Location.X, Location.Y, Location.Z + 0.01), FQuat(0, 0, 0, 0), TraceChannel, SphereShape);
 
 	for (int i = 0; i < HitResults.Num(); i++) {

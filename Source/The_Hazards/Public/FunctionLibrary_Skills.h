@@ -10,7 +10,7 @@
 
 #include "FunctionLibrary_Skills.generated.h"
 
-#define SKILL_COUNT_TOTAL 1
+#define SKILL_COUNT_TOTAL 5
 
 // Forward Declarations
 class AEntity_Base;
@@ -42,7 +42,7 @@ public:
 	//The Function Pointer Variable Type. Functions take in 0 parameters and return void
 	typedef void (AFunctionLibrary_Skills::*FunctionPtrType)(void);
 
-	//A static array of 30 Function Pointers
+	//A static array of Function Pointers
 	FunctionPtrType SkillFunctions[SKILL_COUNT_TOTAL];
 
 	//Call a skill function from the Function Pointer Array. Implementation does not vary in subclasses, so not virtual
@@ -53,4 +53,16 @@ public:
 
 // ------------------------- AER Skills
 	virtual void AER_Base();
+
+// ------------------------- AQUA Skills
+	virtual void AQUA_Base();
+
+// ------------------------- IGNIS Skills
+	virtual void IGNIS_Base();
+
+// ------------------------- TERRA Skills
+	virtual void TERRA_Base();
+
+// ------------------------- VITA Skills
+	virtual void VITA_Base();
 };

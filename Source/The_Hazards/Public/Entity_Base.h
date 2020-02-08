@@ -8,6 +8,7 @@
 #include "Components/StaticMeshComponent.h"
 #include "Components/BoxComponent.h"
 #include "Components/WidgetComponent.h"
+#include "Components/TimelineComponent.h"
 #include "Camera/CameraComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "EngineUtils.h"
@@ -99,6 +100,13 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Skills")
 	int32 UnspentSkillPoints;
 
+// ------------------------- Status Effects
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Status Effects")
+	UDataTable* StatusEffectsDataTable_Reference;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Status Effects")
+	TArray<F_StatusEffect_Base> StatusEffectsArray;
+
 // ------------------------- Components
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Components")
 	UStaticMeshComponent* CubeMesh;
@@ -111,6 +119,9 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Components")
 	UBoxComponent* WeaponCollider;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Components")
+	USceneComponent* RotatingCore;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Components")
 	UWidgetComponent* EntityDataWidgetComponent;
@@ -136,25 +147,44 @@ public:
 	FTimerHandle AuraRegenDelayTimerHandle;
 
 	UPROPERTY()
-	FTimerHandle StatusEffectTickTimerHandle;
+	FTimerHandle SprintPenaltyTimerHandle;
+
+	UPROPERTY()
+	FTimerHandle DodgeTimerHandle;
+
+	//UPROPERTY()
+	//FTimerHandle StatusEffectTickTimerHandle;
 
 	UPROPERTY()
 	FTimerHandle AttackSwingTimerHandle;
 
 // ------------------------- Technical Variables
+	// Used to prevent a single entity from being hit multiple times in a single attack
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Technical Variables")
 	TArray<AEntity_Base*> AttackedEntitiesArray;
+
+	UPROPERTY()
+	UTimelineComponent* AttackAnimationTimeline;
+
+	UPROPERTY()
+	UCurveFloat* AttackAnimationFloatCurve;
+
+	// Movement
+	UPROPERTY()
+	bool IsSprinting;
+
+	UPROPERTY()
+	bool IsSneaking;
+
 
 // Functions
 // --------------------------------------------------
 
-// ------------------------- Movement
-
-// ------------------------- Tick
+// ------------------------- Timers
 	UFUNCTION()
 	void SetTimers();
 
-// ------------------------- Health and Aura
+	// Health and Aura
 	UFUNCTION(BlueprintCallable)
 	void HealthRegenTick();
 
@@ -173,11 +203,33 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void StopAuraRegenTick();
 
+	// Sprint Penalty
+	UFUNCTION()
+	void SprintPenaltyTick();
+
+	// Dodge
+	UFUNCTION()
+	void DodgeTick();
+
 // ------------------------- Stats
 	UFUNCTION()
 	void CalculateTotalStats();
 
-// ------------------------- Attack Functions
+// ------------------------- Movement
+	UFUNCTION()
+	void Sprint();
+
+	UFUNCTION()
+	void Sneak();
+
+	UFUNCTION()
+	void Dodge();
+
+// ------------------------- Status Effects
+	UFUNCTION()
+	void AddStatusEffect(F_StatusEffect_Base StatusEffect);
+
+// ------------------------- Attack
 	// Weapon hitbox overlap
 	UFUNCTION()
 	void OnOverlapBegin(class UPrimitiveComponent* OverlappedComp, class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
@@ -187,6 +239,12 @@ public:
 
 	UFUNCTION()
 	void AttackEnd();
+
+	UFUNCTION()
+	void PlayAttackAnimation(float Value);
+
+	UFUNCTION()
+	void FinishAttackAnimation();
 
 	// Entity received damage function
 	UFUNCTION()

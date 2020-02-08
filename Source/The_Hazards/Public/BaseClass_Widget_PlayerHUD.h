@@ -5,7 +5,9 @@
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
 
-#include "Runtime/UMG/Public/Components/ProgressBar.h"
+#include "Components/ProgressBar.h"
+#include "Components/ScrollBox.h"
+#include "Components/HorizontalBox.h"
 
 #include "BaseClass_Widget_PlayerHUD.generated.h"
 
@@ -21,6 +23,15 @@ protected:
 	virtual void NativeTick(const FGeometry& MyGeometry, float DeltaTime) override;
 
 public:
+// Base Variables
+// --------------------------------------------------
+
+// ------------------------- Components
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Components", meta = (BindWidget))
+	UScrollBox* StatusEffects_ScrollBox;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Components", meta = (BindWidget))
+	UHorizontalBox* StatusEffects_HorizontalBox;
 
 // ------------------------- Bound Variables 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Bound Variables")
@@ -33,7 +44,7 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Bound Variables")
 	float PlayerAura_Maximum;
 
-// ------------------------- Player-Related variables
+// ------------------------- Player-Related Variables
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Player")
 	AEntity_Base* PlayerReference;
 };

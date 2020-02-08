@@ -211,28 +211,28 @@ struct THE_HAZARDS_API F_SecondaryStats_Struct
 
 	F_SecondaryStats_Struct()
 	{
-		Maximum_HealthPoints_Multiplier = 0.f;
-		HealthPoints_Recovery_Multiplier = 0.f;
-		HealthPoints_Delay_Multiplier = 0.f;
-		Maximum_AuraPoints_Multiplier = 0.f;
-		AuraPoints_Recovery_Multiplier = 0.f;
-		AuraPoints_Delay_Multiplier = 0.f;
-		PhysicalStrength_Multiplier = 0.f;
-		PhysicalDefence_Multiplier = 0.f;
-		ElementalStrength_Multiplier = 0.f;
-		ElementalDefence_Multiplier = 0.f;
-		AttackSpeed_Multiplier = 0.f;
-		MoveSpeed_Multiplier = 0.f;
-		Evasiveness_Multiplier = 0.f;
-		StatusPotency_Multiplier = 0.f;
-		Luck_Multiplier = 0.f;
-		IncomingDamage_Multiplier = 0.f;
-		OutgoingDamage_Multiplier = 0.f;
-		Lifesteal_Percentage = 0.f;
-		Armour_Value = 0.f;
-		StatusDuration_Multiplier = 0.f;
-		ShopDiscount_Multiplier = 0.f;
-		Maximum_Companion_Count = 0;
+		Maximum_HealthPoints_Multiplier = 1.f;
+		HealthPoints_Recovery_Multiplier = 1.f;
+		HealthPoints_Delay_Multiplier = 1.f;
+		Maximum_AuraPoints_Multiplier = 1.f;
+		AuraPoints_Recovery_Multiplier = 1.f;
+		AuraPoints_Delay_Multiplier = 1.f;
+		PhysicalStrength_Multiplier = 1.f;
+		PhysicalDefence_Multiplier = 1.f;
+		ElementalStrength_Multiplier = 1.f;
+		ElementalDefence_Multiplier = 1.f;
+		AttackSpeed_Multiplier = 1.f;
+		MoveSpeed_Multiplier = 1.f;
+		Evasiveness_Multiplier = 1.f;
+		StatusPotency_Multiplier = 1.f;
+		Luck_Multiplier = 1.f;
+		IncomingDamage_Multiplier = 1.f;
+		OutgoingDamage_Multiplier = 1.f;
+		Lifesteal_Percentage = 1.f;
+		Armour_Value = 1.f;
+		StatusDuration_Multiplier = 1.f;
+		ShopDiscount_Multiplier = 1.f;
+		Maximum_Companion_Count = 1;
 	}
 };
 
@@ -291,21 +291,21 @@ struct THE_HAZARDS_API F_BaseStats_Struct
 
 	F_BaseStats_Struct()
 	{
-		HealthPoints = 0.f;
-		HealthPoints_RegenPerSecond = 0.f;
-		HealthPoints_RegenStartDelay = 0.f;
-		AuraPoints = 0.f;
-		AuraPoints_RegenPerSecond = 0.f;
-		AuraPoints_RegenStartDelay = 0.f;
-		Physical_Strength = 0.f;
-		Physical_Defence = 0.f;
-		Elemental_Strength = 0.f;
-		Elemental_Defence = 0.f;
-		Attack_Speed = 0.f;
-		Move_Speed = 0.f;
-		Evasiveness = 0.f;
-		Status_Potency = 0.f;
-		Luck = 0.f;
+		HealthPoints = 1.f;
+		HealthPoints_RegenPerSecond = 1.f;
+		HealthPoints_RegenStartDelay = 1.f;
+		AuraPoints = 1.f;
+		AuraPoints_RegenPerSecond = 1.f;
+		AuraPoints_RegenStartDelay = 1.f;
+		Physical_Strength = 1.f;
+		Physical_Defence = 1.f;
+		Elemental_Strength = 1.f;
+		Elemental_Defence = 1.f;
+		Attack_Speed = 1.f;
+		Move_Speed = 1.f;
+		Evasiveness = 1.f;
+		Status_Potency = 1.f;
+		Luck = 1.f;
 	}
 };
 
@@ -462,6 +462,38 @@ struct THE_HAZARDS_API F_Skill_Base : public FTableRowBase
 		ActivationCondition = E_Skill_ActivationCondition::E_Passive;
 		SkillIndex = 1;
 		SlotNumber = 0;
+	}
+};
+
+// ------------------------- Status Effects
+USTRUCT(BlueprintType)
+struct THE_HAZARDS_API F_StatusEffect_Base : public FTableRowBase
+{
+	GENERATED_BODY()
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Base")
+	FString Name;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Base")
+	E_Character_Elements Element;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Display")
+	UTexture2D* StatusEffectImage;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Time")
+	int CurrentStackCount;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Time")
+	float CurrentTime;
+
+
+	F_StatusEffect_Base()
+	{
+		Name = "Default";
+		Element = E_Character_Elements::E_Aer;
+		StatusEffectImage = NULL;
+		CurrentStackCount = 1;
+		CurrentTime = 0.f;
 	}
 };
 

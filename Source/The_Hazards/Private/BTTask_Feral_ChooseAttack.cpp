@@ -20,7 +20,7 @@ EBTNodeResult::Type UBTTask_Feral_ChooseAttack::ExecuteTask(UBehaviorTreeCompone
 	int ChosenAttackRange;
 
 	// Begin
-	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Black, TEXT("Attempting to run BTTask_Feral_ChooseAttack"));
+	//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Black, TEXT("Attempting to run BTTask_Feral_ChooseAttack"));
 
 	// Choose an attack at random
 	for (TMap<FString, int>::TIterator itr = LocalAttacksMap.CreateIterator(); itr; ++itr)
@@ -36,7 +36,7 @@ EBTNodeResult::Type UBTTask_Feral_ChooseAttack::ExecuteTask(UBehaviorTreeCompone
 	OwnerComp.GetBlackboardComponent()->SetValueAsInt("CurrentAttackRange", ChosenAttackRange);
 
 	// End
-	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, TEXT("Successfully ran BTTask_Feral_ChooseAttack"));
+	//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, TEXT("Successfully ran BTTask_Feral_ChooseAttack"));
 	NodeResult = EBTNodeResult::Succeeded;
 	return NodeResult;
 }

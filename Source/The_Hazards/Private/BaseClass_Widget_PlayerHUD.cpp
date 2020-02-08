@@ -16,5 +16,4 @@ void UBaseClass_Widget_PlayerHUD::NativeTick(const FGeometry& MyGeometry, float 
 		PlayerAura_Current = PlayerReference->CurrentStats.AuraPoints;
 		PlayerAura_Maximum = PlayerReference->TotalStats.AuraPoints;
 	}
-
 }
