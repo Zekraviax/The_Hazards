@@ -44,7 +44,7 @@ public:
 // Functions
 // --------------------------------------------------
 
-// ------------------------- Status Effect
+// ------------------------- Widget
 	UFUNCTION()
 	void UpdateStatusEffectData(F_StatusEffect_Base NewStatusEffectData);
 };

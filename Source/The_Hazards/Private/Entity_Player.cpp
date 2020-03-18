@@ -290,7 +290,7 @@ void AEntity_Player::CreateStatusEffectWidget(F_StatusEffect_Base StatusEffect)
 		StatusEffectIcon->StatusEffectIcon->SetBrushFromTexture(StatusEffect.StatusEffectImage, true);
 		Player_HUD_Reference->StatusEffects_ScrollBox->AddChild(StatusEffectIcon);
 
-		GEngine->AddOnScreenDebugMessage(-1, 15.f, FColor::Orange, FString::Printf(TEXT("Update Status Effects: %d"), Player_HUD_Reference->StatusEffects_ScrollBox->GetChildrenCount()));
+		//GEngine->AddOnScreenDebugMessage(-1, 15.f, FColor::Orange, FString::Printf(TEXT("Update Status Effects: %d"), Player_HUD_Reference->StatusEffects_ScrollBox->GetChildrenCount()));
 	}
 }
 
@@ -303,7 +303,6 @@ void AEntity_Player::UpdateStatusEffectWidgets()
 				Cast<USubWidget_StatusEffectIcon>(Player_HUD_Reference->StatusEffects_ScrollBox->GetChildAt(j))->UpdateStatusEffectData(StatusEffectsArray[i]);
 
 				if (Cast<USubWidget_StatusEffectIcon>(Player_HUD_Reference->StatusEffects_ScrollBox->GetChildAt(j))->StatusEffectData.CurrentStackCount <= 0) {
-					GEngine->AddOnScreenDebugMessage(-1, 15.f, FColor::Red, TEXT("Remove Icon"));
 					Player_HUD_Reference->StatusEffects_ScrollBox->RemoveChildAt(i);
 				}
 			}

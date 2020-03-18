@@ -30,9 +30,6 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Components", meta = (BindWidget))
 	UScrollBox* StatusEffects_ScrollBox;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Components", meta = (BindWidget))
-	UHorizontalBox* StatusEffects_HorizontalBox;
-
 // ------------------------- Bound Variables 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Bound Variables")
 	float PlayerHealth_Current;

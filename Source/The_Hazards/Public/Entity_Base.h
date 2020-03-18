@@ -55,6 +55,10 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Entity")
 	int32 Scrap;
 
+// ------------------------- Movement
+	UPROPERTY()
+	bool IsDodging;
+
 // ------------------------- Stats
 	// Combined totals of all other Stats variables, except CurrentStats.
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Stats")
@@ -76,7 +80,7 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Stats")
 	F_BaseStats_Struct ItemStats;
 
-	// Temporary stat changes (e.g status effects, buffs, etc.) Must be recalculated constantly.
+	// Temporary stat changes (e.g status effects, buffs, etc.) Must be recalculated near-constantly.
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Stats")
 	F_BaseStats_Struct TemporaryStats;
 
@@ -84,8 +88,23 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Inventory")
 	TArray<F_Item_BaseStruct> Inventory;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Inventory")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Inventory")
 	int32 MaximumInventorySize;
+
+	// All Entities need Equipment for attacking, at least a Primary Weapon
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Inventory")
+	F_Item_WeaponStruct PrimaryWeapon;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Inventory")
+	F_Item_WeaponStruct SecondaryWeapon;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Inventory")
+	F_Item_WeaponStruct TertiaryWeapon;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Inventory")
+	F_Item_ArmourStruct HeadArmour;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Inventory")
+	F_Item_ArmourStruct BodyArmour;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Inventory")
+	F_Item_ArmourStruct LegArmour;
 
 // ------------------------- Skills
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Skills")

@@ -353,6 +353,9 @@ struct THE_HAZARDS_API F_Item_WeaponStruct
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Stats")
 	F_BaseStats_Struct StatModifiers;
 
+	// SpecialAttack Enum
+	//UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Special")
+
 	F_Item_WeaponStruct()
 	{
 		EquipSlot = E_Weapon_EquipSlot::E_Primary;

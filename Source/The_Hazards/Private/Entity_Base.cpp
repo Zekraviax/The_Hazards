@@ -111,12 +111,9 @@ void AEntity_Base::Tick(float DeltaTime)
 		AttackAnimationTimeline->TickComponent(DeltaTime, ELevelTick::LEVELTICK_TimeOnly, NULL);
 	}
 
-	//GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Yellow, FString::Printf(TEXT("Delta Time: %f"), DeltaTime));
-
 	// Tick Status Effects
 	if (StatusEffectsArray.Num() > 0) {
 		for (int i = 0; i < StatusEffectsArray.Num(); i++) {
-			//GEngine->AddOnScreenDebugMessage(-1, 0.15f, FColor::Yellow, FString::Printf(TEXT("Update Status Time: %f"), StatusEffectsArray[i].CurrentTime));
 
 			// Increment Time
 			StatusEffectsArray[i].CurrentTime -= DeltaTime;
@@ -204,17 +201,25 @@ void AEntity_Base::StopAuraRegenTick()
 // Sprint Penalty Timer
 void::AEntity_Base::SprintPenaltyTick()
 {
-	if (CurrentStats.AuraPoints > 0) {
-		CurrentStats.AuraPoints -= 0.5;
+	if (CurrentStats.AuraPoints > 0 && GetVelocity().Size() != 0) {
+		CurrentStats.AuraPoints -= 0.25;
 	} else {
 		Sprint();
+	}
+
+	// Cancel any active aura regen timers
+	if (GetWorldTimerManager().IsTimerActive(AuraRegenTimerHandle)) {
+		GetWorldTimerManager().ClearTimer(AuraRegenTimerHandle);
+	}
+	if (GetWorldTimerManager().IsTimerActive(AuraRegenDelayTimerHandle)) {
+		GetWorldTimerManager().ClearTimer(AuraRegenDelayTimerHandle);
 	}
 }
 
 void AEntity_Base::DodgeTick()
 {
 	GetWorldTimerManager().ClearTimer(DodgeTimerHandle);
-	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, TEXT("Dodge Tick"));
+	IsDodging = false;
 }
 
 // ------------------------- Stats
@@ -394,9 +399,10 @@ void AEntity_Base::Sprint()
 
 	// Start Sprinting
 	if (IsSprinting) {
-		GetWorldTimerManager().SetTimer(SprintPenaltyTimerHandle, this, &AEntity_Base::SprintPenaltyTick, 1.f, true);
-		// Stop Aura Regen while sprinting
+		GetWorldTimerManager().SetTimer(SprintPenaltyTimerHandle, this, &AEntity_Base::SprintPenaltyTick, 0.2f, true);
+		// Stop Aura Regen while Sprinting
 		GetWorldTimerManager().ClearTimer(AuraRegenTimerHandle);
+		GetWorldTimerManager().ClearTimer(AuraRegenDelayTimerHandle);
 	} else {
 		GetWorldTimerManager().SetTimer(AuraRegenDelayTimerHandle, this, &AEntity_Base::StartAuraRegenTick, CurrentStats.AuraPoints_RegenStartDelay, false);
 		GetWorldTimerManager().ClearTimer(SprintPenaltyTimerHandle);
@@ -416,12 +422,20 @@ void AEntity_Base::Sneak()
 
 void AEntity_Base::Dodge()
 {
-	GetWorldTimerManager().SetTimer(DodgeTimerHandle, this, &AEntity_Base::DodgeTick, 1.f, true);
+	if (!IsDodging) {
+		GetWorldTimerManager().SetTimer(DodgeTimerHandle, this, &AEntity_Base::DodgeTick, 1.f, true);
 
-	if (StatusEffectsDataTable_Reference) {
-		FString ContextString;
-		F_StatusEffect_Base* DodgeStatus = StatusEffectsDataTable_Reference->FindRow<F_StatusEffect_Base>(FName(TEXT("Dodge")), ContextString, true);
-		AddStatusEffect(*DodgeStatus);
+		if (StatusEffectsDataTable_Reference) {
+			FString ContextString;
+			F_StatusEffect_Base* DodgeStatus = StatusEffectsDataTable_Reference->FindRow<F_StatusEffect_Base>(FName(TEXT("Dodge")), ContextString, true);
+			AddStatusEffect(*DodgeStatus);
+		}
+
+		FVector LaunchDirection = GetVelocity();
+		LaunchDirection.Normalize();
+		LaunchCharacter(LaunchDirection * 5500, true, true);
+
+		IsDodging = true;
 	}
 }
 

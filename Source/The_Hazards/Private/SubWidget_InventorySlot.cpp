@@ -19,8 +19,7 @@ void USubWidget_InventorySlot::UpdateSlot()
 	
 	if (ItemStruct.InventoryImage) {
 		ItemImage->SetBrushFromTexture(ItemStruct.InventoryImage, true);
-	}
-	else {
+	} else {
 		ItemImage->SetBrushFromTexture(NULL, true);
 	}
 
@@ -54,6 +53,7 @@ void USubWidget_InventorySlot::OnMouseUp()
 			USubWidget_ItemDrag *FoundSlot = FoundInventorySlot->ItemDrag_Reference;
 			F_Item_BaseStruct TempItemVariable = FoundSlot->ItemStruct;
 
+			// Weapon
 			// Switch on slot type and item type in dragged slot
 			// Drag weapon onto weapon slot
 			if (SlotType == E_InventorySlot_SlotType::E_EquipmentSlot && FoundSlot->ItemStruct.Supertype == E_Item_Supertypes::E_Weapon) {
@@ -80,6 +80,7 @@ void USubWidget_InventorySlot::OnMouseUp()
 				}
 			}
 
+			// Armour
 			// Drag equipment onto armour slot
 			if (SlotType == E_InventorySlot_SlotType::E_EquipmentSlot && FoundSlot->ItemStruct.Supertype == E_Item_Supertypes::E_Armour) {
 				if (EquipmentSlotType == E_InventorySlot_EquipType::E_Armour_Head && FoundSlot->ItemStruct.Armour.EquipSlot == E_Armour_EquipSlot::E_Head || 
@@ -105,6 +106,7 @@ void USubWidget_InventorySlot::OnMouseUp()
 				}
 			}
 
+			// Other Items
 			// Swap any item to a standard slot
 			else if (SlotType == E_InventorySlot_SlotType::E_StandardSlot) {
 				FoundSlot->SlotReference->ItemStruct = ItemStruct;
