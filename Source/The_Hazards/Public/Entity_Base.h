@@ -1,5 +1,3 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
 #pragma once
 
 #include "CoreMinimal.h"
@@ -15,9 +13,11 @@
 #include "Engine/DataTable.h"
 #include "BaseClass_WidgetComponent_Entity.h"
 #include "FunctionLibrary_Skills.h"
+#include "FunctionLibrary_SpecialAttacks.h"
 #include "TheHazards_GameMode.h"
 
 #include "Entity_Base.generated.h"
+
 
 UCLASS()
 class THE_HAZARDS_API AEntity_Base : public ACharacter
@@ -93,18 +93,21 @@ public:
 
 	// All Entities need Equipment for attacking, at least a Primary Weapon
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Inventory")
-	F_Item_WeaponStruct PrimaryWeapon;
+	F_Item_BaseStruct PrimaryWeapon;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Inventory")
-	F_Item_WeaponStruct SecondaryWeapon;
+	F_Item_BaseStruct SecondaryWeapon;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Inventory")
-	F_Item_WeaponStruct TertiaryWeapon;
+	F_Item_BaseStruct TertiaryWeapon;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Inventory")
-	F_Item_ArmourStruct HeadArmour;
+	F_Item_BaseStruct HeadArmour;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Inventory")
-	F_Item_ArmourStruct BodyArmour;
+	F_Item_BaseStruct BodyArmour;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Inventory")
-	F_Item_ArmourStruct LegArmour;
+	F_Item_BaseStruct LegArmour;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Inventory")
+	F_Item_BaseStruct CurrentEquippedWeapon;
 
 // ------------------------- Skills
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Skills")
@@ -118,6 +121,13 @@ public:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Skills")
 	int32 UnspentSkillPoints;
+
+// ------------------------- Special Attacks
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Special Attacks")
+	TSubclassOf<AFunctionLibrary_SpecialAttacks> SpecialAttacksFunctionLibrary_Class;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Special Attacks")
+	AFunctionLibrary_SpecialAttacks* SpecialAttacksFunctionLibrary_Reference;
 
 // ------------------------- Status Effects
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Status Effects")
@@ -176,6 +186,9 @@ public:
 
 	UPROPERTY()
 	FTimerHandle AttackSwingTimerHandle;
+
+	UPROPERTY()
+	FTimerHandle SpecialAttackSwingTimerHandle;
 
 // ------------------------- Technical Variables
 	// Used to prevent a single entity from being hit multiple times in a single attack
@@ -258,6 +271,12 @@ public:
 
 	UFUNCTION()
 	void AttackEnd();
+
+	UFUNCTION()
+	void SpecialAttackStart();
+
+	UFUNCTION()
+	void SpecialAttackEnd();
 
 	UFUNCTION()
 	void PlayAttackAnimation(float Value);

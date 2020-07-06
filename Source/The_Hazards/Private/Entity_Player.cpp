@@ -63,6 +63,17 @@ void AEntity_Player::BeginPlay()
 			CalculateTotalStats();
 		}
 	}
+
+	// Spawn a SpecialAttacksFunctionLibrary actor for this entity
+	if (SpecialAttacksFunctionLibrary_Class) {
+		FActorSpawnParameters SpawnInfo;
+
+		//GEngine->AddOnScreenDebugMessage(-1, 15.f, FColor::Orange, FString::Printf(TEXT("Spawn Special Attacks Function Library Actor")));
+
+		SpecialAttacksFunctionLibrary_Reference = GetWorld()->SpawnActor<AFunctionLibrary_SpecialAttacks>(SpecialAttacksFunctionLibrary_Class, FVector::ZeroVector, FRotator::ZeroRotator, SpawnInfo);
+		SpecialAttacksFunctionLibrary_Reference->InitializeSpecialAttacks();
+		SpecialAttacksFunctionLibrary_Reference->LinkedEntity = this;
+	}
 }
 
 // Called every frame
@@ -91,9 +102,13 @@ void AEntity_Player::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 
 	// Attacks
 	PlayerInputComponent->BindAction("PrimaryAttack", IE_Released, this, &AEntity_Player::AttackStart);
+	PlayerInputComponent->BindAction("SpecialAttack", IE_Released, this, &AEntity_Player::SpecialAttackStart);
 
 	// Other
 	PlayerInputComponent->BindAction("Interact", IE_Released, this, &AEntity_Player::Interact);
+	PlayerInputComponent->BindAction("EquipPrimaryWeapon", IE_Released, this, &AEntity_Player::EquipPrimaryWeapon);
+	PlayerInputComponent->BindAction("EquipSecondaryWeapon", IE_Released, this, &AEntity_Player::EquipSecondaryWeapon);
+	PlayerInputComponent->BindAction("EquipTertiaryWeapon", IE_Released, this, &AEntity_Player::EquipTertiaryWeapon);
 
 	// Movement 
 	PlayerInputComponent->BindAxis("MoveForwardBackward", this, &AEntity_Player::MoveForwardBackward);
@@ -328,4 +343,40 @@ void AEntity_Player::Interact()
 	}
 }
 
-// ------------------------- Attacks
+// ------------------------- Equipment
+void AEntity_Player::EquipPrimaryWeapon()
+{
+	CurrentEquippedWeapon = PrimaryWeapon;
+}
+
+void AEntity_Player::EquipSecondaryWeapon()
+{
+	CurrentEquippedWeapon = SecondaryWeapon;
+}
+
+void AEntity_Player::EquipTertiaryWeapon()
+{
+	CurrentEquippedWeapon = TertiaryWeapon;
+}
+
+F_Item_BaseStruct AEntity_Player::ReturnEquippedWeapon()
+{
+	F_Item_BaseStruct ReturnWeapon;
+
+	switch (CurrentEquippedWeapon.Weapon.EquipSlot)
+	{
+		case(E_Weapon_EquipSlot::E_Primary):
+			ReturnWeapon = PrimaryWeapon;
+			break;
+		case(E_Weapon_EquipSlot::E_Secondary):
+			ReturnWeapon = SecondaryWeapon;
+			break;
+		case(E_Weapon_EquipSlot::E_Tertiary):
+			ReturnWeapon = TertiaryWeapon;
+			break;
+		default:
+			ReturnWeapon = PrimaryWeapon;
+			break;
+	}
+	return ReturnWeapon;
+}

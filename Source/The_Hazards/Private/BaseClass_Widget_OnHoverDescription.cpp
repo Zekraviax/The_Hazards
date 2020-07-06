@@ -1,7 +1,5 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
-
 #include "BaseClass_Widget_OnHoverDescription.h"
+
 
 void UBaseClass_Widget_OnHoverDescription::SetText(E_Description_Supertypes Supertype)
 {

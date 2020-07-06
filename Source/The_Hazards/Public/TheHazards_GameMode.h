@@ -99,6 +99,14 @@ enum class E_Skill_ActivationCondition : uint8
 	E_OnDamageTaken,
 };
 
+//------------------------- Special Attacks
+UENUM(BlueprintType)
+enum class E_SpecialAttacks : uint8
+{
+	E_None,
+	E_Assassinate,
+};
+
 //------------------------- NPC
 UENUM(BlueprintType)
 enum class E_Conversation_NextActionInConversation : uint8
@@ -351,14 +359,17 @@ struct THE_HAZARDS_API F_Item_WeaponStruct
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Stats")
 	F_BaseStats_Struct StatModifiers;
 
-	// SpecialAttack Enum
-	//UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Special")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Special")
+	E_SpecialAttacks SpecialAttack;
+
+	// Special Attack Modifiers
 
 	F_Item_WeaponStruct()
 	{
 		EquipSlot = E_Weapon_EquipSlot::E_Primary;
 		DamagePerShot = 1.f;
 		AttackSpeedMultiplier = 1.f;
+		SpecialAttack = E_SpecialAttacks::E_None;
 	}
 };
 
@@ -384,7 +395,7 @@ struct THE_HAZARDS_API F_Item_ArmourStruct
 };
 
 USTRUCT(BlueprintType)
-struct THE_HAZARDS_API F_Item_BaseStruct
+struct THE_HAZARDS_API F_Item_BaseStruct : public FTableRowBase
 {
 	GENERATED_BODY()
 

@@ -1,10 +1,8 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
-
 #include "SubWidget_InventorySlot.h"
 
 #include "BaseClass_Widget_Inventory.h"
 #include "Entity_Base.h"
+
 
 void USubWidget_InventorySlot::NativeTick(const FGeometry& MyGeometry, float DeltaTime)
 {
@@ -49,7 +47,6 @@ void USubWidget_InventorySlot::OnMouseUp()
 		USubWidget_InventorySlot *FoundInventorySlot = *Itr;
 
 		if (FoundInventorySlot->ItemDrag_Reference) {
-
 			USubWidget_ItemDrag *FoundSlot = FoundInventorySlot->ItemDrag_Reference;
 			F_Item_BaseStruct TempItemVariable = FoundSlot->ItemStruct;
 
@@ -73,6 +70,29 @@ void USubWidget_InventorySlot::OnMouseUp()
 								Item.IndexInInventoryArray = InventorySlotIndex;
 								break;
 							}
+						}
+
+						// Set primary, secondary, and tertiary slots
+						switch (ItemStruct.Weapon.EquipSlot)
+						{
+							case(E_Weapon_EquipSlot::E_Primary):
+								PlayerReference->PrimaryWeapon = TempItemVariable;
+								break;
+							case(E_Weapon_EquipSlot::E_Secondary):
+								PlayerReference->SecondaryWeapon = TempItemVariable;
+								break;
+							case(E_Weapon_EquipSlot::E_Tertiary):
+								PlayerReference->TertiaryWeapon = TempItemVariable;
+								break;
+							default:
+								break;
+						}
+
+						// Set equipped weapon
+						if (PlayerReference->CurrentEquippedWeapon.Weapon.EquipSlot == FoundSlot->SlotReference->ItemStruct.Weapon.EquipSlot) {
+							
+							PlayerReference->CurrentEquippedWeapon = TempItemVariable;
+							GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, TEXT("Equip weapon: " + PlayerReference->CurrentEquippedWeapon.Name));
 						}
 
 						PlayerReference->CalculateTotalStats();
@@ -194,4 +214,6 @@ void USubWidget_InventorySlot::Item_TextBind()
 	else if (SlotType == E_InventorySlot_SlotType::E_StandardSlot) {
 		AmountText->SetText(FText::FromString(FString::FromInt(ItemStruct.Amount)));
 	}
+
+	//AmountText->SetText(FText::FromString(FString::FromInt(InventorySlotIndex)));
 }

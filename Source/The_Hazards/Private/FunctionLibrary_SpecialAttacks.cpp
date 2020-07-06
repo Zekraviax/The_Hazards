@@ -1,27 +1,47 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
-
 #include "FunctionLibrary_SpecialAttacks.h"
 
-// Sets default values
-AFunctionLibrary_SpecialAttacks::AFunctionLibrary_SpecialAttacks()
+
+// Define Special Attack Indices
+#define ASSASSINATE 0
+#define DOWNWARDS_STRIKE 1
+#define PARRY 2
+#define SWING_AROUND 3
+
+// Initialize Special Attacks
+void AFunctionLibrary_SpecialAttacks::InitializeSpecialAttacks()
 {
- 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
-	PrimaryActorTick.bCanEverTick = true;
+	SpecialAttackFunctions[ASSASSINATE] = &AFunctionLibrary_SpecialAttacks::Assassinate;
+	SpecialAttackFunctions[DOWNWARDS_STRIKE] = &AFunctionLibrary_SpecialAttacks::Downwards_Strike;
+	SpecialAttackFunctions[PARRY] = &AFunctionLibrary_SpecialAttacks::Parry;
+	SpecialAttackFunctions[SWING_AROUND] = &AFunctionLibrary_SpecialAttacks::Swing_Around;
+}
+
+// ------------------------- Dagger
+void AFunctionLibrary_SpecialAttacks::Assassinate()
+{
 
 }
 
-// Called when the game starts or when spawned
-void AFunctionLibrary_SpecialAttacks::BeginPlay()
+// ------------------------- Broadsword
+void AFunctionLibrary_SpecialAttacks::Downwards_Strike()
 {
-	Super::BeginPlay();
-	
-}
-
-// Called every frame
-void AFunctionLibrary_SpecialAttacks::Tick(float DeltaTime)
-{
-	Super::Tick(DeltaTime);
 
 }
 
+// ------------------------- Rapier
+void AFunctionLibrary_SpecialAttacks::Parry()
+{
+
+}
+
+// ------------------------- Flail
+void AFunctionLibrary_SpecialAttacks::Swing_Around()
+{
+
+}
+
+// Call Special Attacks
+void AFunctionLibrary_SpecialAttacks::CallSpecialAttackFunction(int32 SkillIndex)
+{
+
+}

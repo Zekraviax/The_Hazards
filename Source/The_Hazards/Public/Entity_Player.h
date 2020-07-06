@@ -16,6 +16,7 @@
 // Forward Declarations
 class ABaseClass_PlayerController;
 
+
 // Exclusive enums
 UENUM(BlueprintType)
 enum class E_MenuWidgetTypes : uint8
@@ -141,7 +142,16 @@ public:
 	UFUNCTION()
 	void Interact();
 
-// ------------------------- Attacks
-	//UFUNCTION()
-	//void PlayerAttack();
+// ------------------------- Equipment
+	UFUNCTION()
+	void EquipPrimaryWeapon();
+
+	UFUNCTION()
+	void EquipSecondaryWeapon();
+
+	UFUNCTION()
+	void EquipTertiaryWeapon();
+
+	UFUNCTION()
+	F_Item_BaseStruct ReturnEquippedWeapon();
 };

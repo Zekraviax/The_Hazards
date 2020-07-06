@@ -36,13 +36,18 @@ AEntity_Base::AEntity_Base()
 	WeaponCollider->SetupAttachment(WeaponMesh);
 	EntityDataWidgetComponent->SetupAttachment(RootComponent);
 
-	//Initialize variables
+	// Initialize variables
 	MaximumInventorySize = 30;
 
 	// Set Stats
 	SkillStats.Move_Speed = 1;
 	ItemStats.Move_Speed = 1;
 	TemporaryStats.Move_Speed = 1;
+
+	// Set Default Weapon
+	CurrentEquippedWeapon.Name = "Unarmed";
+	//CurrentEquippedWeapon = E_Weapon_EquipSlot::E_Primary;
+	//PrimaryWeapon.Name = "Unarmed";
 }
 
 // Called when the game starts or when spawned
@@ -468,7 +473,7 @@ void AEntity_Base::OnOverlapBegin(class UPrimitiveComponent* OverlappedComp, cla
 
 void AEntity_Base::AttackStart()
 {
-	if (!GetWorldTimerManager().IsTimerActive(AttackSwingTimerHandle)) {
+	if (!GetWorldTimerManager().IsTimerActive(AttackSwingTimerHandle) && !(GetWorldTimerManager().IsTimerActive(SpecialAttackSwingTimerHandle))) {
 		WeaponCollider->SetGenerateOverlapEvents(true);
 		GetWorldTimerManager().SetTimer(AttackSwingTimerHandle, this, &AEntity_Base::AttackEnd, 1.f, false);
 
@@ -477,10 +482,10 @@ void AEntity_Base::AttackStart()
 			AttackAnimationTimeline->PlayFromStart();
 		}
 
-		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, TEXT("Attack Start"));
+		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, TEXT("Attack Start"));
 	}
 	else {
-		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Attack Timer Counting Down"));
+		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("An Attack Timer Is Counting Down"));
 	}
 }
 
@@ -490,6 +495,35 @@ void AEntity_Base::AttackEnd()
 	GetWorldTimerManager().ClearTimer(AttackSwingTimerHandle);
 	AttackedEntitiesArray.Empty();
 	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, TEXT("Attack End"));
+}
+
+void AEntity_Base::SpecialAttackStart()
+{
+	if (!GetWorldTimerManager().IsTimerActive(AttackSwingTimerHandle) && !(GetWorldTimerManager().IsTimerActive(SpecialAttackSwingTimerHandle))) {
+		//WeaponCollider->SetGenerateOverlapEvents(true);
+		GetWorldTimerManager().SetTimer(SpecialAttackSwingTimerHandle, this, &AEntity_Base::SpecialAttackEnd, 1.f, false);
+
+		// Create Special Attack hitbox
+
+		// Set Special Attack animation
+
+		if (AttackAnimationTimeline != NULL) {
+			AttackAnimationTimeline->PlayFromStart();
+		}
+
+		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, TEXT("Special Attack Start"));
+	}
+	else {
+		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("An Attack Timer Is Counting Down"));
+	}
+}
+
+void AEntity_Base::SpecialAttackEnd()
+{
+	//WeaponCollider->SetGenerateOverlapEvents(false);
+	GetWorldTimerManager().ClearTimer(SpecialAttackSwingTimerHandle);
+	AttackedEntitiesArray.Empty();
+	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, TEXT("Special Attack End"));
 }
 
 void AEntity_Base::PlayAttackAnimation(float Value)
