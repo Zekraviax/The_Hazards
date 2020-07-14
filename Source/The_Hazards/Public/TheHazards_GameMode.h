@@ -101,7 +101,7 @@ enum class E_Skill_ActivationCondition : uint8
 
 //------------------------- Special Attacks
 UENUM(BlueprintType)
-enum class E_SpecialAttacks : uint8
+enum class E_Weapon_SpecialAttacks : uint8
 {
 	E_None,
 	E_Assassinate,
@@ -360,7 +360,7 @@ struct THE_HAZARDS_API F_Item_WeaponStruct
 	F_BaseStats_Struct StatModifiers;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Special")
-	E_SpecialAttacks SpecialAttack;
+	E_Weapon_SpecialAttacks SpecialAttack;
 
 	// Special Attack Modifiers
 
@@ -369,7 +369,7 @@ struct THE_HAZARDS_API F_Item_WeaponStruct
 		EquipSlot = E_Weapon_EquipSlot::E_Primary;
 		DamagePerShot = 1.f;
 		AttackSpeedMultiplier = 1.f;
-		SpecialAttack = E_SpecialAttacks::E_None;
+		SpecialAttack = E_Weapon_SpecialAttacks::E_None;
 	}
 };
 

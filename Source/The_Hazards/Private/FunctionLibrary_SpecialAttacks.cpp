@@ -2,10 +2,10 @@
 
 
 // Define Special Attack Indices
-#define ASSASSINATE 0
-#define DOWNWARDS_STRIKE 1
-#define PARRY 2
-#define SWING_AROUND 3
+#define ASSASSINATE 1
+#define DOWNWARDS_STRIKE 2
+#define PARRY 3
+#define SWING_AROUND 4
 
 // Initialize Special Attacks
 void AFunctionLibrary_SpecialAttacks::InitializeSpecialAttacks()
@@ -16,10 +16,19 @@ void AFunctionLibrary_SpecialAttacks::InitializeSpecialAttacks()
 	SpecialAttackFunctions[SWING_AROUND] = &AFunctionLibrary_SpecialAttacks::Swing_Around;
 }
 
+//void AFunctionLibrary_SpecialAttacks::SpawnSpecialAttackActor(E_Weapon_SpecialAttacks SpecialAttack)
+//{
+//
+//}
+
 // ------------------------- Dagger
 void AFunctionLibrary_SpecialAttacks::Assassinate()
 {
+	FActorSpawnParameters SpawnInfo;
 
+	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Orange, TEXT("Special Attack: Assassinate"));
+
+	SpecialAttackActor_Reference = GetWorld()->SpawnActor<ASpecialAttackActor_Base>(Assassinate_Class, FVector::ZeroVector, FRotator::ZeroRotator, SpawnInfo);
 }
 
 // ------------------------- Broadsword
@@ -41,7 +50,29 @@ void AFunctionLibrary_SpecialAttacks::Swing_Around()
 }
 
 // Call Special Attacks
-void AFunctionLibrary_SpecialAttacks::CallSpecialAttackFunction(int32 SkillIndex)
+void AFunctionLibrary_SpecialAttacks::CallSpecialAttackFunction(E_Weapon_SpecialAttacks SpecialAttack)
 {
+	//uint8 SpecialAttackEnumToByte = (uint8)SpecialAttack;
 
+	//(this->* (SpecialAttackFunctions[SpecialAttackEnumToByte]))();
+
+	FActorSpawnParameters SpawnInfo;
+	FAttachmentTransformRules AttachmentRules(EAttachmentRule::KeepRelative, EAttachmentRule::KeepRelative, EAttachmentRule::KeepWorld, true);
+
+	switch (SpecialAttack) {
+		case(E_Weapon_SpecialAttacks::E_Assassinate):
+			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Orange, TEXT("Special Attack: Assassinate"));
+
+			if (Assassinate_Class)
+				SpecialAttackActor_Reference = GetWorld()->SpawnActor<ASpecialAttackActor_Base>(Assassinate_Class, FVector::ZeroVector, FRotator::ZeroRotator, SpawnInfo);
+			break;
+		default:
+			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Special Attack Error"));
+			break;
+	}
+
+	if (SpecialAttackActor_Reference) {
+		//SpecialAttackActor_Reference->AttachToActor(Cast<AActor>(LinkedEntity), FAttachmentTransformRules::SnapToTargetIncludingScale);
+		SpecialAttackActor_Reference->AttachToComponent(LinkedEntity->WeaponCollider, AttachmentRules);
+	}
 }

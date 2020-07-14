@@ -499,14 +499,19 @@ void AEntity_Base::AttackEnd()
 
 void AEntity_Base::SpecialAttackStart()
 {
-	if (!GetWorldTimerManager().IsTimerActive(AttackSwingTimerHandle) && !(GetWorldTimerManager().IsTimerActive(SpecialAttackSwingTimerHandle))) {
+	if (!GetWorldTimerManager().IsTimerActive(AttackSwingTimerHandle) && !(GetWorldTimerManager().IsTimerActive(SpecialAttackSwingTimerHandle) && CurrentEquippedWeapon.Weapon.SpecialAttack != E_Weapon_SpecialAttacks::E_None)) {
 		//WeaponCollider->SetGenerateOverlapEvents(true);
 		GetWorldTimerManager().SetTimer(SpecialAttackSwingTimerHandle, this, &AEntity_Base::SpecialAttackEnd, 1.f, false);
 
-		// Create Special Attack hitbox
+		// Spawn Special Attack hitbox actor
+		F_Item_BaseStruct EquippedWeapon = Cast<AEntity_Player>(this)->ReturnEquippedWeapon();
+
+		if (EquippedWeapon.Weapon.SpecialAttack != E_Weapon_SpecialAttacks::E_None && SpecialAttacksFunctionLibrary_Reference) {
+			SpecialAttacksFunctionLibrary_Reference->CallSpecialAttackFunction(EquippedWeapon.Weapon.SpecialAttack);
+			SpecialAttacksFunctionLibrary_Reference->SpecialAttackActor_Reference->AttackingEntity = this;
+		}
 
 		// Set Special Attack animation
-
 		if (AttackAnimationTimeline != NULL) {
 			AttackAnimationTimeline->PlayFromStart();
 		}
@@ -523,6 +528,10 @@ void AEntity_Base::SpecialAttackEnd()
 	//WeaponCollider->SetGenerateOverlapEvents(false);
 	GetWorldTimerManager().ClearTimer(SpecialAttackSwingTimerHandle);
 	AttackedEntitiesArray.Empty();
+
+	// Delete Special Attack actor
+	SpecialAttacksFunctionLibrary_Reference->SpecialAttackActor_Reference->Destroy();
+
 	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, TEXT("Special Attack End"));
 }
 

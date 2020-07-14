@@ -3,6 +3,8 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
 
+#include "SpecialAttackActor_Base.h"
+
 #include "FunctionLibrary_SpecialAttacks.generated.h"
 
 #define SPECIAL_ATTACK_COUNT_TOTAL 4
@@ -24,9 +26,19 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	AEntity_Base* LinkedEntity;
 
-// ------------------------- Special Attack DataTable
+// ------------------------- Special Attack Actors
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TSubclassOf<ASpecialAttackActor_Base> Assassinate_Class;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TSubclassOf<ASpecialAttackActor_Base> DownwardStrike_Class;
+
 	//UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	//UDataTable* SpecialAttackDataTable_Reference;
+	//FActorSpawnParameters SpawnInfo;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	ASpecialAttackActor_Base* SpecialAttackActor_Reference;
+
+
 
 // Functions
 // --------------------------------------------------
@@ -39,10 +51,12 @@ public:
 	FunctionPtrType SpecialAttackFunctions[SPECIAL_ATTACK_COUNT_TOTAL];
 
 	// Call a special attack function from the Function Pointer Array. Implementation does not vary in subclasses, so not virtual
-	void CallSpecialAttackFunction(int32 SkillIndex);
+	void CallSpecialAttackFunction(E_Weapon_SpecialAttacks SpecialAttack);
 
 	// Initialize the array
 	void InitializeSpecialAttacks();
+
+	//void SpawnSpecialAttackActor(E_Weapon_SpecialAttacks SpecialAttack);
 
 // ------------------------- Special Attacks
 	virtual void Assassinate();

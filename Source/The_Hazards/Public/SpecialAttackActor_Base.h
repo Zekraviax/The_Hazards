@@ -4,6 +4,9 @@
 #include "GameFramework/Actor.h"
 #include "SpecialAttackActor_Base.generated.h"
 
+// Forward Declarations
+class AFunctionLibrary_SpecialAttacks;
+
 
 UCLASS()
 class THE_HAZARDS_API ASpecialAttackActor_Base : public AActor
@@ -22,4 +25,17 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
+// Base Variables
+// --------------------------------------------------
+
+// ------------------------- Owner
+	UPROPERTY()
+	AEntity_Base* AttackingEntity;
+
+	UPROPERTY()
+	AFunctionLibrary_SpecialAttacks* SpecialAttackLibrary_Reference;
+
+// ------------------------- Technical Variables
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Technical Variables")
+	TArray<AEntity_Base*> AttackedEntitiesArray;
 };
