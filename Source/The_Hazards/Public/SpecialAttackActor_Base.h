@@ -29,10 +29,10 @@ public:
 // --------------------------------------------------
 
 // ------------------------- Owner
-	UPROPERTY()
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Technical Variables")
 	AEntity_Base* AttackingEntity;
 
-	UPROPERTY()
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Technical Variables")
 	AFunctionLibrary_SpecialAttacks* SpecialAttackLibrary_Reference;
 
 // ------------------------- Technical Variables

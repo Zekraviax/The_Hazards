@@ -1,10 +1,8 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
-
 #include "BaseClass_Widget_PauseMenu.h"
 
 #include "Runtime/Engine/Classes/Kismet/GameplayStatics.h"
 #include "Entity_Player.h"
+
 
 // Button Functions
 void UBaseClass_Widget_PauseMenu::Function_ResumeGame()

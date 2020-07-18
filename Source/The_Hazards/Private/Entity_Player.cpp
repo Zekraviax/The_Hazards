@@ -39,41 +39,41 @@ void AEntity_Player::BeginPlay()
 	}
 
 	// Setup Hitbox collisions
-	WeaponCollider->SetCollisionProfileName(TEXT("Trigger"));
-	WeaponCollider->SetGenerateOverlapEvents(false);
-	WeaponCollider->OnComponentBeginOverlap.AddDynamic(this, &AEntity_Player::OnOverlapBegin);
+	//WeaponCollider->SetCollisionProfileName(TEXT("Trigger"));
+	//WeaponCollider->SetGenerateOverlapEvents(false);
+	//WeaponCollider->OnComponentBeginOverlap.AddDynamic(this, &AEntity_Player::OnOverlapBegin);
 
 	// Setup Skill Tree
-	if (SkillsFunctionLibrary_Reference) {
-		if (SkillsFunctionLibrary_Reference->SkillDataTable_Reference) {
+	//if (SkillsFunctionLibrary_Reference) {
+	//	if (SkillsFunctionLibrary_Reference->SkillDataTable_Reference) {
 
-			FString ContextString;
-			TArray<FName> RowNames = SkillsFunctionLibrary_Reference->SkillDataTable_Reference->GetRowNames();
+	//		FString ContextString;
+	//		TArray<FName> RowNames = SkillsFunctionLibrary_Reference->SkillDataTable_Reference->GetRowNames();
 
-			for (auto& Row : SkillsFunctionLibrary_Reference->SkillDataTable_Reference->GetRowMap()) {
-				F_Skill_Base* Skill = (F_Skill_Base*)(Row.Value);
+	//		for (auto& Row : SkillsFunctionLibrary_Reference->SkillDataTable_Reference->GetRowMap()) {
+	//			F_Skill_Base* Skill = (F_Skill_Base*)(Row.Value);
 
-				//if (Skill->SkillIndex == 101) {
-				//	Skill->CurrentLevel += 1;
-				//}
+	//			//if (Skill->SkillIndex == 101) {
+	//			//	Skill->CurrentLevel += 1;
+	//			//}
 
-				KnownSkills.Add(*Skill);
-			}
+	//			KnownSkills.Add(*Skill);
+	//		}
 
-			CalculateTotalStats();
-		}
-	}
+	//		CalculateTotalStats();
+	//	}
+	//}
 
-	// Spawn a SpecialAttacksFunctionLibrary actor for this entity
-	if (SpecialAttacksFunctionLibrary_Class) {
-		FActorSpawnParameters SpawnInfo;
+	//// Spawn a SpecialAttacksFunctionLibrary actor for this entity
+	//if (SpecialAttacksFunctionLibrary_Class) {
+	//	FActorSpawnParameters SpawnInfo;
 
-		//GEngine->AddOnScreenDebugMessage(-1, 15.f, FColor::Orange, FString::Printf(TEXT("Spawn Special Attacks Function Library Actor")));
+	//	//GEngine->AddOnScreenDebugMessage(-1, 15.f, FColor::Orange, FString::Printf(TEXT("Spawn Special Attacks Function Library Actor")));
 
-		SpecialAttacksFunctionLibrary_Reference = GetWorld()->SpawnActor<AFunctionLibrary_SpecialAttacks>(SpecialAttacksFunctionLibrary_Class, FVector::ZeroVector, FRotator::ZeroRotator, SpawnInfo);
-		SpecialAttacksFunctionLibrary_Reference->InitializeSpecialAttacks();
-		SpecialAttacksFunctionLibrary_Reference->LinkedEntity = this;
-	}
+	//	SpecialAttacksFunctionLibrary_Reference = GetWorld()->SpawnActor<AFunctionLibrary_SpecialAttacks>(SpecialAttacksFunctionLibrary_Class, FVector::ZeroVector, FRotator::ZeroRotator, SpawnInfo);
+	//	SpecialAttacksFunctionLibrary_Reference->InitializeSpecialAttacks();
+	//	SpecialAttacksFunctionLibrary_Reference->LinkedEntity = this;
+	//}
 }
 
 // Called every frame

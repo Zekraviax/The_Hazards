@@ -72,7 +72,7 @@ void AFunctionLibrary_SpecialAttacks::CallSpecialAttackFunction(E_Weapon_Special
 	}
 
 	if (SpecialAttackActor_Reference) {
-		//SpecialAttackActor_Reference->AttachToActor(Cast<AActor>(LinkedEntity), FAttachmentTransformRules::SnapToTargetIncludingScale);
 		SpecialAttackActor_Reference->AttachToComponent(LinkedEntity->WeaponCollider, AttachmentRules);
+		SpecialAttackActor_Reference->SpecialAttackLibrary_Reference = this;
 	}
 }

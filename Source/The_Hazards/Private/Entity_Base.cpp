@@ -97,12 +97,39 @@ void AEntity_Base::BeginPlay()
 	}
 
 	// Spawn a SkillsFunctionLibrary actor for this entity
-	if (SkillsFunctionLibrary_Class) {
+	if (SkillsFunctionLibrary_Class && !SkillsFunctionLibrary_Reference) {
 		FActorSpawnParameters SpawnInfo;
 
 		SkillsFunctionLibrary_Reference = GetWorld()->SpawnActor<AFunctionLibrary_Skills>(SkillsFunctionLibrary_Class, FVector::ZeroVector, FRotator::ZeroRotator, SpawnInfo);
 		SkillsFunctionLibrary_Reference->InitializeSkills();
 		SkillsFunctionLibrary_Reference->LinkedEntity = this;
+
+		// Set the player's skills here instead of the Entity_Player.cpp
+		if (Cast<AEntity_Player>(this)) {
+			if (SkillsFunctionLibrary_Reference->SkillDataTable_Reference) {
+
+				FString ContextString;
+				TArray<FName> RowNames = SkillsFunctionLibrary_Reference->SkillDataTable_Reference->GetRowNames();
+
+				for (auto& Row : SkillsFunctionLibrary_Reference->SkillDataTable_Reference->GetRowMap()) {
+					F_Skill_Base* Skill = (F_Skill_Base*)(Row.Value);
+					KnownSkills.Add(*Skill);
+				}
+
+				CalculateTotalStats();
+			}
+
+			// Spawn a SpecialAttacksFunctionLibrary actor for this entity
+			//if (SpecialAttacksFunctionLibrary_Class) {
+				//FActorSpawnParameters SpawnInfo;
+
+				//GEngine->AddOnScreenDebugMessage(-1, 15.f, FColor::Orange, FString::Printf(TEXT("Spawn Special Attacks Function Library Actor")));
+
+				//SpecialAttacksFunctionLibrary_Reference = GetWorld()->SpawnActor<AFunctionLibrary_SpecialAttacks>(SpecialAttacksFunctionLibrary_Class, FVector::ZeroVector, FRotator::ZeroRotator, SpawnInfo);
+				//SpecialAttacksFunctionLibrary_Reference->InitializeSpecialAttacks();
+				//SpecialAttacksFunctionLibrary_Reference->LinkedEntity = this;
+			//}
+		}
 	}
 }
 
@@ -525,12 +552,15 @@ void AEntity_Base::SpecialAttackStart()
 
 void AEntity_Base::SpecialAttackEnd()
 {
-	//WeaponCollider->SetGenerateOverlapEvents(false);
-	GetWorldTimerManager().ClearTimer(SpecialAttackSwingTimerHandle);
-	AttackedEntitiesArray.Empty();
+	if (SpecialAttacksFunctionLibrary_Reference) {
+		//WeaponCollider->SetGenerateOverlapEvents(false);
+		GetWorldTimerManager().ClearTimer(SpecialAttackSwingTimerHandle);
+		AttackedEntitiesArray.Empty();
 
-	// Delete Special Attack actor
-	SpecialAttacksFunctionLibrary_Reference->SpecialAttackActor_Reference->Destroy();
+		// Delete Special Attack actor
+		SpecialAttacksFunctionLibrary_Reference->SpecialAttackActor_Reference->Destroy();
+
+	}
 
 	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, TEXT("Special Attack End"));
 }

@@ -1,6 +1,3 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
-
 #include "BaseClass_EnemyController.h"
 
 #include "Entity_EnemyNPC.h"
@@ -20,10 +17,12 @@ void ABaseClass_EnemyController::OnPossess(APawn* InPawn)
 	AEntity_EnemyNPC* LocalPawnRef = Cast<AEntity_EnemyNPC>(InPawn);
 
 	if (LocalPawnRef) {
-		if (LocalPawnRef->BehaviorTree->BlackboardAsset) {
-			BlackboardComponent->InitializeBlackboard(*LocalPawnRef->BehaviorTree->BlackboardAsset);
-			if (BehaviourComponent) {
-				BehaviourComponent->StartTree(*LocalPawnRef->BehaviorTree);
+		if (LocalPawnRef->BehaviorTree) {
+			if (LocalPawnRef->BehaviorTree->BlackboardAsset) {
+				BlackboardComponent->InitializeBlackboard(*LocalPawnRef->BehaviorTree->BlackboardAsset);
+				if (BehaviourComponent) {
+					BehaviourComponent->StartTree(*LocalPawnRef->BehaviorTree);
+				}
 			}
 		}
 	}
