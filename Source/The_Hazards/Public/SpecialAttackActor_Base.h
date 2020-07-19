@@ -6,6 +6,7 @@
 
 // Forward Declarations
 class AFunctionLibrary_SpecialAttacks;
+class AEntity_Base;
 
 
 UCLASS()
@@ -38,4 +39,8 @@ public:
 // ------------------------- Technical Variables
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Technical Variables")
 	TArray<AEntity_Base*> AttackedEntitiesArray;
+
+// Functions
+// --------------------------------------------------
+	// Return attack style and/or animations
 };

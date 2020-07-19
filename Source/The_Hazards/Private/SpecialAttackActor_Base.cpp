@@ -1,5 +1,7 @@
 #include "SpecialAttackActor_Base.h"
 
+#include "Entity_Base.h"
+
 
 // Sets default values
 ASpecialAttackActor_Base::ASpecialAttackActor_Base()

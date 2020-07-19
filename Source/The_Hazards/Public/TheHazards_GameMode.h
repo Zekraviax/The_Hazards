@@ -150,70 +150,70 @@ struct THE_HAZARDS_API F_SecondaryStats_Struct
 	GENERATED_BODY()
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Health and Aura")
-		float Maximum_HealthPoints_Multiplier;
+	float Maximum_HealthPoints_Multiplier;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Health and Aura")
-		float HealthPoints_Recovery_Multiplier;
+	float HealthPoints_Recovery_Multiplier;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Health and Aura")
-		float HealthPoints_Delay_Multiplier;
+	float HealthPoints_Delay_Multiplier;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Health and Aura")
-		float Maximum_AuraPoints_Multiplier;
+	float Maximum_AuraPoints_Multiplier;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Health and Aura")
-		float AuraPoints_Recovery_Multiplier;
+	float AuraPoints_Recovery_Multiplier;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Health and Aura")
-		float AuraPoints_Delay_Multiplier;
+	float AuraPoints_Delay_Multiplier;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Base Stats")
-		float PhysicalStrength_Multiplier;
+	float PhysicalStrength_Multiplier;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Base Stats")
-		float PhysicalDefence_Multiplier;
+	float PhysicalDefence_Multiplier;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Base Stats")
-		float ElementalStrength_Multiplier;
+	float ElementalStrength_Multiplier;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Base Stats")
-		float ElementalDefence_Multiplier;
+	float ElementalDefence_Multiplier;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Base Stats")
-		float AttackSpeed_Multiplier;
+	float AttackSpeed_Multiplier;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Base Stats")
-		float MoveSpeed_Multiplier;
+	float MoveSpeed_Multiplier;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Base Stats")
-		float Evasiveness_Multiplier;
+	float Evasiveness_Multiplier;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Base Stats")
-		float StatusPotency_Multiplier;
+	float StatusPotency_Multiplier;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Base Stats")
-		float Luck_Multiplier;
+	float Luck_Multiplier;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Other")
-		float IncomingDamage_Multiplier;
+	float IncomingDamage_Multiplier;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Other")
-		float OutgoingDamage_Multiplier;
+	float OutgoingDamage_Multiplier;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Other")
-		float Lifesteal_Percentage;
+	float Lifesteal_Percentage;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Other")
-		float Armour_Value;
+	float Armour_Value;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Other")
-		float StatusDuration_Multiplier;
+	float StatusDuration_Multiplier;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Other")
-		float ShopDiscount_Multiplier;
+	float ShopDiscount_Multiplier;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Other")
-		int Maximum_Companion_Count;
+	int Maximum_Companion_Count;
 
 	F_SecondaryStats_Struct()
 	{
@@ -240,6 +240,37 @@ struct THE_HAZARDS_API F_SecondaryStats_Struct
 		ShopDiscount_Multiplier = 1.f;
 		Maximum_Companion_Count = 1;
 	}
+
+	F_SecondaryStats_Struct(const float& InMaximumHealthPointsMultiplier, const float& InHealthPointsRecoveryMultiplier, const float& InHealthPointsDelayMultiplier, 
+		const float& InMaximumAuraPointsMultiplier, const float& InAuraPointsRecoveryMultiplier, const float& InAuraPointsDelayMultiplier,
+		const float& InPhysicalStrengthMultiplier, const float& InPhysicalDefenceMultiplier, const float& InElementalStrengthMultiplier, const float& InElementalDefenceMultiplier,
+		const float& InAttackSpeedMultiplier, const float& InMoveSpeedMultiplier, const float& InEvasivenessMultiplier, const float& InStatusPotencyMultiplier,
+		const float& InLuckMultiplier, const float& InIncomingDamageMultiplier, const float& InOutgoingDamageMultiplier, const float& InLifestealPercentage,
+		const float& InArmourValue, const float& InStatusDurationMultiplier, const float& InShopDiscountMultiplier, const int& InMaximumCompanionCount)
+	{
+		Maximum_HealthPoints_Multiplier = InMaximumHealthPointsMultiplier;
+		HealthPoints_Recovery_Multiplier = InHealthPointsRecoveryMultiplier;
+		HealthPoints_Delay_Multiplier = InHealthPointsDelayMultiplier;
+		Maximum_AuraPoints_Multiplier = InMaximumAuraPointsMultiplier;
+		AuraPoints_Recovery_Multiplier = InAuraPointsRecoveryMultiplier;
+		AuraPoints_Delay_Multiplier = InAuraPointsDelayMultiplier;
+		PhysicalStrength_Multiplier = InPhysicalStrengthMultiplier;
+		PhysicalDefence_Multiplier = InPhysicalDefenceMultiplier;
+		ElementalStrength_Multiplier = InElementalStrengthMultiplier;
+		ElementalDefence_Multiplier = InElementalDefenceMultiplier;
+		AttackSpeed_Multiplier = InAttackSpeedMultiplier;
+		MoveSpeed_Multiplier = InMoveSpeedMultiplier;
+		Evasiveness_Multiplier = InEvasivenessMultiplier;
+		StatusPotency_Multiplier = InStatusPotencyMultiplier;
+		Luck_Multiplier = InLuckMultiplier;
+		IncomingDamage_Multiplier = InIncomingDamageMultiplier;
+		OutgoingDamage_Multiplier = InOutgoingDamageMultiplier;
+		Lifesteal_Percentage = InLifestealPercentage;
+		Armour_Value = InArmourValue;
+		StatusDuration_Multiplier = InStatusDurationMultiplier;
+		ShopDiscount_Multiplier = InShopDiscountMultiplier;
+		Maximum_Companion_Count = InMaximumCompanionCount;
+	}
 };
 
 USTRUCT(BlueprintType)
@@ -248,52 +279,52 @@ struct THE_HAZARDS_API F_BaseStats_Struct
 	GENERATED_BODY()
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Health")
-		float HealthPoints;
+	float HealthPoints;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Health")
-		float HealthPoints_RegenPerSecond;
+	float HealthPoints_RegenPerSecond;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Health")
-		float HealthPoints_RegenStartDelay;
+	float HealthPoints_RegenStartDelay;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Aura")
-		float AuraPoints;
+	float AuraPoints;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Aura")
-		float AuraPoints_RegenPerSecond;
+	float AuraPoints_RegenPerSecond;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Aura")
-		float AuraPoints_RegenStartDelay;
+	float AuraPoints_RegenStartDelay;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Stats")
-		float Physical_Strength;
+	float Physical_Strength;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Stats")
-		float Physical_Defence;
+	float Physical_Defence;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Stats")
-		float Elemental_Strength;
+	float Elemental_Strength;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Stats")
-		float Elemental_Defence;
+	float Elemental_Defence;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Stats")
-		float Attack_Speed;
+	float Attack_Speed;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Stats")
-		float Move_Speed;
+	float Move_Speed;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Stats")
-		float Evasiveness;
+	float Evasiveness;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Stats")
-		float Status_Potency;
+	float Status_Potency;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Stats")
-		float Luck;
+	float Luck;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Stats")
-		F_SecondaryStats_Struct SecondaryStats;
+	F_SecondaryStats_Struct SecondaryStats;
 
 	F_BaseStats_Struct()
 	{
@@ -312,6 +343,28 @@ struct THE_HAZARDS_API F_BaseStats_Struct
 		Evasiveness = 1.f;
 		Status_Potency = 1.f;
 		Luck = 1.f;
+	}
+
+	F_BaseStats_Struct(const float& InHealthPoints, const float& InHealthPointsRegenPerSecond, const float& InHealthPointsRegenStartDelay,
+		const float& InAuraPoints, const float& InAuraPointsRegenPerSecond, const float& InAuraPointsRegenStartDelay,
+		const float& InPhysicalStrength, const float& InPhysicalDefence, const float& InElementalStrength, const float& InElementalDefence,
+		const float& InAttackSpeed, const float& InMoveSpeed, const float& InEvasiveness, const float& InStatusPotency, const float& InLuck)
+	{
+		HealthPoints = InHealthPoints;
+		HealthPoints_RegenPerSecond = InHealthPointsRegenPerSecond;
+		HealthPoints_RegenStartDelay = InHealthPointsRegenStartDelay;
+		AuraPoints = InAuraPoints;
+		AuraPoints_RegenPerSecond = InAuraPointsRegenPerSecond;
+		AuraPoints_RegenStartDelay = InAuraPointsRegenStartDelay;
+		Physical_Strength = InPhysicalStrength;
+		Physical_Defence = InPhysicalDefence;
+		Elemental_Strength = InElementalStrength;
+		Elemental_Defence = InElementalDefence;
+		Attack_Speed = InAttackSpeed;
+		Move_Speed = InMoveSpeed;
+		Evasiveness = InEvasiveness;
+		Status_Potency = InStatusPotency;
+		Luck = InLuck;
 	}
 };
 

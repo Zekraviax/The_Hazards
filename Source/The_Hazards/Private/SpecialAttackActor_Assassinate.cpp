@@ -10,9 +10,24 @@ void ASpecialAttackActor_Assassinate::OnEntityOverlap(class UPrimitiveComponent*
 		{
 			GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Yellow, TEXT("Overlap Begin  /  Actor: " + this->GetName() + "  /  Other Actor: " + OtherActor->GetName()));
 			GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Yellow, TEXT("Overlapped Component: " + OverlappedComp->GetName() + "  /  Other Component: " + OtherComp->GetName()));
-
 			AttackedEntitiesArray.Add(Cast<AEntity_Base>(OtherActor));
-			Cast<AEntity_Base>(OtherActor)->EntityHit(20);
+
+			// Find two actor's look directions
+			FRotator AttackingEntityLookAtVector = AttackingEntity->RotatingCore->GetComponentRotation();
+			AttackingEntityLookAtVector.Normalize();
+			FRotator OtherEntityLookAtVector = OtherActor->GetActorRotation();
+			OtherEntityLookAtVector.Normalize();
+
+			//GEngine->AddOnScreenDebugMessage(-1, 15.f, FColor::Orange, FString::Printf(TEXT("Attacking Entity Forward Vector: %s"), *AttackingEntityLookAtVector.ToString()));
+			//GEngine->AddOnScreenDebugMessage(-1, 15.f, FColor::Orange, FString::Printf(TEXT("Other Entity Forward Vector: %s"), *OtherEntityLookAtVector.ToString()));
+
+			// Check if attacking entity is behind enough other entity
+			if (AttackingEntityLookAtVector.Yaw >= (OtherEntityLookAtVector.Yaw - 45) && AttackingEntityLookAtVector.Yaw <= (OtherEntityLookAtVector.Yaw + 45)) {
+				GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Yellow, TEXT("Backstab!"));
+				Cast<AEntity_Base>(OtherActor)->EntityHit(50);
+			} else {
+				Cast<AEntity_Base>(OtherActor)->EntityHit(25);
+			}
 		}
 	}
 }

@@ -126,7 +126,7 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Special Attacks")
 	TSubclassOf<AFunctionLibrary_SpecialAttacks> SpecialAttacksFunctionLibrary_Class;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Special Attacks")
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Special Attacks")
 	AFunctionLibrary_SpecialAttacks* SpecialAttacksFunctionLibrary_Reference;
 
 // ------------------------- Status Effects
@@ -287,4 +287,7 @@ public:
 	// Entity received damage function
 	UFUNCTION()
 	void EntityHit(int32 BaseAttackDamage);
+
+	UFUNCTION()
+	void EntityDeath();
 };

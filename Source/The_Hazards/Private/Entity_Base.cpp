@@ -46,8 +46,12 @@ AEntity_Base::AEntity_Base()
 
 	// Set Default Weapon
 	CurrentEquippedWeapon.Name = "Unarmed";
-	//CurrentEquippedWeapon = E_Weapon_EquipSlot::E_Primary;
-	//PrimaryWeapon.Name = "Unarmed";
+	CurrentEquippedWeapon.Supertype = E_Item_Supertypes::E_Weapon;
+	//CurrentEquippedWeapon.Amount = 0;
+	CurrentEquippedWeapon.Weapon.EquipSlot = E_Weapon_EquipSlot::E_Primary;
+	CurrentEquippedWeapon.Weapon.StatModifiers = F_BaseStats_Struct(0.f, 0.f, 0.f, 0.f, 0.f, 0.f, 0.f, 0.f, 0.f, 0.f, 0.f, 0.f, 0.f, 0.f, 0.f);
+	CurrentEquippedWeapon.Weapon.StatModifiers.SecondaryStats = F_SecondaryStats_Struct(0.f, 0.f, 0.f, 0.f, 0.f, 0.f, 0.f, 0.f, 0.f, 0.f, 0.f, 0.f, 0.f, 0.f, 0.f, 0.f, 0.f, 0.f, 0.f, 0.f, 0.f, 0);
+
 }
 
 // Called when the game starts or when spawned
@@ -89,7 +93,7 @@ void AEntity_Base::BeginPlay()
 	CurrentStats.AuraPoints = 75;
 
 	// Get a reference to the EntityStats proper widget and set the variables
-	if(EntityDataWidgetComponent && EntityStatsWidgetComponent_Class) {
+	if(EntityStatsWidgetComponent_Class) {
 		EntityStatsWidgetComponent_Reference = Cast<UBaseClass_WidgetComponent_Entity>(EntityDataWidgetComponent->GetUserWidgetObject());
 
 		if (EntityStatsWidgetComponent_Reference)
@@ -120,15 +124,11 @@ void AEntity_Base::BeginPlay()
 			}
 
 			// Spawn a SpecialAttacksFunctionLibrary actor for this entity
-			//if (SpecialAttacksFunctionLibrary_Class) {
-				//FActorSpawnParameters SpawnInfo;
-
-				//GEngine->AddOnScreenDebugMessage(-1, 15.f, FColor::Orange, FString::Printf(TEXT("Spawn Special Attacks Function Library Actor")));
-
-				//SpecialAttacksFunctionLibrary_Reference = GetWorld()->SpawnActor<AFunctionLibrary_SpecialAttacks>(SpecialAttacksFunctionLibrary_Class, FVector::ZeroVector, FRotator::ZeroRotator, SpawnInfo);
-				//SpecialAttacksFunctionLibrary_Reference->InitializeSpecialAttacks();
-				//SpecialAttacksFunctionLibrary_Reference->LinkedEntity = this;
-			//}
+			if (SpecialAttacksFunctionLibrary_Class) {
+				SpecialAttacksFunctionLibrary_Reference = GetWorld()->SpawnActor<AFunctionLibrary_SpecialAttacks>(SpecialAttacksFunctionLibrary_Class, FVector::ZeroVector, FRotator::ZeroRotator, SpawnInfo);
+				SpecialAttacksFunctionLibrary_Reference->InitializeSpecialAttacks();
+				SpecialAttacksFunctionLibrary_Reference->LinkedEntity = this;
+			}
 		}
 	}
 }
@@ -526,40 +526,39 @@ void AEntity_Base::AttackEnd()
 
 void AEntity_Base::SpecialAttackStart()
 {
-	if (!GetWorldTimerManager().IsTimerActive(AttackSwingTimerHandle) && !(GetWorldTimerManager().IsTimerActive(SpecialAttackSwingTimerHandle) && CurrentEquippedWeapon.Weapon.SpecialAttack != E_Weapon_SpecialAttacks::E_None)) {
-		//WeaponCollider->SetGenerateOverlapEvents(true);
-		GetWorldTimerManager().SetTimer(SpecialAttackSwingTimerHandle, this, &AEntity_Base::SpecialAttackEnd, 1.f, false);
+	if (CurrentEquippedWeapon.Weapon.SpecialAttack != E_Weapon_SpecialAttacks::E_None) {
+		if (!GetWorldTimerManager().IsTimerActive(AttackSwingTimerHandle) && !(GetWorldTimerManager().IsTimerActive(SpecialAttackSwingTimerHandle))) {
+			GetWorldTimerManager().SetTimer(SpecialAttackSwingTimerHandle, this, &AEntity_Base::SpecialAttackEnd, 1.f, false);
 
-		// Spawn Special Attack hitbox actor
-		F_Item_BaseStruct EquippedWeapon = Cast<AEntity_Player>(this)->ReturnEquippedWeapon();
+			// Spawn Special Attack hitbox actor
+			F_Item_BaseStruct EquippedWeapon = Cast<AEntity_Player>(this)->ReturnEquippedWeapon();
 
-		if (EquippedWeapon.Weapon.SpecialAttack != E_Weapon_SpecialAttacks::E_None && SpecialAttacksFunctionLibrary_Reference) {
-			SpecialAttacksFunctionLibrary_Reference->CallSpecialAttackFunction(EquippedWeapon.Weapon.SpecialAttack);
-			SpecialAttacksFunctionLibrary_Reference->SpecialAttackActor_Reference->AttackingEntity = this;
+			if (EquippedWeapon.Weapon.SpecialAttack != E_Weapon_SpecialAttacks::E_None && SpecialAttacksFunctionLibrary_Reference) {
+				SpecialAttacksFunctionLibrary_Reference->CallSpecialAttackFunction(EquippedWeapon.Weapon.SpecialAttack);
+				SpecialAttacksFunctionLibrary_Reference->SpecialAttackActor_Reference->AttackingEntity = this;
+			}
+
+			// Sets Special Attack animation to the default attack animation
+			if (AttackAnimationTimeline != NULL) {
+				AttackAnimationTimeline->PlayFromStart();
+			}
+
+			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, TEXT("Special Attack Start"));
 		}
-
-		// Set Special Attack animation
-		if (AttackAnimationTimeline != NULL) {
-			AttackAnimationTimeline->PlayFromStart();
+		else {
+			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("An Attack Timer Is Counting Down"));
 		}
-
-		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, TEXT("Special Attack Start"));
-	}
-	else {
-		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("An Attack Timer Is Counting Down"));
 	}
 }
 
 void AEntity_Base::SpecialAttackEnd()
 {
 	if (SpecialAttacksFunctionLibrary_Reference) {
-		//WeaponCollider->SetGenerateOverlapEvents(false);
 		GetWorldTimerManager().ClearTimer(SpecialAttackSwingTimerHandle);
 		AttackedEntitiesArray.Empty();
 
 		// Delete Special Attack actor
 		SpecialAttacksFunctionLibrary_Reference->SpecialAttackActor_Reference->Destroy();
-
 	}
 
 	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, TEXT("Special Attack End"));
@@ -580,6 +579,18 @@ void AEntity_Base::FinishAttackAnimation()
 void AEntity_Base::EntityHit(int32 BaseAttackDamage)
 {
 	CurrentStats.HealthPoints -= BaseAttackDamage;
+	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Damage Dealt  /  HP: " + FString::FromInt(CurrentStats.HealthPoints)));
+
 	GetWorldTimerManager().ClearTimer(HealthRegenTimerHandle);
 	GetWorldTimerManager().SetTimer(HealthRegenDelayTimerHandle, this, &AEntity_Base::StartHealthRegenTick, CurrentStats.HealthPoints_RegenStartDelay, false);
+
+	// Entity Death
+	// Player's death must be handled differently
+	if (CurrentStats.HealthPoints <= 0 && !Cast<AEntity_Player>(this))
+		EntityDeath();
+}
+
+void AEntity_Base::EntityDeath()
+{
+	this->Destroy();
 }
