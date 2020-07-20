@@ -10,7 +10,6 @@
 #include "Components/CanvasPanel.h"
 #include "Runtime/UMG/Public/Blueprint/WidgetTree.h"
 #include "Runtime/Core/Public/Math/UnrealMathUtility.h"
-
 #include "BaseClass_WidgetComponent_Entity.generated.h"
 
 //Forward Declarations

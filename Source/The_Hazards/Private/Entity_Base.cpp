@@ -93,23 +93,25 @@ void AEntity_Base::BeginPlay()
 	CurrentStats.AuraPoints = 75;
 
 	// Get a reference to the EntityStats proper widget and set the variables
-	if(EntityStatsWidgetComponent_Class) {
+	if (EntityStatsWidgetComponent_Class) {
 		EntityStatsWidgetComponent_Reference = Cast<UBaseClass_WidgetComponent_Entity>(EntityDataWidgetComponent->GetUserWidgetObject());
 
 		if (EntityStatsWidgetComponent_Reference)
 			EntityStatsWidgetComponent_Reference->LinkedEntity = this;
+	} else {
+		EntityDataWidgetComponent->DestroyComponent();
 	}
 
-	// Spawn a SkillsFunctionLibrary actor for this entity
-	if (SkillsFunctionLibrary_Class && !SkillsFunctionLibrary_Reference) {
-		FActorSpawnParameters SpawnInfo;
+	// Set the player's skills here instead of the Entity_Player.cpp
+	if (Cast<AEntity_Player>(this)) {
+		// Spawn a SkillsFunctionLibrary actor for this entity
+		if (SkillsFunctionLibrary_Class && !SkillsFunctionLibrary_Reference) {
+			FActorSpawnParameters SpawnInfo;
 
-		SkillsFunctionLibrary_Reference = GetWorld()->SpawnActor<AFunctionLibrary_Skills>(SkillsFunctionLibrary_Class, FVector::ZeroVector, FRotator::ZeroRotator, SpawnInfo);
-		SkillsFunctionLibrary_Reference->InitializeSkills();
-		SkillsFunctionLibrary_Reference->LinkedEntity = this;
+			SkillsFunctionLibrary_Reference = GetWorld()->SpawnActor<AFunctionLibrary_Skills>(SkillsFunctionLibrary_Class, FVector::ZeroVector, FRotator::ZeroRotator, SpawnInfo);
+			SkillsFunctionLibrary_Reference->InitializeSkills();
+			SkillsFunctionLibrary_Reference->LinkedEntity = this;
 
-		// Set the player's skills here instead of the Entity_Player.cpp
-		if (Cast<AEntity_Player>(this)) {
 			if (SkillsFunctionLibrary_Reference->SkillDataTable_Reference) {
 
 				FString ContextString;
@@ -526,7 +528,7 @@ void AEntity_Base::AttackEnd()
 
 void AEntity_Base::SpecialAttackStart()
 {
-	if (CurrentEquippedWeapon.Weapon.SpecialAttack != E_Weapon_SpecialAttacks::E_None) {
+	if (CurrentEquippedWeapon.Weapon.SpecialAttack != E_Weapon_SpecialAttacks::E_None && CurrentStats.AuraPoints >= CurrentEquippedWeapon.Weapon.SpecialAttackCost) {
 		if (!GetWorldTimerManager().IsTimerActive(AttackSwingTimerHandle) && !(GetWorldTimerManager().IsTimerActive(SpecialAttackSwingTimerHandle))) {
 			GetWorldTimerManager().SetTimer(SpecialAttackSwingTimerHandle, this, &AEntity_Base::SpecialAttackEnd, 1.f, false);
 
@@ -542,6 +544,8 @@ void AEntity_Base::SpecialAttackStart()
 			if (AttackAnimationTimeline != NULL) {
 				AttackAnimationTimeline->PlayFromStart();
 			}
+
+			CurrentStats.AuraPoints -= CurrentEquippedWeapon.Weapon.SpecialAttackCost;
 
 			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, TEXT("Special Attack Start"));
 		}

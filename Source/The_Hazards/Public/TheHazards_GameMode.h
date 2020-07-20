@@ -415,6 +415,9 @@ struct THE_HAZARDS_API F_Item_WeaponStruct
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Special")
 	E_Weapon_SpecialAttacks SpecialAttack;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Special")
+	int SpecialAttackCost;
+
 	// Special Attack Modifiers
 
 	F_Item_WeaponStruct()
@@ -423,6 +426,7 @@ struct THE_HAZARDS_API F_Item_WeaponStruct
 		DamagePerShot = 1.f;
 		AttackSpeedMultiplier = 1.f;
 		SpecialAttack = E_Weapon_SpecialAttacks::E_None;
+		SpecialAttackCost = 20;
 	}
 };
 
