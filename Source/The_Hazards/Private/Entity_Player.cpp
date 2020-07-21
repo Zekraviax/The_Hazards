@@ -337,7 +337,7 @@ void AEntity_Player::Interact()
 
 	for (int i = 0; i < HitResults.Num(); i++) {
 		if (HitResults[i].GetActor()->IsA(AEntity_NPC::StaticClass())) {
-			Cast<AEntity_NPC>(HitResults[i].GetActor())->PlayerInteract();
+			Cast<AEntity_NPC>(HitResults[i].GetActor())->PlayerInteract(this);
 			break;
 		}
 	}

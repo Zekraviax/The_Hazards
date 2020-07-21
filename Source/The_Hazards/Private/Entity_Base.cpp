@@ -21,7 +21,7 @@ AEntity_Base::AEntity_Base()
 	WeaponMesh = CreateDefaultSubobject<UStaticMeshComponent>("WeaponMesh");
 	WeaponCollider = CreateDefaultSubobject<UBoxComponent>("WeaponCollider");
 	RotatingCore = CreateDefaultSubobject<USceneComponent>("RotatingCore");
-	EntityDataWidgetComponent = CreateDefaultSubobject<UWidgetComponent>("EntityDataWidgetComponent");
+	//EntityDataWidgetComponent = CreateDefaultSubobject<UWidgetComponent>("EntityDataWidgetComponent");
 
 	// Construct Timeline
 	const ConstructorHelpers::FObjectFinder<UCurveFloat> Curve(TEXT("CurveFloat'/Game/DataCurves/Melee_Swing_Curve.Melee_Swing_Curve'"));
@@ -34,10 +34,12 @@ AEntity_Base::AEntity_Base()
 	RotatingCore->SetupAttachment(CubeMesh);
 	WeaponMesh->SetupAttachment(RotatingCore);
 	WeaponCollider->SetupAttachment(WeaponMesh);
-	EntityDataWidgetComponent->SetupAttachment(RootComponent);
+	//EntityDataWidgetComponent->SetupAttachment(RootComponent);
 
 	// Initialize variables
 	MaximumInventorySize = 30;
+	Money = 100;
+	CanAttack = true;
 
 	// Set Stats
 	SkillStats.Move_Speed = 1;
@@ -93,14 +95,14 @@ void AEntity_Base::BeginPlay()
 	CurrentStats.AuraPoints = 75;
 
 	// Get a reference to the EntityStats proper widget and set the variables
-	if (EntityStatsWidgetComponent_Class) {
-		EntityStatsWidgetComponent_Reference = Cast<UBaseClass_WidgetComponent_Entity>(EntityDataWidgetComponent->GetUserWidgetObject());
+	//if (EntityStatsWidgetComponent_Class) {
+	//	EntityStatsWidgetComponent_Reference = Cast<UBaseClass_WidgetComponent_Entity>(EntityDataWidgetComponent->GetUserWidgetObject());
 
-		if (EntityStatsWidgetComponent_Reference)
-			EntityStatsWidgetComponent_Reference->LinkedEntity = this;
-	} else {
-		EntityDataWidgetComponent->DestroyComponent();
-	}
+	//	if (EntityStatsWidgetComponent_Reference)
+	//		EntityStatsWidgetComponent_Reference->LinkedEntity = this;
+	//} else {
+	//	EntityDataWidgetComponent->DestroyComponent();
+	//}
 
 	// Set the player's skills here instead of the Entity_Player.cpp
 	if (Cast<AEntity_Player>(this)) {
@@ -502,19 +504,21 @@ void AEntity_Base::OnOverlapBegin(class UPrimitiveComponent* OverlappedComp, cla
 
 void AEntity_Base::AttackStart()
 {
-	if (!GetWorldTimerManager().IsTimerActive(AttackSwingTimerHandle) && !(GetWorldTimerManager().IsTimerActive(SpecialAttackSwingTimerHandle))) {
-		WeaponCollider->SetGenerateOverlapEvents(true);
-		GetWorldTimerManager().SetTimer(AttackSwingTimerHandle, this, &AEntity_Base::AttackEnd, 1.f, false);
+	if (CurrentEquippedWeapon.Weapon.AttackStyle != E_Weapon_AttackStyles::E_None && CanAttack) {
+		if (!GetWorldTimerManager().IsTimerActive(AttackSwingTimerHandle) && !(GetWorldTimerManager().IsTimerActive(SpecialAttackSwingTimerHandle))) {
+			WeaponCollider->SetGenerateOverlapEvents(true);
+			GetWorldTimerManager().SetTimer(AttackSwingTimerHandle, this, &AEntity_Base::AttackEnd, 1.f, false);
 
-		if (AttackAnimationTimeline != NULL) {
-			//AttackAnimationTimeline->SetPlayRate(0.5);
-			AttackAnimationTimeline->PlayFromStart();
+			if (AttackAnimationTimeline != NULL) {
+				//AttackAnimationTimeline->SetPlayRate(0.5);
+				AttackAnimationTimeline->PlayFromStart();
+			}
+
+			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, TEXT("Attack Start"));
 		}
-
-		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, TEXT("Attack Start"));
-	}
-	else {
-		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("An Attack Timer Is Counting Down"));
+		else {
+			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("An Attack Timer Is Counting Down"));
+		}
 	}
 }
 
@@ -545,7 +549,9 @@ void AEntity_Base::SpecialAttackStart()
 				AttackAnimationTimeline->PlayFromStart();
 			}
 
+			// Subtract Aura Points
 			CurrentStats.AuraPoints -= CurrentEquippedWeapon.Weapon.SpecialAttackCost;
+			StopAuraRegenTick();
 
 			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, TEXT("Special Attack Start"));
 		}

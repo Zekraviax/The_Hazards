@@ -1,5 +1,3 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
 #pragma once
 
 #include "CoreMinimal.h"
@@ -7,6 +5,7 @@
 
 #include "Runtime/Engine/Classes/Kismet/GameplayStatics.h"
 #include "BaseClass_Widget_Dialogue.h"
+#include "BaseClass_Widget_ItemShop.h"
 
 #include "Entity_NPC.generated.h"
 
@@ -31,12 +30,24 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
 	UBoxComponent* InteractBox;
 
-// ------------------------- Widget
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Widget")
+// ------------------------- Widgets
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Widgets")
 	TSubclassOf<UBaseClass_Widget_Dialogue> DialogueWidget_Class;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Widget")
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Widgets")
 	UBaseClass_Widget_Dialogue* DialogueWidget_Instance;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Widgets")
+	TSubclassOf<UBaseClass_Widget_ItemShop> ItemShop_Class;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Widgets")
+	UBaseClass_Widget_ItemShop* ItemShop_Instance;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Widgets")
+	TSubclassOf<UBaseClass_Widget_DialogueBranch> DialogueBranchWidget_Class;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Widgets")
+	UBaseClass_Widget_DialogueBranch* DialogueBranchWidget_Instance;
 
 // ------------------------- Dialogue
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Dialogue")
@@ -57,5 +68,5 @@ public:
 
 // ------------------------- Player
 	UFUNCTION(BlueprintCallable)
-	void PlayerInteract();
+	void PlayerInteract(AEntity_Player* PlayerReference);
 };

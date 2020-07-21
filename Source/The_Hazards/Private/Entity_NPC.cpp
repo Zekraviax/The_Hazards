@@ -1,6 +1,3 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
-
 #include "Entity_NPC.h"
 
 #include "Entity_Player.h"
@@ -24,14 +21,12 @@ void AEntity_NPC::BeginPlay()
 	// Setup InteractBox collisions
 	InteractBox->SetCollisionProfileName(TEXT("Trigger"));
 	InteractBox->SetGenerateOverlapEvents(true);
-	//InteractBox->OnComponentBeginOverlap.AddDynamic(this, &AEntity_NPC::OnPlayerBeginOverlap);
 	OnActorEndOverlap.AddDynamic(this, &AEntity_NPC::OnPlayerEndOverlap);
 }
 
 
 void AEntity_NPC::OnPlayerEndOverlap(class AActor* Self, class AActor* OtherActor)
 {
-	//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, TEXT("PlayerEndOverlap"));
 	if (DialogueWidget_Instance) {
 		DialogueWidget_Instance->RemoveFromParent();
 		DialogueWidget_Instance = NULL;
@@ -39,9 +34,11 @@ void AEntity_NPC::OnPlayerEndOverlap(class AActor* Self, class AActor* OtherActo
 }
 
 
-void AEntity_NPC::PlayerInteract()
+void AEntity_NPC::PlayerInteract(AEntity_Player* PlayerReference)
 {
-	//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, TEXT("Player Interact"));
+	// Prevent the player from attacking while speaking
+	if (PlayerReference->CanAttack)
+		PlayerReference->CanAttack = false;
 
 	if (!DialogueWidget_Instance && DialogueWidget_Class) {
 		DialogueWidget_Instance = CreateWidget<UBaseClass_Widget_Dialogue>(GetWorld(), DialogueWidget_Class);
@@ -52,20 +49,45 @@ void AEntity_NPC::PlayerInteract()
 
 		DialogueWidget_Instance->AddToViewport();
 	}
-	else if (DialogueWidget_Instance && DialogueLines[CurrentDialogueIndex].NextLineIndex == -1 || !DialogueWidget_Instance) {
-		if (DialogueWidget_Instance)
-			DialogueWidget_Instance->RemoveFromParent();
+	// Open Branching Dialogue Widget
+	else if (DialogueWidget_Instance && DialogueBranchWidget_Class && DialogueLines[CurrentDialogueIndex].NextActionInConversation == E_Conversation_NextActionInConversation::E_OpenDialogueBranch) {
+		DialogueWidget_Instance->DialogueOptions_ScrollBox->SetVisibility(ESlateVisibility::Visible);
+		DialogueWidget_Instance->BackgroundFade->SetVisibility(ESlateVisibility::Visible);
 
-		DialogueWidget_Instance = NULL;
+		for (int i = 0; i < DialogueLines[CurrentDialogueIndex].DialogueBranchOptions.Num(); i++) {
+			DialogueBranchWidget_Instance = CreateWidget<UBaseClass_Widget_DialogueBranch>(GetWorld(), DialogueBranchWidget_Class);
+			DialogueBranchWidget_Instance->DialogueBranch = DialogueLines[CurrentDialogueIndex].DialogueBranchOptions[i];
+			DialogueBranchWidget_Instance->ButtonLabel->SetText(FText::FromString(DialogueBranchWidget_Instance->DialogueBranch.DialogueLine));
 
-		CurrentDialogueIndex = -1;
+			DialogueBranchWidget_Instance->SpeakerReference = this;
+			DialogueBranchWidget_Instance->DialogueWindowReference = DialogueWidget_Instance;
+
+			DialogueWidget_Instance->DialogueOptions_ScrollBox->AddChild(DialogueBranchWidget_Instance);
+		}
 	}
-	else if (DialogueWidget_Instance && DialogueLines.IsValidIndex(DialogueLines[CurrentDialogueIndex].NextLineIndex)) {
+	// Open Shop Widget
+	else if (!ItemShop_Instance && ItemShop_Class && DialogueLines[CurrentDialogueIndex].NextActionInConversation == E_Conversation_NextActionInConversation::E_OpenShop) {
+		ItemShop_Instance = CreateWidget<UBaseClass_Widget_ItemShop>(GetWorld(), ItemShop_Class);
+		ItemShop_Instance->ShopkeeperReference = this;
+		ItemShop_Instance->PopulateShop();
+
+		ItemShop_Instance->AddToViewport();
+	}
+	// Next Line in Conversation
+	else if (DialogueWidget_Instance && DialogueLines.IsValidIndex(DialogueLines[CurrentDialogueIndex].NextLineIndex) && DialogueLines[CurrentDialogueIndex].NextActionInConversation == E_Conversation_NextActionInConversation::E_OpenDialogueBranch) {
 		CurrentDialogueIndex = DialogueLines[CurrentDialogueIndex].NextLineIndex;
 
 		DialogueWidget_Instance->CurrentDialogueLine = DialogueLines[CurrentDialogueIndex];
 		DialogueWidget_Instance->UpdateDialogueWidget();
+	}
+	// End of Conversation
+	else if (DialogueWidget_Instance && DialogueLines[CurrentDialogueIndex].NextLineIndex == -1 || !DialogueWidget_Instance || DialogueLines[CurrentDialogueIndex].NextActionInConversation == E_Conversation_NextActionInConversation::E_CloseDialogue) {
+		if (DialogueWidget_Instance)
+			DialogueWidget_Instance->RemoveFromParent();
 
-		//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, TEXT("Valid Index: " + FString::FromInt(DialogueLines[CurrentDialogueIndex].NextLineIndex)));
+		DialogueWidget_Instance = NULL;
+		CurrentDialogueIndex = -1;
+
+		PlayerReference->CanAttack = true;
 	}
 }

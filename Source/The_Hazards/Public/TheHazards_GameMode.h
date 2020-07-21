@@ -101,6 +101,18 @@ enum class E_Skill_ActivationCondition : uint8
 
 //------------------------- Special Attacks
 UENUM(BlueprintType)
+enum class E_Weapon_AttackStyles : uint8
+{
+	E_None,
+	E_Melee_Swing,
+	E_Melee_Thrust,
+	E_Ranged_SingleShot,
+	E_Ranged_BurstFire,
+	E_Ranged_FullAuto
+};
+
+//------------------------- Special Attacks
+UENUM(BlueprintType)
 enum class E_Weapon_SpecialAttacks : uint8
 {
 	E_None,
@@ -111,8 +123,9 @@ enum class E_Weapon_SpecialAttacks : uint8
 UENUM(BlueprintType)
 enum class E_Conversation_NextActionInConversation : uint8
 {
-	E_OpenNextDialogueline,
+	E_OpenNextDialogueLine,
 	E_OpenShop,
+	E_OpenDialogueBranch,
 	E_CloseDialogue,
 };
 
@@ -403,6 +416,9 @@ struct THE_HAZARDS_API F_Item_WeaponStruct
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Enum")
 	E_Weapon_EquipSlot EquipSlot;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Enum")
+	E_Weapon_AttackStyles AttackStyle;
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Base")
 	float DamagePerShot;
 
@@ -423,6 +439,7 @@ struct THE_HAZARDS_API F_Item_WeaponStruct
 	F_Item_WeaponStruct()
 	{
 		EquipSlot = E_Weapon_EquipSlot::E_Primary;
+		AttackStyle = E_Weapon_AttackStyles::E_None;
 		DamagePerShot = 1.f;
 		AttackSpeedMultiplier = 1.f;
 		SpecialAttack = E_Weapon_SpecialAttacks::E_None;
@@ -568,6 +585,36 @@ struct THE_HAZARDS_API F_StatusEffect_Base : public FTableRowBase
 
 // ------------------------- NPC
 USTRUCT(BlueprintType)
+struct THE_HAZARDS_API F_Dialogue_Branch
+{
+	GENERATED_BODY()
+
+	//UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Dialogue")
+	//FString SpeakerName;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Dialogue")
+	FString DialogueLine;
+
+	//UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Dialogue")
+	//UTexture2D* SpeakerImage;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Technical")
+	int32 NextLineIndex;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Technical")
+	E_Conversation_NextActionInConversation NextAction;
+
+	F_Dialogue_Branch()
+	{
+		//SpeakerName = "Default";
+		DialogueLine = "Default.";
+		//SpeakerImage = NULL;
+		NextLineIndex = -1;
+		NextAction = E_Conversation_NextActionInConversation::E_OpenNextDialogueLine;
+	}
+};
+
+USTRUCT(BlueprintType)
 struct THE_HAZARDS_API F_Dialogue_Entry
 {
 	GENERATED_BODY()
@@ -584,12 +631,19 @@ struct THE_HAZARDS_API F_Dialogue_Entry
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Speaker")
 	UTexture2D* SpeakerImage;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Speaker")
+	E_Conversation_NextActionInConversation NextActionInConversation;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Technical")
+	TArray<F_Dialogue_Branch> DialogueBranchOptions;
+
 	F_Dialogue_Entry()
 	{
 		DialogueLine = "Default.";
 		NextLineIndex = -1;
 		SpeakerName = "Default";
 		SpeakerImage = NULL;
+		NextActionInConversation = E_Conversation_NextActionInConversation::E_CloseDialogue;
 	}
 };
 
@@ -607,19 +661,19 @@ struct THE_HAZARDS_API F_Dialogue_Shop
 	}
 };
 
-USTRUCT(BlueprintType)
-struct THE_HAZARDS_API F_Dialogue_Branch
-{
-	GENERATED_BODY()
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Technical")
-	int32 IndexInConversation;
-
-	F_Dialogue_Branch()
-	{
-		IndexInConversation = -1;
-	}
-};
+//USTRUCT(BlueprintType)
+//struct THE_HAZARDS_API F_Dialogue_Branch
+//{
+//	GENERATED_BODY()
+//
+//	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Technical")
+//	int32 IndexInConversation;
+//
+//	F_Dialogue_Branch()
+//	{
+//		IndexInConversation = -1;
+//	}
+//};
 
 // ------------------------- Artificial Intelligence
 USTRUCT(BlueprintType)

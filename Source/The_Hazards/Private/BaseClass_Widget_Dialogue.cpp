@@ -3,10 +3,10 @@
 #include "Entity_NPC.h"
 
 
-void UBaseClass_Widget_Dialogue::SwitchFunctionOnIndex(int32 NewIndex)
-{
-
-}
+//void UBaseClass_Widget_Dialogue::SwitchFunctionOnIndex(int32 NewIndex)
+//{
+//
+//}
 
 
 void UBaseClass_Widget_Dialogue::UpdateDialogueWidget()
@@ -17,13 +17,15 @@ void UBaseClass_Widget_Dialogue::UpdateDialogueWidget()
 }
 
 
-void UBaseClass_Widget_Dialogue::OpenDialogueBranch()
+void UBaseClass_Widget_Dialogue::ClearDialogueBranches()
 {
-
+	DialogueOptions_ScrollBox->ClearChildren();
+	DialogueOptions_ScrollBox->SetVisibility(ESlateVisibility::Collapsed);
+	BackgroundFade->SetVisibility(ESlateVisibility::Collapsed);
 }
 
 
-void UBaseClass_Widget_Dialogue::OpenShop()
-{
-
-}
+//void UBaseClass_Widget_Dialogue::OpenShop()
+//{
+//
+//}

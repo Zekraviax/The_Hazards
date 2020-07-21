@@ -36,12 +36,18 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components", meta = (BindWidget))
 	UTextBlock* SpeakerName;
 
-// ------------------------- Widgets
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Widgets")
-	TSubclassOf<class UBaseClass_Widget_DialogueBranch> DialogueBranchWidget_Class;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components", meta = (BindWidget))
+	UScrollBox* DialogueOptions_ScrollBox;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Widgets")
-	UBaseClass_Widget_DialogueBranch* DialogueBranchWidget_Reference;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components", meta = (BindWidget))
+	UImage* BackgroundFade;
+
+// ------------------------- Widgets
+	//UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Widgets")
+	//TSubclassOf<class UBaseClass_Widget_DialogueBranch> DialogueBranchWidget_Class;
+
+	//UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Widgets")
+	//UBaseClass_Widget_DialogueBranch* DialogueBranchWidget_Reference;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Widgets")
 	TSubclassOf<class UBaseClass_Widget_ItemShop> ItemShopWidget_Class;
@@ -63,11 +69,11 @@ public:
 	void UpdateDialogueWidget();
 
 	UFUNCTION()
-	void OpenDialogueBranch();
+	void ClearDialogueBranches();
 
-	UFUNCTION()
-	void OpenShop();
+	//UFUNCTION()
+	//void OpenShop();
 
-	UFUNCTION()
-	void SwitchFunctionOnIndex(int32 NewIndex);
+	//UFUNCTION()
+	//void SwitchFunctionOnIndex(int32 NewIndex);
 };

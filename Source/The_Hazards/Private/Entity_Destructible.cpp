@@ -4,7 +4,12 @@
 // ------------------------- Base actor functions
 AEntity_Destructible::AEntity_Destructible()
 {
-
+	// Disable unnecessary components
+	//RotatingCore->DestroyComponent();
+	WeaponCollider->Deactivate();
+	WeaponMesh->Deactivate();
+	RotatingCore->Deactivate();
+	//EntityDataWidgetComponent->Deactivate();
 }
 
 void AEntity_Destructible::BeginPlay()

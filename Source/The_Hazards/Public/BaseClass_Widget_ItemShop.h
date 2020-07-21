@@ -1,5 +1,3 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
 #pragma once
 
 #include "CoreMinimal.h"
@@ -7,6 +5,7 @@
 
 #include "TheHazards_GameMode.h"
 #include "Components/ScrollBox.h"
+#include "SubWidget_ShopItemListing.h"
 
 #include "BaseClass_Widget_ItemShop.generated.h"
 
@@ -27,10 +26,22 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components", meta = (BindWidget))
 	UScrollBox* ItemListingsScrollBox;
 
+// ------------------------- Widgets
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Widgets")
+	TSubclassOf<USubWidget_ShopItemListing> ShopItemListing_Class;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Widgets")
+	USubWidget_ShopItemListing* ShopItemListing_Instance;
+
 // ------------------------- Entities
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Entities")
 	AEntity_Base* PlayerReference;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Entities")
 	AEntity_Base* ShopkeeperReference;
+
+// Functions
+// --------------------------------------------------
+	UFUNCTION()
+	void PopulateShop();
 };

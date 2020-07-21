@@ -156,11 +156,11 @@ public:
 	UWidgetComponent* EntityDataWidgetComponent;
 
 // ------------------------- Widgets
-	UPROPERTY(visibleAnywhere, BlueprintReadOnly, Category = "Widgets")
-	UBaseClass_WidgetComponent_Entity* EntityStatsWidgetComponent_Reference;
-
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Widgets")
 	TSubclassOf<UBaseClass_WidgetComponent_Entity> EntityStatsWidgetComponent_Class;
+
+	UPROPERTY(visibleAnywhere, BlueprintReadOnly, Category = "Widgets")
+	UBaseClass_WidgetComponent_Entity* EntityStatsWidgetComponent_Reference;
 
 // ------------------------- Timer Handles
 	UPROPERTY()
@@ -207,6 +207,9 @@ public:
 
 	UPROPERTY()
 	bool IsSneaking;
+
+	UPROPERTY()
+	bool CanAttack;
 
 
 // Functions

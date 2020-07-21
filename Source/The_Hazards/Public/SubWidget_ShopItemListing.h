@@ -1,5 +1,3 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
 #pragma once
 
 #include "CoreMinimal.h"
@@ -29,4 +27,13 @@ public:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components", meta = (BindWidget))
 	UButton* BuyButton;
+
+// ------------------------- Item
+	UPROPERTY()
+	F_Item_BaseStruct ItemData;
+
+// Functions
+// --------------------------------------------------
+	UFUNCTION(BlueprintCallable)
+	void OnButtonPressed();
 };
