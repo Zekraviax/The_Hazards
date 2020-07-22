@@ -1,5 +1,3 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
 #pragma once
 
 #include "CoreMinimal.h"
@@ -15,6 +13,7 @@
 
 // Forward Declarations
 class AEntity_Base;
+
 
 UCLASS()
 class THE_HAZARDS_API UBaseClass_Widget_Inventory : public UUserWidget
@@ -44,6 +43,6 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void OnMouseUp();
 
-	UFUNCTION(BlueprintCallable)
-	void RunTest();
+	//UFUNCTION(BlueprintCallable)
+	//void RunTest();
 };

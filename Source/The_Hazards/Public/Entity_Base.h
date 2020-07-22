@@ -293,4 +293,8 @@ public:
 
 	UFUNCTION()
 	void EntityDeath();
+
+// ------------------------- Inventory
+	UFUNCTION()
+	void AddItemToInventory(F_Item_BaseStruct ItemToAdd);
 };

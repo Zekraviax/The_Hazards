@@ -604,3 +604,30 @@ void AEntity_Base::EntityDeath()
 {
 	this->Destroy();
 }
+
+// ------------------------- Inventory
+void AEntity_Base::AddItemToInventory(F_Item_BaseStruct ItemToAdd)
+{
+	TArray<int> ValidInventoryIndices;
+	bool AddedItemToInventory = false;
+
+	for (int x = 1; x < MaximumInventorySize; x++) {
+		ValidInventoryIndices.Add(x);
+	}
+
+	for (int i = 0; i < Inventory.Num(); i++) {
+		if (ItemToAdd == Inventory[i]) {
+			Inventory[i].Amount++;
+			AddedItemToInventory = true;
+			break;
+		} else {
+			ValidInventoryIndices.Remove(Inventory[i].IndexInInventoryArray);
+		}
+	}
+
+	if (!AddedItemToInventory) {
+		ItemToAdd.IndexInInventoryArray = ValidInventoryIndices[0];
+		ItemToAdd.Amount = 1;
+		Inventory.Add(ItemToAdd);
+	}
+}

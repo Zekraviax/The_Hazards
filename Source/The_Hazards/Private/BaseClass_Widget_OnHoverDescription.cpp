@@ -56,6 +56,8 @@ void UBaseClass_Widget_OnHoverDescription::SetText(E_Description_Supertypes Supe
 			}
 
 			if (ItemReference.Amount > 0) {
+				Name->SetText(FText::FromString(ItemReference.Name));
+
 				switch (ItemReference.Supertype)
 				{
 					// Set Weapon Description
@@ -76,7 +78,7 @@ void UBaseClass_Widget_OnHoverDescription::SetText(E_Description_Supertypes Supe
 						break;
 					}
 
-					Name->SetText(FText::FromString(ItemReference.Name));
+					//Name->SetText(FText::FromString(ItemReference.Name));
 					Description->SetText(FText::FromString("Item Type: " + ItemSupertype_String
 						+ "\nEquip Slot: " + EquipSlot_String
 						+ "\nDamage Per Shot: " + FString::SanitizeFloat(ItemReference.Weapon.DamagePerShot)
@@ -101,7 +103,7 @@ void UBaseClass_Widget_OnHoverDescription::SetText(E_Description_Supertypes Supe
 						break;
 					}
 
-					Name->SetText(FText::FromString(ItemReference.Name));
+					//Name->SetText(FText::FromString(ItemReference.Name));
 					Description->SetText(FText::FromString("Item Type: " + ItemSupertype_String
 						+ "\nEquip Slot: " + EquipSlot_String
 						+ "\nArmour Value: " + FString::SanitizeFloat(ItemReference.Armour.ArmourValue)));
@@ -110,7 +112,4 @@ void UBaseClass_Widget_OnHoverDescription::SetText(E_Description_Supertypes Supe
 			}
 		}
 	}
-	//else {
-	//	this->RemoveFromParent();
-	//}
 }

@@ -1,5 +1,3 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
 #pragma once
 
 #include "CoreMinimal.h"
@@ -16,9 +14,9 @@
 
 #include "SubWidget_InventorySlot.generated.h"
 
-
 // Forward Declarations
 class AEntity_Base;
+
 
 // ------------------------- Class-specific Enums
 UENUM(BlueprintType)
@@ -53,7 +51,7 @@ public:
 	int32 ItemAmountBind;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Bound Variables")
-		AEntity_Base* PlayerReference;
+	AEntity_Base* PlayerReference;
 
 // ------------------------- Slot
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Slot")

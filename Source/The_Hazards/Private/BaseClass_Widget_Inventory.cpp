@@ -53,7 +53,7 @@ void UBaseClass_Widget_Inventory::OnMouseUp()
 	});
 }
 
-void UBaseClass_Widget_Inventory::RunTest()
-{
-
-}
+//void UBaseClass_Widget_Inventory::RunTest()
+//{
+//
+//}

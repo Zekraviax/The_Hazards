@@ -28,7 +28,10 @@ public:
 
 // ------------------------- Components
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
-	UBoxComponent* InteractBox;
+	UBoxComponent* OuterInteractBox;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
+	UBoxComponent* InnerInteractBox;
 
 // ------------------------- Widgets
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Widgets")

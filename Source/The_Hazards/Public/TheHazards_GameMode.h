@@ -284,6 +284,37 @@ struct THE_HAZARDS_API F_SecondaryStats_Struct
 		ShopDiscount_Multiplier = InShopDiscountMultiplier;
 		Maximum_Companion_Count = InMaximumCompanionCount;
 	}
+
+	FORCEINLINE bool operator==(const F_SecondaryStats_Struct& OtherSecondaryStatStruct) const
+	{
+		if (Maximum_HealthPoints_Multiplier == OtherSecondaryStatStruct.Maximum_HealthPoints_Multiplier &&
+			HealthPoints_Recovery_Multiplier == OtherSecondaryStatStruct.HealthPoints_Recovery_Multiplier &&
+			HealthPoints_Delay_Multiplier == OtherSecondaryStatStruct.HealthPoints_Delay_Multiplier &&
+			Maximum_AuraPoints_Multiplier == OtherSecondaryStatStruct.Maximum_AuraPoints_Multiplier &&
+			AuraPoints_Recovery_Multiplier == OtherSecondaryStatStruct.AuraPoints_Recovery_Multiplier &&
+			AuraPoints_Delay_Multiplier == OtherSecondaryStatStruct.AuraPoints_Delay_Multiplier &&
+			PhysicalStrength_Multiplier == OtherSecondaryStatStruct.PhysicalStrength_Multiplier &&
+			PhysicalDefence_Multiplier == OtherSecondaryStatStruct.PhysicalDefence_Multiplier &&
+			ElementalStrength_Multiplier == OtherSecondaryStatStruct.ElementalStrength_Multiplier &&
+			ElementalDefence_Multiplier == OtherSecondaryStatStruct.ElementalDefence_Multiplier &&
+			AttackSpeed_Multiplier == OtherSecondaryStatStruct.AttackSpeed_Multiplier &&
+			MoveSpeed_Multiplier == OtherSecondaryStatStruct.MoveSpeed_Multiplier &&
+			Evasiveness_Multiplier == OtherSecondaryStatStruct.Evasiveness_Multiplier &&
+			StatusPotency_Multiplier == OtherSecondaryStatStruct.StatusPotency_Multiplier &&
+			Luck_Multiplier == OtherSecondaryStatStruct.Luck_Multiplier &&
+			IncomingDamage_Multiplier == OtherSecondaryStatStruct.IncomingDamage_Multiplier &&
+			OutgoingDamage_Multiplier == OtherSecondaryStatStruct.OutgoingDamage_Multiplier &&
+			Lifesteal_Percentage == OtherSecondaryStatStruct.Lifesteal_Percentage &&
+			Armour_Value == OtherSecondaryStatStruct.Armour_Value &&
+			StatusDuration_Multiplier == OtherSecondaryStatStruct.StatusDuration_Multiplier &&
+			ShopDiscount_Multiplier == OtherSecondaryStatStruct.ShopDiscount_Multiplier &&
+			Maximum_Companion_Count == OtherSecondaryStatStruct.Maximum_Companion_Count) {
+			return true;
+		}
+		else {
+			return false;
+		}
+	}
 };
 
 USTRUCT(BlueprintType)
@@ -379,6 +410,31 @@ struct THE_HAZARDS_API F_BaseStats_Struct
 		Status_Potency = InStatusPotency;
 		Luck = InLuck;
 	}
+
+	FORCEINLINE bool operator==(const F_BaseStats_Struct& OtherBaseStatStruct) const
+	{
+		if (HealthPoints == OtherBaseStatStruct.HealthPoints && 
+			HealthPoints_RegenPerSecond == OtherBaseStatStruct.HealthPoints_RegenPerSecond && 
+			HealthPoints_RegenStartDelay == OtherBaseStatStruct.HealthPoints_RegenStartDelay &&
+			AuraPoints == OtherBaseStatStruct.AuraPoints &&
+			AuraPoints_RegenPerSecond == OtherBaseStatStruct.AuraPoints_RegenPerSecond &&
+			AuraPoints_RegenStartDelay == OtherBaseStatStruct.AuraPoints_RegenStartDelay &&
+			Physical_Strength == OtherBaseStatStruct.Physical_Strength &&
+			Physical_Defence == OtherBaseStatStruct.Physical_Defence &&
+			Elemental_Strength == OtherBaseStatStruct.Elemental_Strength &&
+			Elemental_Defence == OtherBaseStatStruct.Elemental_Defence &&
+			Attack_Speed == OtherBaseStatStruct.Attack_Speed &&
+			Move_Speed == OtherBaseStatStruct.Move_Speed &&
+			Evasiveness == OtherBaseStatStruct.Evasiveness &&
+			Status_Potency == OtherBaseStatStruct.Status_Potency &&
+			Luck == OtherBaseStatStruct.Luck &&
+			SecondaryStats == OtherBaseStatStruct.SecondaryStats) {
+			return true;
+		}
+		else {
+			return false;
+		}
+	}
 };
 
 USTRUCT(BlueprintType)
@@ -445,6 +501,22 @@ struct THE_HAZARDS_API F_Item_WeaponStruct
 		SpecialAttack = E_Weapon_SpecialAttacks::E_None;
 		SpecialAttackCost = 20;
 	}
+
+	FORCEINLINE bool operator==(const F_Item_WeaponStruct& OtherWeapon) const
+	{
+		if (EquipSlot == OtherWeapon.EquipSlot &&
+			AttackStyle == OtherWeapon.AttackStyle &&
+			DamagePerShot == OtherWeapon.DamagePerShot &&
+			AttackSpeedMultiplier == OtherWeapon.AttackSpeedMultiplier &&
+			StatModifiers == OtherWeapon.StatModifiers &&
+			SpecialAttack == OtherWeapon.SpecialAttack &&
+			SpecialAttackCost == OtherWeapon.SpecialAttackCost) {
+			return true;
+		}
+		else {
+			return false;
+		}
+	}
 };
 
 USTRUCT(BlueprintType)
@@ -466,6 +538,17 @@ struct THE_HAZARDS_API F_Item_ArmourStruct
 		EquipSlot = E_Armour_EquipSlot::E_Head;
 		ArmourValue = 0;
 	}
+
+	FORCEINLINE bool operator==(const F_Item_ArmourStruct& OtherArmour) const
+	{
+		if (EquipSlot == OtherArmour.EquipSlot &&
+			ArmourValue == OtherArmour.ArmourValue &&
+			StatModifiers == OtherArmour.StatModifiers) {
+			return true;
+		} else {
+			return false;
+		}
+	}
 };
 
 USTRUCT(BlueprintType)
@@ -486,6 +569,9 @@ struct THE_HAZARDS_API F_Item_BaseStruct : public FTableRowBase
 	int32 Amount;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Base")
+	int32 Value;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Base")
 	UTexture2D* InventoryImage;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Supertypes")
@@ -500,7 +586,21 @@ struct THE_HAZARDS_API F_Item_BaseStruct : public FTableRowBase
 		Supertype = E_Item_Supertypes::E_Miscellaneous;
 		IndexInInventoryArray = -1;
 		Amount = 0;
+		Value = 1;
 		InventoryImage = NULL;
+	}
+
+	FORCEINLINE bool operator==(const F_Item_BaseStruct& OtherItem) const
+	{
+		if (Name == OtherItem.Name &&
+			Supertype == OtherItem.Supertype &&
+			InventoryImage == OtherItem.InventoryImage &&
+			Weapon == OtherItem.Weapon &&
+			Armour == OtherItem.Armour) {
+			return true;
+		} else {
+			return false;
+		}
 	}
 };
 

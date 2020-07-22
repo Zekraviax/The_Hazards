@@ -6,8 +6,8 @@
 
 AEntity_NPC::AEntity_NPC()
 {
-	InteractBox = CreateDefaultSubobject<UBoxComponent>("InteractBox");
-	InteractBox->SetupAttachment(RootComponent);
+	OuterInteractBox = CreateDefaultSubobject<UBoxComponent>("OuterInteractBox");
+	OuterInteractBox->SetupAttachment(RootComponent);
 
 	CurrentDialogueIndex = -1;
 }
@@ -19,8 +19,8 @@ void AEntity_NPC::BeginPlay()
 	Super::BeginPlay();
 
 	// Setup InteractBox collisions
-	InteractBox->SetCollisionProfileName(TEXT("Trigger"));
-	InteractBox->SetGenerateOverlapEvents(true);
+	OuterInteractBox->SetCollisionProfileName(TEXT("Trigger"));
+	OuterInteractBox->SetGenerateOverlapEvents(true);
 	OnActorEndOverlap.AddDynamic(this, &AEntity_NPC::OnPlayerEndOverlap);
 }
 
@@ -31,6 +31,10 @@ void AEntity_NPC::OnPlayerEndOverlap(class AActor* Self, class AActor* OtherActo
 		DialogueWidget_Instance->RemoveFromParent();
 		DialogueWidget_Instance = NULL;
 	}
+
+	CurrentDialogueIndex = -1;
+
+	//PlayerReference->CanAttack = true;
 }
 
 
@@ -69,9 +73,18 @@ void AEntity_NPC::PlayerInteract(AEntity_Player* PlayerReference)
 	else if (!ItemShop_Instance && ItemShop_Class && DialogueLines[CurrentDialogueIndex].NextActionInConversation == E_Conversation_NextActionInConversation::E_OpenShop) {
 		ItemShop_Instance = CreateWidget<UBaseClass_Widget_ItemShop>(GetWorld(), ItemShop_Class);
 		ItemShop_Instance->ShopkeeperReference = this;
+		ItemShop_Instance->PlayerReference = PlayerReference;
 		ItemShop_Instance->PopulateShop();
-
 		ItemShop_Instance->AddToViewport();
+
+		// Clear dialogue
+		if (DialogueWidget_Instance)
+			DialogueWidget_Instance->RemoveFromParent();
+
+		DialogueWidget_Instance = NULL;
+		CurrentDialogueIndex = -1;
+
+		PlayerReference->CanAttack = true;
 	}
 	// Next Line in Conversation
 	else if (DialogueWidget_Instance && DialogueLines.IsValidIndex(DialogueLines[CurrentDialogueIndex].NextLineIndex) && DialogueLines[CurrentDialogueIndex].NextActionInConversation == E_Conversation_NextActionInConversation::E_OpenDialogueBranch) {

@@ -44,4 +44,7 @@ public:
 // --------------------------------------------------
 	UFUNCTION()
 	void PopulateShop();
+
+	UFUNCTION(BlueprintCallable)
+	void OnExit();
 };

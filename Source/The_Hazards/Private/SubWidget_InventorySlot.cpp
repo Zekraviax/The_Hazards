@@ -8,13 +8,15 @@ void USubWidget_InventorySlot::NativeTick(const FGeometry& MyGeometry, float Del
 {
 	Super::NativeTick(MyGeometry, DeltaTime);
 
-	Item_TextBind();
+	//Item_TextBind();
 }
 
 void USubWidget_InventorySlot::UpdateSlot()
 {
 	ItemAmountBind = ItemStruct.Amount;
 	
+	Item_TextBind();
+
 	if (ItemStruct.InventoryImage) {
 		ItemImage->SetBrushFromTexture(ItemStruct.InventoryImage, true);
 	} else {
