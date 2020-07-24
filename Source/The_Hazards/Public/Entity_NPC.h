@@ -63,13 +63,13 @@ public:
 // --------------------------------------------------
 
 // ------------------------- Overlap
-	//UFUNCTION()
-	//void OnPlayerBeginOverlap(class UPrimitiveComponent* OverlappedComp, class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+	UFUNCTION(BlueprintCallable)
+	void OnPlayerBeginOverlap(AEntity_Player* PlayerReference);
 
-	UFUNCTION()
-	void OnPlayerEndOverlap(class AActor* Self, class AActor* OtherActor);
+	UFUNCTION(BlueprintCallable)
+	void OnPlayerEndOverlap(AEntity_Player* PlayerReference);
 
 // ------------------------- Player
-	UFUNCTION(BlueprintCallable)
+	UFUNCTION()
 	void PlayerInteract(AEntity_Player* PlayerReference);
 };

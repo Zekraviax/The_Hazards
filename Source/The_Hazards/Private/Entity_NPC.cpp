@@ -7,7 +7,10 @@
 AEntity_NPC::AEntity_NPC()
 {
 	OuterInteractBox = CreateDefaultSubobject<UBoxComponent>("OuterInteractBox");
+	InnerInteractBox = CreateDefaultSubobject<UBoxComponent>("InnerInteractBox");
+
 	OuterInteractBox->SetupAttachment(RootComponent);
+	InnerInteractBox->SetupAttachment(RootComponent);
 
 	CurrentDialogueIndex = -1;
 }
@@ -19,13 +22,21 @@ void AEntity_NPC::BeginPlay()
 	Super::BeginPlay();
 
 	// Setup InteractBox collisions
-	OuterInteractBox->SetCollisionProfileName(TEXT("Trigger"));
-	OuterInteractBox->SetGenerateOverlapEvents(true);
-	OnActorEndOverlap.AddDynamic(this, &AEntity_NPC::OnPlayerEndOverlap);
+	//OuterInteractBox->SetCollisionProfileName(TEXT("Trigger"));
+	//OuterInteractBox->SetGenerateOverlapEvents(true);
+	//OnActorEndOverlap.AddDynamic(this, &AEntity_NPC::OnPlayerEndOverlap);
 }
 
 
-void AEntity_NPC::OnPlayerEndOverlap(class AActor* Self, class AActor* OtherActor)
+void AEntity_NPC::OnPlayerBeginOverlap(AEntity_Player* PlayerReference)
+{
+	if (PlayerReference) {
+		PlayerReference->InteractableEntities.AddUnique(this);
+	}
+}
+
+
+void AEntity_NPC::OnPlayerEndOverlap(AEntity_Player* PlayerReference)
 {
 	if (DialogueWidget_Instance) {
 		DialogueWidget_Instance->RemoveFromParent();
@@ -33,8 +44,15 @@ void AEntity_NPC::OnPlayerEndOverlap(class AActor* Self, class AActor* OtherActo
 	}
 
 	CurrentDialogueIndex = -1;
-
 	//PlayerReference->CanAttack = true;
+
+	if (PlayerReference) {
+		PlayerReference->InteractableEntities.Remove(this);
+
+		if (PlayerReference->ConversingActor == this) {
+			PlayerReference->ConversingActor = NULL;
+		}
+	}
 }
 
 

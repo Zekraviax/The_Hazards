@@ -15,6 +15,7 @@
 
 // Forward Declarations
 class ABaseClass_PlayerController;
+class AEntity_NPC;
 
 
 // Exclusive enums
@@ -95,6 +96,12 @@ public:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Technical Variables")
 	TSubclassOf<UUserWidget> ChosenWidgetClass;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Technical Variables")
+	TArray<AActor*> InteractableEntities;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Technical Variables")
+	AEntity_NPC* ConversingActor;
 
 // Functions
 // --------------------------------------------------

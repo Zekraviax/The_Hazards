@@ -50,6 +50,9 @@ void UBaseClass_Widget_OnHoverDescription::SetText(E_Description_Supertypes Supe
 				case(E_Item_Supertypes::E_Weapon):
 					ItemSupertype_String = "Weapon";
 					break;
+				case(E_Item_Supertypes::E_Armour):
+					ItemSupertype_String = "Armour";
+					break;
 				default:
 					ItemSupertype_String = "Error";
 					break;

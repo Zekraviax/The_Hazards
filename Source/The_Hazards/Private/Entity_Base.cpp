@@ -602,6 +602,13 @@ void AEntity_Base::EntityHit(int32 BaseAttackDamage)
 
 void AEntity_Base::EntityDeath()
 {
+	// Drop items
+	for (int i = 0; i < Inventory.Num(); i++) {
+
+	}
+
+
+	// Destroy entity
 	this->Destroy();
 }
 
