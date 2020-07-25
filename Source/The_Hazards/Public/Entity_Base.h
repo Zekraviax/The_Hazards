@@ -18,6 +18,9 @@
 
 #include "Entity_Base.generated.h"
 
+// Forward Declarations
+class AEntity_Item;
+
 
 UCLASS()
 class THE_HAZARDS_API AEntity_Base : public ACharacter
@@ -43,16 +46,16 @@ public:
 // --------------------------------------------------
 
 // ------------------------- Character
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Entity")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Entity")
 	F_Entity_CharacterSheet CharacterSheet;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Entity")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Entity")
 	int32 Level;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Entity")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Entity")
 	int32 Money;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Entity")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Entity")
 	int32 Scrap;
 
 // ------------------------- Movement
@@ -210,6 +213,13 @@ public:
 
 	UPROPERTY()
 	bool CanAttack;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Technical Variables")
+	TSubclassOf<AEntity_Item> Item_Class;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Technical Variables")
+	AEntity_Item* Item_Reference;
+
 
 
 // Functions

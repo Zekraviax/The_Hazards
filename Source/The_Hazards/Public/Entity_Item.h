@@ -21,12 +21,12 @@ class THE_HAZARDS_API AEntity_Item : public AActor
 public:	
 	// Sets default values for this actor's properties
 	AEntity_Item();
-//
-//protected:
-//	// Called when the game starts or when spawned
-//	virtual void BeginPlay() override;
-//
-//public:	
+
+protected:
+	// Called when the game starts or when spawned
+	virtual void BeginPlay() override;
+
+public:	
 //	// Called every frame
 //	virtual void Tick(float DeltaTime) override;
 
@@ -43,9 +43,15 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Components")
 	UBoxComponent* InnerBoxCollider;
 
-// ------------------------- Items
+// ------------------------- Inventory
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Inventory")
 	TArray<F_Item_BaseStruct> Items;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Inventory")
+	int Money;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Inventory")
+	int Scrap;
 
 // Functions
 // --------------------------------------------------

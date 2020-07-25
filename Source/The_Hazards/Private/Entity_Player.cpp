@@ -346,20 +346,10 @@ void AEntity_Player::Interact()
 	if (ConversingActor) {
 		ConversingActor->PlayerInteract(this);
 	} else {
-		//for (int i = 0; i < InteractableEntities.Num(); i++) {
-		//	if (Cast<AEntity_NPC>(InteractableEntities[i])) {
-		//		Cast<AEntity_NPC>(InteractableEntities[i])->PlayerInteract(this);
-		//		ConversingActor = Cast<AEntity_NPC>(InteractableEntities[i]);
-		//	}
-		//	else if (Cast<AEntity_Item>(InteractableEntities[i])) {
-		//		Cast<AEntity_Item>(InteractableEntities[i])->OnPlayerInteract(this);
-		//	}
-		//}
-
 		if (Cast<AEntity_NPC>(InteractableEntities[0])) {
 			Cast<AEntity_NPC>(InteractableEntities[0])->PlayerInteract(this);
 			ConversingActor = Cast<AEntity_NPC>(InteractableEntities[0]);
-		}	else if (Cast<AEntity_Item>(InteractableEntities[0])) {
+		} else if (Cast<AEntity_Item>(InteractableEntities[0])) {
 			Cast<AEntity_Item>(InteractableEntities[0])->OnPlayerInteract(this);
 		}
 	}

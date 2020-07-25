@@ -1,6 +1,7 @@
 #include "Entity_Base.h"
 
 #include "Entity_Player.h"
+#include "Entity_Item.h"
 #include "SubWidget_StatusEffectIcon.h"
 
 
@@ -267,7 +268,7 @@ void AEntity_Base::CalculateTotalStats()
 	TemporaryStats = F_BaseStats_Struct();
 
 	// Step 2: Get all stat changes from Skills
-	if (KnownSkills.Num() > 0) {
+	if (KnownSkills.Num() > 0 && SkillsFunctionLibrary_Reference) {
 		for (int i = 0; i < KnownSkills.Num(); i++) {
 			if (SkillsFunctionLibrary_Reference && KnownSkills[i].CurrentLevel > 0 && KnownSkills[i].ActivationCondition == E_Skill_ActivationCondition::E_Passive) {
 				SkillsFunctionLibrary_Reference->CallSkillFunction(KnownSkills[i].SkillIndex);
@@ -602,11 +603,37 @@ void AEntity_Base::EntityHit(int32 BaseAttackDamage)
 
 void AEntity_Base::EntityDeath()
 {
+	FActorSpawnParameters SpawnInfo;
+
 	// Drop items
-	for (int i = 0; i < Inventory.Num(); i++) {
+	if (Item_Class) {
+		for (int i = 0; i < Inventory.Num(); i++) {
+			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Yellow, TEXT("Drop Item On Death"));
+
+			FVector SpawnLocation = FVector(FMath::RandRange(GetActorLocation().X - 100, GetActorLocation().X + 100), FMath::RandRange(GetActorLocation().Y - 100, GetActorLocation().Y + 100), GetActorLocation().Z);
+
+			Item_Reference = GetWorld()->SpawnActor<AEntity_Item>(Item_Class, SpawnLocation, GetActorRotation(), SpawnInfo);
+			Item_Reference->Items.Add(Inventory[i]);
+		}
+
+		// Drop money and scrap
+		if (Money > 0) {
+			FVector SpawnLocation = FVector(FMath::RandRange(GetActorLocation().X - 100, GetActorLocation().X + 100), FMath::RandRange(GetActorLocation().Y - 100, GetActorLocation().Y + 100), GetActorLocation().Z);
+
+			Item_Reference = GetWorld()->SpawnActor<AEntity_Item>(Item_Class, SpawnLocation, GetActorRotation(), SpawnInfo);
+			Item_Reference->Money = Money;
+		}
+
+		if (Scrap > 0) {
+			FVector SpawnLocation = FVector(FMath::RandRange(GetActorLocation().X - 100, GetActorLocation().X + 100), FMath::RandRange(GetActorLocation().Y - 100, GetActorLocation().Y + 100), GetActorLocation().Z);
+
+			Item_Reference = GetWorld()->SpawnActor<AEntity_Item>(Item_Class, SpawnLocation, GetActorRotation(), SpawnInfo);
+			Item_Reference->Scrap = Scrap;
+		}
+	}
+	else {
 
 	}
-
 
 	// Destroy entity
 	this->Destroy();
