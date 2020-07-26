@@ -6,6 +6,7 @@
 #include "BaseClass_Widget_PlayerHUD.h"
 #include "BaseClass_Widget_PauseMenu.h"
 #include "BaseClass_Widget_Inventory.h"
+#include "BaseClass_Widget_ItemCraft.h"
 #include "BaseClass_Widget_CharacterSheet.h"
 #include "BaseClass_Widget_CharCreator.h"
 #include "BaseClass_Widget_SkillTree.h"
@@ -62,12 +63,6 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Widgets")
 	TSubclassOf<UBaseClass_Widget_PlayerHUD> Player_HUD_Class;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Widgets")
-	UUserWidget* CurrentOpenMenuWidget;
-
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Widgets")
-	TSubclassOf<UUserWidget> CurrentOpenMenuWidget_Class;
-
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Widgets")
 	TSubclassOf<UBaseClass_Widget_PauseMenu> PauseMenu_Class;
 
@@ -85,6 +80,15 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Widgets")
 	TSubclassOf<USubWidget_StatusEffectIcon> StatusEffectIcon_Class;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Widgets")
+	TSubclassOf<UBaseClass_Widget_ItemCraft> ItemCraft_Class;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Widgets")
+	TSubclassOf<UUserWidget> CurrentOpenMenuWidget_Class;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Widgets")
+	UUserWidget* CurrentOpenMenuWidget;
 
 // Technical Variables
 // --------------------------------------------------
@@ -120,8 +124,8 @@ public:
 	void MoveLeftRight(float AxisValue);
 
 // ------------------------- Menus and Pause Screens
-	UFUNCTION()
-	void OpenMenuWidget(E_MenuWidgetTypes MenuType);
+	//UFUNCTION()
+	//void OpenMenuWidget(E_MenuWidgetTypes MenuType);
 
 	UFUNCTION()
 	void OpenPauseMenu();

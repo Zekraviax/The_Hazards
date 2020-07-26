@@ -11,6 +11,7 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "EngineUtils.h"
 #include "Engine/DataTable.h"
+#include "DrawDebugHelpers.h"
 #include "BaseClass_WidgetComponent_Entity.h"
 #include "FunctionLibrary_Skills.h"
 #include "FunctionLibrary_SpecialAttacks.h"

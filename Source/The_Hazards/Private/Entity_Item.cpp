@@ -15,11 +15,13 @@ AEntity_Item::AEntity_Item()
 	//CubeMesh->SetEnableGravity(true);
 
 	// Construct actor components
+	//BoxComponent = CreateDefaultSubobject<UBoxComponent>("BoxComponent");
 	CubeMesh = CreateDefaultSubobject<UStaticMeshComponent>("CubeMesh");
 	OuterBoxCollider = CreateDefaultSubobject<UBoxComponent>("OuterBoxCollider");
 	InnerBoxCollider = CreateDefaultSubobject<UBoxComponent>("InnerBoxCollider");
 
 	// Attach components
+	//BoxComponent->SetupAttachment(RootComponent);
 	CubeMesh->SetupAttachment(RootComponent);
 	OuterBoxCollider->SetupAttachment(CubeMesh);
 	InnerBoxCollider->SetupAttachment(CubeMesh);

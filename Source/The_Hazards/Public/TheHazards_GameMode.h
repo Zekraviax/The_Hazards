@@ -21,6 +21,7 @@ enum class E_Item_Supertypes : uint8
 	E_Consumable,
 	E_Ammo,
 	E_CustomPart,
+	E_Blueprint,
 	E_Collectable,
 	E_Miscellaneous
 };
@@ -41,6 +42,13 @@ enum class E_Armour_EquipSlot : uint8
 	E_Head,
 	E_Body,
 	E_Legs,
+};
+
+//------------------------- Custom Parts
+UENUM(BlueprintType)
+enum class E_CustomPart_Types : uint8
+{
+	E_Blade,
 };
 
 //------------------------- Characters
@@ -552,6 +560,60 @@ struct THE_HAZARDS_API F_Item_ArmourStruct
 };
 
 USTRUCT(BlueprintType)
+struct THE_HAZARDS_API F_Item_BlueprintStruct
+{
+	GENERATED_BODY()
+
+	// Item type?
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Base")
+	E_Item_Supertypes ItemType;
+
+	F_Item_BlueprintStruct()
+	{
+		ItemType = E_Item_Supertypes::E_Weapon;
+	}
+
+	FORCEINLINE bool operator==(const F_Item_BlueprintStruct& OtherBlueprint) const
+	{
+		if (ItemType == OtherBlueprint.ItemType) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+};
+
+USTRUCT(BlueprintType)
+struct THE_HAZARDS_API F_Item_CustomPartStruct
+{
+	GENERATED_BODY()
+
+	// Part type?
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Base")
+	E_CustomPart_Types Type;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Stats")
+	F_BaseStats_Struct StatModifiers;
+
+	F_Item_CustomPartStruct()
+	{
+		Type = E_CustomPart_Types::E_Blade;
+	}
+
+	FORCEINLINE bool operator==(const F_Item_CustomPartStruct& OtherCustomPart) const
+	{
+		if (Type == OtherCustomPart.Type &&
+			StatModifiers == OtherCustomPart.StatModifiers) {
+			return true;
+		}
+		else {
+			return false;
+		}
+	}
+
+};
+
+USTRUCT(BlueprintType)
 struct THE_HAZARDS_API F_Item_BaseStruct : public FTableRowBase
 {
 	GENERATED_BODY()
@@ -580,6 +642,12 @@ struct THE_HAZARDS_API F_Item_BaseStruct : public FTableRowBase
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Supertypes")
 	F_Item_ArmourStruct Armour;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Supertypes")
+	F_Item_BlueprintStruct Blueprint;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Supertypes")
+	F_Item_CustomPartStruct CustomPart;
+
 	F_Item_BaseStruct()
 	{
 		Name = "Default";
@@ -596,7 +664,9 @@ struct THE_HAZARDS_API F_Item_BaseStruct : public FTableRowBase
 			Supertype == OtherItem.Supertype &&
 			InventoryImage == OtherItem.InventoryImage &&
 			Weapon == OtherItem.Weapon &&
-			Armour == OtherItem.Armour) {
+			Armour == OtherItem.Armour &&
+			Blueprint == OtherItem.Blueprint &&
+			CustomPart == OtherItem.CustomPart) {
 			return true;
 		} else {
 			return false;

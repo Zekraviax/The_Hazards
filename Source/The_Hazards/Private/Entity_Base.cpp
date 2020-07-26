@@ -507,15 +507,50 @@ void AEntity_Base::AttackStart()
 {
 	if (CurrentEquippedWeapon.Weapon.AttackStyle != E_Weapon_AttackStyles::E_None && CanAttack) {
 		if (!GetWorldTimerManager().IsTimerActive(AttackSwingTimerHandle) && !(GetWorldTimerManager().IsTimerActive(SpecialAttackSwingTimerHandle))) {
-			WeaponCollider->SetGenerateOverlapEvents(true);
-			GetWorldTimerManager().SetTimer(AttackSwingTimerHandle, this, &AEntity_Base::AttackEnd, 1.f, false);
-
-			if (AttackAnimationTimeline != NULL) {
-				//AttackAnimationTimeline->SetPlayRate(0.5);
-				AttackAnimationTimeline->PlayFromStart();
-			}
 
 			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, TEXT("Attack Start"));
+			GetWorldTimerManager().SetTimer(AttackSwingTimerHandle, this, &AEntity_Base::AttackEnd, 1.f, false);
+
+			// Melee attacks
+			if (CurrentEquippedWeapon.Weapon.AttackStyle == E_Weapon_AttackStyles::E_Melee_Swing || 
+				CurrentEquippedWeapon.Weapon.AttackStyle == E_Weapon_AttackStyles::E_Melee_Thrust) {
+				WeaponCollider->SetGenerateOverlapEvents(true);
+
+				if (AttackAnimationTimeline != NULL) {
+					//AttackAnimationTimeline->SetPlayRate(0.5);
+					AttackAnimationTimeline->PlayFromStart();
+				}
+
+			// Ranged attacks
+			} else if (CurrentEquippedWeapon.Weapon.AttackStyle == E_Weapon_AttackStyles::E_Ranged_SingleShot || 
+				CurrentEquippedWeapon.Weapon.AttackStyle == E_Weapon_AttackStyles::E_Ranged_BurstFire || 
+				CurrentEquippedWeapon.Weapon.AttackStyle == E_Weapon_AttackStyles::E_Ranged_FullAuto) {
+
+				FCollisionQueryParams RangedLineTraceParams = FCollisionQueryParams(FName(TEXT("RangedLineTrace")), true, this);
+				FHitResult RangedLineTraceHit(ForceInit);
+				FVector Start = WeaponCollider->GetComponentLocation();
+				FVector ForwardVector = WeaponCollider->GetForwardVector();
+				FVector End = (ForwardVector * 10000.f) + Start;
+
+				DrawDebugLine(GetWorld(), Start, End, FColor::Red, false, 2.5f);
+
+				switch (CurrentEquippedWeapon.Weapon.AttackStyle)
+				{
+					case(E_Weapon_AttackStyles::E_Ranged_SingleShot):
+						GetWorld()->LineTraceSingleByChannel(RangedLineTraceHit, Start, End, ECC_Pawn, RangedLineTraceParams);
+
+						// Entity hit
+						if (RangedLineTraceHit.bBlockingHit) {
+							GEngine->AddOnScreenDebugMessage(-1, 2.5f, FColor::Red, FString::Printf(TEXT("Entity Hit: %s"), *RangedLineTraceHit.GetActor()->GetName()));
+							Cast<AEntity_Base>(RangedLineTraceHit.GetActor())->EntityHit(20);
+						}
+
+						break;
+					default:
+						break;
+				}
+			}
+
 		}
 		else {
 			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("An Attack Timer Is Counting Down"));

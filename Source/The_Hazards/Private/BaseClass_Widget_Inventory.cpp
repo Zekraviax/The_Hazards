@@ -5,6 +5,15 @@
 #include "SubWidget_SkillTreeSlot.h"
 
 
+void UBaseClass_Widget_Inventory::OnInventoryOpened()
+{
+	if (PlayerReference) {
+		MoneyText->SetText(FText::FromString("Money: " + FString::FromInt(PlayerReference->Money)));
+		ScrapText->SetText(FText::FromString("Scrap: " + FString::FromInt(PlayerReference->Scrap)));
+	}
+}
+
+
 void UBaseClass_Widget_Inventory::PopulateInventorySlots()
 {
 	if (PlayerReference && WidgetTree) {
@@ -27,6 +36,7 @@ void UBaseClass_Widget_Inventory::PopulateInventorySlots()
 		}
 	}
 }
+
 
 void UBaseClass_Widget_Inventory::OnMouseUp()
 {
@@ -52,8 +62,3 @@ void UBaseClass_Widget_Inventory::OnMouseUp()
 		}
 	});
 }
-
-//void UBaseClass_Widget_Inventory::RunTest()
-//{
-//
-//}

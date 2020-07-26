@@ -35,6 +35,9 @@ public:
 
 // ------------------------- Components
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Components")
+	UBoxComponent* BoxComponent;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Components")
 	UStaticMeshComponent* CubeMesh;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Components")

@@ -28,6 +28,12 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Components", meta = (BindWidget))
 	UImage* BackgroundImage;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Components", meta = (BindWidget))
+	UTextBlock* MoneyText;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Components", meta = (BindWidget))
+	UTextBlock* ScrapText;
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Components")
 	TArray<USubWidget_InventorySlot*> InventorySlotsArray;
 
@@ -37,12 +43,12 @@ public:
 
 // Functions
 // --------------------------------------------------
+	UFUNCTION(BlueprintCallable)
+	void OnInventoryOpened();
+
 	UFUNCTION()
 	void PopulateInventorySlots();
 
 	UFUNCTION(BlueprintCallable)
 	void OnMouseUp();
-
-	//UFUNCTION(BlueprintCallable)
-	//void RunTest();
 };

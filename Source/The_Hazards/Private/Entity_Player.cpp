@@ -192,6 +192,7 @@ void AEntity_Player::OpenInventory()
 
 		// Inventory specific variables and functions
 		Cast<UBaseClass_Widget_Inventory>(CurrentOpenMenuWidget)->PlayerReference = this;
+		Cast<UBaseClass_Widget_Inventory>(CurrentOpenMenuWidget)->OnInventoryOpened();
 		Cast<UBaseClass_Widget_Inventory>(CurrentOpenMenuWidget)->PopulateInventorySlots();
 	}
 	else {
@@ -280,20 +281,21 @@ void AEntity_Player::OpenSkillTree()
 	}
 }
 
-void AEntity_Player::OpenMenuWidget(E_MenuWidgetTypes MenuType)
-{
-	//Widget MenuClass;
-	//TSubclassOf<UUserWidget> MenuSubClass;
+//void AEntity_Player::OpenMenuWidget(E_MenuWidgetTypes MenuType)
+//{
+//	Widget MenuClass;
+//	TSubclassOf<UUserWidget> MenuSubClass;
+//
+//	switch (MenuType) 
+//	{
+//	case(E_MenuWidgetTypes::E_CharacterCreator):
+//		MenuClass = UBaseClass_Widget_CharacterSheet;
+//		break;
+//	}
+//
+//	CurrentOpenMenuWidget = CreateWidget<MenuClass>(GetWorld(), MenuSubClass);
+//}
 
-	//switch (MenuType) 
-	//{
-	//case(E_MenuWidgetTypes::E_CharacterCreator):
-	//	MenuClass = UBaseClass_Widget_CharacterSheet;
-	//	break;
-	//}
-
-	//CurrentOpenMenuWidget = CreateWidget<MenuClass>(GetWorld(), MenuSubClass);
-}
 // ------------------------- HUD
 void AEntity_Player::CreateStatusEffectWidget(F_StatusEffect_Base StatusEffect)
 {
@@ -326,31 +328,17 @@ void AEntity_Player::UpdateStatusEffectWidgets()
 // ------------------------- Non-Player Characters
 void AEntity_Player::Interact()
 {
-	// Sphere trace for interactable NPCs
-	//FHitResult HitResult;
-	//TArray<FHitResult> HitResults;
-	//FVector Location = this->GetActorLocation();
-	//ECollisionChannel TraceChannel = ECollisionChannel::ECC_GameTraceChannel1;
-	//FCollisionShape SphereShape = FCollisionShape::MakeSphere(200.f);
-
-	//DrawDebugSphere(GetWorld(), Location, SphereShape.GetSphereRadius(), 50, FColor::Red, false, 2.5f);
-	//GetWorld()->SweepMultiByChannel(HitResults, Location, FVector(Location.X, Location.Y, Location.Z + 0.01), FQuat(0, 0, 0, 0), TraceChannel, SphereShape);
-
-	//for (int i = 0; i < HitResults.Num(); i++) {
-	//	if (HitResults[i].GetActor()->IsA(AEntity_NPC::StaticClass())) {
-	//		Cast<AEntity_NPC>(HitResults[i].GetActor())->PlayerInteract(this);
-	//		break;
-	//	}
-	//}
-
 	if (ConversingActor) {
 		ConversingActor->PlayerInteract(this);
 	} else {
-		if (Cast<AEntity_NPC>(InteractableEntities[0])) {
-			Cast<AEntity_NPC>(InteractableEntities[0])->PlayerInteract(this);
-			ConversingActor = Cast<AEntity_NPC>(InteractableEntities[0]);
-		} else if (Cast<AEntity_Item>(InteractableEntities[0])) {
-			Cast<AEntity_Item>(InteractableEntities[0])->OnPlayerInteract(this);
+		if (InteractableEntities.IsValidIndex(0)) {
+			if (Cast<AEntity_NPC>(InteractableEntities[0])) {
+				Cast<AEntity_NPC>(InteractableEntities[0])->PlayerInteract(this);
+				ConversingActor = Cast<AEntity_NPC>(InteractableEntities[0]);
+			}
+			else if (Cast<AEntity_Item>(InteractableEntities[0])) {
+				Cast<AEntity_Item>(InteractableEntities[0])->OnPlayerInteract(this);
+			}
 		}
 	}
 }
