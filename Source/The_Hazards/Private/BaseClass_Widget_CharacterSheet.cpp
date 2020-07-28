@@ -1,13 +1,12 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
-
 #include "BaseClass_Widget_CharacterSheet.h"
 
 #include "Entity_Base.h"
 #include "Entity_Player.h"
 
+
 void UBaseClass_Widget_CharacterSheet::OpenCharacterSheet()
 {
+	// Set base variables
 	if (PlayerReference) {
 		// Set Name
 		Name_Text->SetText(FText::FromString(PlayerReference->CharacterSheet.Name));
@@ -83,6 +82,41 @@ void UBaseClass_Widget_CharacterSheet::OpenCharacterSheet()
 			Faction_Text->SetText(FText::FromString(TEXT("N/A")));
 			break;
 		}
+
+		// Set stats
+		// Current Stats
+		CurrentStatsColumn->SetText(FText::FromString("Current Stats: \n\n" + FString::FromInt(PlayerReference->CurrentStats.HealthPoints)
+			+ "\n" + FString::SanitizeFloat(PlayerReference->CurrentStats.HealthPoints_RegenPerSecond)
+			+ "\n" + FString::SanitizeFloat(PlayerReference->CurrentStats.HealthPoints_RegenStartDelay)
+			+ "\n" + FString::FromInt(PlayerReference->CurrentStats.AuraPoints)
+			+ "\n" + FString::SanitizeFloat(PlayerReference->CurrentStats.AuraPoints_RegenPerSecond)
+			+ "\n" + FString::SanitizeFloat(PlayerReference->CurrentStats.AuraPoints_RegenStartDelay)
+			+ "\n" + FString::FromInt(PlayerReference->CurrentStats.Physical_Strength)
+			+ "\n" + FString::FromInt(PlayerReference->CurrentStats.Physical_Defence)
+			+ "\n" + FString::FromInt(PlayerReference->CurrentStats.Elemental_Strength)
+			+ "\n" + FString::FromInt(PlayerReference->CurrentStats.Elemental_Defence)
+			+ "\n" + FString::FromInt(PlayerReference->CurrentStats.Attack_Speed)
+			+ "\n" + FString::FromInt(PlayerReference->CurrentStats.Move_Speed)
+			+ "\n" + FString::FromInt(PlayerReference->CurrentStats.Evasiveness)
+			+ "\n" + FString::FromInt(PlayerReference->CurrentStats.Status_Potency)
+			+ "\n" + FString::FromInt(PlayerReference->CurrentStats.Luck)));
+
+		// Total Stats
+		TotalStatsColumn->SetText(FText::FromString("Total Stats: \n\n" + FString::FromInt(PlayerReference->TotalStats.HealthPoints)
+			+ "\n" + FString::SanitizeFloat(PlayerReference->TotalStats.HealthPoints_RegenPerSecond)
+			+ "\n" + FString::SanitizeFloat(PlayerReference->TotalStats.HealthPoints_RegenStartDelay)
+			+ "\n" + FString::FromInt(PlayerReference->TotalStats.AuraPoints)
+			+ "\n" + FString::SanitizeFloat(PlayerReference->TotalStats.AuraPoints_RegenPerSecond)
+			+ "\n" + FString::SanitizeFloat(PlayerReference->TotalStats.AuraPoints_RegenStartDelay)
+			+ "\n" + FString::FromInt(PlayerReference->TotalStats.Physical_Strength)
+			+ "\n" + FString::FromInt(PlayerReference->TotalStats.Physical_Defence)
+			+ "\n" + FString::FromInt(PlayerReference->TotalStats.Elemental_Strength)
+			+ "\n" + FString::FromInt(PlayerReference->TotalStats.Elemental_Defence)
+			+ "\n" + FString::FromInt(PlayerReference->TotalStats.Attack_Speed)
+			+ "\n" + FString::FromInt(PlayerReference->TotalStats.Move_Speed)
+			+ "\n" + FString::FromInt(PlayerReference->TotalStats.Evasiveness)
+			+ "\n" + FString::FromInt(PlayerReference->TotalStats.Status_Potency)
+			+ "\n" + FString::FromInt(PlayerReference->TotalStats.Luck)));
 	}
 }
 
@@ -91,9 +125,12 @@ void UBaseClass_Widget_CharacterSheet::OpenStatBreakdown()
 	if (StatBreakdown_Class && PlayerReference) {
 		StatBreakdown_Reference = CreateWidget<USubWidget_StatBreakdown>(GetWorld(), StatBreakdown_Class);
 		StatBreakdown_Reference->PlayerReference = PlayerReference;
+		StatBreakdown_Reference->SetText();
 		StatBreakdown_Reference->AddToViewport();
 
 		Cast<AEntity_Player>(PlayerReference)->CurrentOpenMenuWidget = StatBreakdown_Reference;
 		Cast<AEntity_Player>(PlayerReference)->CurrentOpenMenuWidget_Class = StatBreakdown_Class;
+
+		RemoveFromParent();
 	}
 }

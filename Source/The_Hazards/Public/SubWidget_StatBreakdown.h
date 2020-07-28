@@ -1,5 +1,3 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
 #pragma once
 
 #include "CoreMinimal.h"
@@ -12,16 +10,17 @@
 // Forward Declarations
 class AEntity_Base;
 
+
 UCLASS()
 class THE_HAZARDS_API USubWidget_StatBreakdown : public UUserWidget
 {
 	GENERATED_BODY()
 
-protected:
-	virtual void NativeTick(const FGeometry& MyGeometry, float DeltaTime) override;
+//protected:
+//	virtual void NativeTick(const FGeometry& MyGeometry, float DeltaTime) override;
 
 public:
-// Variables
+// Base Variables
 // --------------------------------------------------
 
 // ------------------------- Player
@@ -46,4 +45,9 @@ public:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components", meta = (BindWidget))
 	UTextBlock* TotalStatsColumn;
+
+// Functions
+// --------------------------------------------------
+	UFUNCTION()
+	void SetText();
 };

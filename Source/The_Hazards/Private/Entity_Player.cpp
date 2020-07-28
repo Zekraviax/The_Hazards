@@ -151,15 +151,24 @@ void AEntity_Player::MoveLeftRight(float AxisValue)
 // ------------------------- Menu and Pause Screens
 void AEntity_Player::OpenPauseMenu()
 {
-	if (CurrentOpenMenuWidget) {
-		// Close widget and resume game
-		UGameplayStatics::SetGamePaused(GetWorld(), false);
-		CurrentOpenMenuWidget->RemoveFromParent();
+	if (PauseMenu_Class && CurrentOpenMenuWidget) {
+		// Close pause menu widget and resume game
+		if (CurrentOpenMenuWidget->GetClass() == PauseMenu_Class) {
+			UGameplayStatics::SetGamePaused(GetWorld(), false);
+			CurrentOpenMenuWidget->RemoveFromParent();
+			CurrentOpenMenuWidget = NULL;
+			CurrentOpenMenuWidget_Class = NULL;
+		}
+	} 
+	// Create pause menu widget, add to viewport, and pause game
+	else {
+		// Remove other widgets from screen
+		//CurrentOpenMenuWidget->RemoveFromParent();
 		CurrentOpenMenuWidget = NULL;
-	}
-	else if (!CurrentOpenMenuWidget && PauseMenu_Class) {
-		// Create widget, add to viewport, and pause game
+		CurrentOpenMenuWidget_Class = NULL;
+
 		CurrentOpenMenuWidget = CreateWidget<UBaseClass_Widget_PauseMenu>(GetWorld(), PauseMenu_Class);
+		CurrentOpenMenuWidget_Class = CurrentOpenMenuWidget->GetClass();
 
 		Cast<UBaseClass_Widget_PauseMenu>(CurrentOpenMenuWidget)->LocalPlayerReference = this;
 		CurrentOpenMenuWidget->AddToViewport();

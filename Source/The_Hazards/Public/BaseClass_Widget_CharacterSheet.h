@@ -1,5 +1,3 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
 #pragma once
 
 #include "CoreMinimal.h"
@@ -14,13 +12,14 @@
 // Forward Declaration
 class AEntity_Base;
 
+
 UCLASS()
 class THE_HAZARDS_API UBaseClass_Widget_CharacterSheet : public UUserWidget
 {
 	GENERATED_BODY()
 
 public:
-// Variables
+// Base Variables
 // --------------------------------------------------
 
 // ------------------------- Player
@@ -40,11 +39,17 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components", meta = (BindWidget))
 	UTextBlock* Faction_Text;
 
-// ------------------------- StatBreakdown Widget
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "StatBreakdown Widget")
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components", meta = (BindWidget))
+	UTextBlock* CurrentStatsColumn;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components", meta = (BindWidget))
+	UTextBlock* TotalStatsColumn;
+
+// ------------------------- Widgets
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Widgets")
 	TSubclassOf<USubWidget_StatBreakdown> StatBreakdown_Class;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "StatBreakdown Widget")
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Widgets")
 	USubWidget_StatBreakdown* StatBreakdown_Reference;
 
 // Functions

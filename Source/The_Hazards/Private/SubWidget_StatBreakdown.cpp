@@ -1,15 +1,17 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
-
 #include "SubWidget_StatBreakdown.h"
 
 #include "Entity_Base.h"
 
 
-void USubWidget_StatBreakdown::NativeTick(const FGeometry& MyGeometry, float DeltaTime)
-{
-	Super::NativeTick(MyGeometry, DeltaTime);
+//void USubWidget_StatBreakdown::NativeTick(const FGeometry& MyGeometry, float DeltaTime)
+//{
+//	Super::NativeTick(MyGeometry, DeltaTime);
+//
+//}
 
+
+void USubWidget_StatBreakdown::SetText()
+{
 	if (PlayerReference) {
 		// Level-Up Stats
 		LevelupStatsColumn->SetText(FText::FromString("Level-Up Stats: \n\n(" + FString::FromInt(PlayerReference->LevelStats.HealthPoints) + " * " + FString::SanitizeFloat(PlayerReference->LevelStats.SecondaryStats.Maximum_HealthPoints_Multiplier) + ")"
@@ -20,7 +22,7 @@ void USubWidget_StatBreakdown::NativeTick(const FGeometry& MyGeometry, float Del
 			+ "\n(" + FString::SanitizeFloat(PlayerReference->LevelStats.AuraPoints_RegenStartDelay) + ")"
 			+ "\n(" + FString::FromInt(PlayerReference->LevelStats.Physical_Strength) + ")"
 			+ "\n(" + FString::FromInt(PlayerReference->LevelStats.Physical_Defence) + " * " + FString::SanitizeFloat(PlayerReference->LevelStats.SecondaryStats.PhysicalDefence_Multiplier) + ")"
-			+ "\n(" + FString::FromInt(PlayerReference->LevelStats.Elemental_Strength) + + " * " + FString::SanitizeFloat(PlayerReference->LevelStats.SecondaryStats.ElementalStrength_Multiplier) + ")"
+			+ "\n(" + FString::FromInt(PlayerReference->LevelStats.Elemental_Strength) + +" * " + FString::SanitizeFloat(PlayerReference->LevelStats.SecondaryStats.ElementalStrength_Multiplier) + ")"
 			+ "\n(" + FString::FromInt(PlayerReference->LevelStats.Elemental_Defence) + ")"
 			+ "\n(" + FString::FromInt(PlayerReference->LevelStats.Attack_Speed) + " * " + FString::SanitizeFloat(PlayerReference->LevelStats.SecondaryStats.AttackSpeed_Multiplier) + ")"
 			+ "\n(" + FString::FromInt(PlayerReference->LevelStats.Move_Speed) + " * " + FString::SanitizeFloat(PlayerReference->LevelStats.SecondaryStats.MoveSpeed_Multiplier) + ")"

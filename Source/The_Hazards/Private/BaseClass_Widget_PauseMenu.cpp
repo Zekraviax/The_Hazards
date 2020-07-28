@@ -13,7 +13,7 @@ void UBaseClass_Widget_PauseMenu::Function_ResumeGame()
 
 void UBaseClass_Widget_PauseMenu::Function_QuitToMainMenu()
 {
-
+	UGameplayStatics::OpenLevel(GetWorld(), "MainMenu");
 }
 
 void UBaseClass_Widget_PauseMenu::Function_QuitToDesktop()
