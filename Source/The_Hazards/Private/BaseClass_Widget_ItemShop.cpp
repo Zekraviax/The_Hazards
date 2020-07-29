@@ -13,6 +13,7 @@ void UBaseClass_Widget_ItemShop::PopulateShop()
 			ShopItemListing_Instance->ItemData = ShopkeeperReference->Inventory[i];
 			ShopItemListing_Instance->NameText->SetText(FText::FromString(ShopkeeperReference->Inventory[i].Name));
 			ShopItemListing_Instance->AmountText->SetText(FText::FromString(FString::FromInt(ShopkeeperReference->Inventory[i].Amount)));
+			ShopItemListing_Instance->PriceText->SetText(FText::FromString("$" + FString::FromInt(ShopkeeperReference->Inventory[i].Value)));
 
 			ItemListingsScrollBox->AddChild(ShopItemListing_Instance);
 		}

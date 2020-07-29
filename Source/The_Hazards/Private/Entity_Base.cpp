@@ -40,6 +40,7 @@ AEntity_Base::AEntity_Base()
 	// Initialize variables
 	MaximumInventorySize = 30;
 	Money = 100;
+	Scrap = 10;
 	CanAttack = true;
 
 	// Set Stats
@@ -52,8 +53,8 @@ AEntity_Base::AEntity_Base()
 	CurrentEquippedWeapon.Supertype = E_Item_Supertypes::E_Weapon;
 	//CurrentEquippedWeapon.Amount = 0;
 	CurrentEquippedWeapon.Weapon.EquipSlot = E_Weapon_EquipSlot::E_Primary;
-	CurrentEquippedWeapon.Weapon.StatModifiers = F_BaseStats_Struct(0.f, 0.f, 0.f, 0.f, 0.f, 0.f, 0.f, 0.f, 0.f, 0.f, 0.f, 0.f, 0.f, 0.f, 0.f);
-	CurrentEquippedWeapon.Weapon.StatModifiers.SecondaryStats = F_SecondaryStats_Struct(0.f, 0.f, 0.f, 0.f, 0.f, 0.f, 0.f, 0.f, 0.f, 0.f, 0.f, 0.f, 0.f, 0.f, 0.f, 0.f, 0.f, 0.f, 0.f, 0.f, 0.f, 0);
+	CurrentEquippedWeapon.Weapon.StatModifiers = F_BaseStats_Struct(1.f, 1.f, 1.f, 1.f, 1.f, 1.f, 1.f, 1.f, 1.f, 1.f, 1.f, 1.f, 1.f, 1.f, 1.f);
+	CurrentEquippedWeapon.Weapon.StatModifiers.SecondaryStats = F_SecondaryStats_Struct(1.f, 1.f, 1.f, 1.f, 1.f, 1.f, 1.f, 1.f, 1.f, 1.f, 1.f, 1.f, 1.f, 1.f, 1.f, 1.f, 1.f, 1.f, 1.f, 1.f, 1.f, 1);
 
 }
 
@@ -90,6 +91,9 @@ void AEntity_Base::BeginPlay()
 
 		AttackAnimationTimeline->RegisterComponent();
 	}
+
+	// First time stat calculation
+	CalculateTotalStats();
 
 	// Health and Aura regen test
 	CurrentStats.HealthPoints = 75;
@@ -268,10 +272,12 @@ void AEntity_Base::CalculateTotalStats()
 	TemporaryStats = F_BaseStats_Struct();
 
 	// Step 2: Get all stat changes from Skills
-	if (KnownSkills.Num() > 0 && SkillsFunctionLibrary_Reference) {
-		for (int i = 0; i < KnownSkills.Num(); i++) {
-			if (SkillsFunctionLibrary_Reference && KnownSkills[i].CurrentLevel > 0 && KnownSkills[i].ActivationCondition == E_Skill_ActivationCondition::E_Passive) {
-				SkillsFunctionLibrary_Reference->CallSkillFunction(KnownSkills[i].SkillIndex);
+	if (SkillsFunctionLibrary_Reference) {
+		if (KnownSkills.Num() > 0) {
+			for (int i = 0; i < KnownSkills.Num(); i++) {
+				if (SkillsFunctionLibrary_Reference && KnownSkills[i].CurrentLevel > 0 && KnownSkills[i].ActivationCondition == E_Skill_ActivationCondition::E_Passive) {
+					SkillsFunctionLibrary_Reference->CallSkillFunction(KnownSkills[i].SkillIndex);
+				}
 			}
 		}
 	}
@@ -413,6 +419,8 @@ void AEntity_Base::CalculateTotalStats()
 		(ItemStats.Luck * ItemStats.SecondaryStats.Luck_Multiplier));
 
 	// Step 6: Set (Current = Total * Temporary) Stats
+	CurrentStats = TotalStats; // Temporary
+
 	//CurrentStats.HealthPoints = (TotalStats.HealthPoints * (TemporaryStats.HealthPoints * TemporaryStats.SecondaryStats.Maximum_HealthPoints_Multiplier));
 	CurrentStats.Move_Speed = (TotalStats.Move_Speed * (TemporaryStats.Move_Speed * TemporaryStats.SecondaryStats.MoveSpeed_Multiplier));
 
@@ -632,11 +640,15 @@ void AEntity_Base::EntityHit(int32 BaseAttackDamage)
 
 	// Entity Death
 	// Player's death must be handled differently
-	if (CurrentStats.HealthPoints <= 0 && !Cast<AEntity_Player>(this))
-		EntityDeath();
+	if (CurrentStats.HealthPoints <= 0 && !Cast<AEntity_Player>(this)) {
+		for (TObjectIterator<AEntity_Player> Itr; Itr; ++Itr) {
+			AEntity_Player* FoundPlayer = *Itr;
+			EntityDeath(true, FoundPlayer);
+		}
+	}
 }
 
-void AEntity_Base::EntityDeath()
+void AEntity_Base::EntityDeath(bool GrantExperienceToPlayer, AEntity_Player* PlayerReference)
 {
 	FActorSpawnParameters SpawnInfo;
 
@@ -668,6 +680,11 @@ void AEntity_Base::EntityDeath()
 	}
 	else {
 
+	}
+
+	// Grant experience
+	if (GrantExperienceToPlayer && PlayerReference) {
+		PlayerReference->GainExperience(ExperienceGivenOnDeath);
 	}
 
 	// Destroy entity

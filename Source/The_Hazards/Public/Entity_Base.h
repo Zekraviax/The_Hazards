@@ -46,12 +46,15 @@ public:
 // Base Variables
 // --------------------------------------------------
 
-// ------------------------- Character
+// ------------------------- Entity
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Entity")
 	F_Entity_CharacterSheet CharacterSheet;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Entity")
 	int32 Level;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Entity")
+	int32 Experience;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Entity")
 	int32 Money;
@@ -221,7 +224,8 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Technical Variables")
 	AEntity_Item* Item_Reference;
 
-
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Technical Variables")
+	int ExperienceGivenOnDeath;
 
 // Functions
 // --------------------------------------------------
@@ -303,7 +307,7 @@ public:
 	void EntityHit(int32 BaseAttackDamage);
 
 	UFUNCTION()
-	void EntityDeath();
+	void EntityDeath(bool GrantExperienceToPlayer, AEntity_Player* PlayerReference = NULL);
 
 // ------------------------- Inventory
 	UFUNCTION()

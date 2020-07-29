@@ -22,10 +22,12 @@ AEntity_Player::AEntity_Player()
 	// Attach components
 	IsometricCamera->SetupAttachment(RootComponent);
 
-	// Initialize variables
+	// Initialize player specific variables
 	UnspentSkillPoints = 3;
-	Money = 9999999;
+	Money = 1000;
+	Experience = 95;
 }
+
 
 // Called when the game starts or when spawned
 void AEntity_Player::BeginPlay()
@@ -77,6 +79,7 @@ void AEntity_Player::BeginPlay()
 	//}
 }
 
+
 // Called every frame
 void AEntity_Player::Tick(float DeltaTime)
 {
@@ -87,6 +90,7 @@ void AEntity_Player::Tick(float DeltaTime)
 	// Call Tick functions
 	RotatePlayerTowardsMouse();
 }
+
 
 // Called to bind functionality to input
 void AEntity_Player::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
@@ -121,6 +125,7 @@ void AEntity_Player::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 	PlayerInputComponent->BindAction("Dodge", IE_Pressed, this, &AEntity_Player::Dodge);
 }
 
+
 //  ------------------------- Tick
 void AEntity_Player::RotatePlayerTowardsMouse()
 {
@@ -137,16 +142,19 @@ void AEntity_Player::RotatePlayerTowardsMouse()
 	CubeMesh->SetWorldRotation(PlayerRotationTowardsMouseValue);
 }
 
+
 // ------------------------- Movement
 void AEntity_Player::MoveForwardBackward(float AxisValue)
 {
 	AddMovementInput(IsometricCamera->GetForwardVector(), AxisValue);
 }
 
+
 void AEntity_Player::MoveLeftRight(float AxisValue)
 {
 	AddMovementInput(IsometricCamera->GetRightVector(), AxisValue);
 }
+
 
 // ------------------------- Menu and Pause Screens
 void AEntity_Player::OpenPauseMenu()
@@ -175,6 +183,7 @@ void AEntity_Player::OpenPauseMenu()
 		UGameplayStatics::SetGamePaused(GetWorld(), true);
 	}
 }
+
 
 void AEntity_Player::OpenInventory()
 {
@@ -209,6 +218,7 @@ void AEntity_Player::OpenInventory()
 	}
 }
 
+
 void AEntity_Player::OpenCharacterSheet()
 {
 	if (CurrentOpenMenuWidget) {
@@ -234,6 +244,7 @@ void AEntity_Player::OpenCharacterSheet()
 	}
 }
 
+
 void AEntity_Player::OpenCharacterCreator()
 {
 	if (CurrentOpenMenuWidget) {
@@ -257,6 +268,7 @@ void AEntity_Player::OpenCharacterCreator()
 		CurrentOpenMenuWidget_Class = NULL;
 	}
 }
+
 
 void AEntity_Player::OpenSkillTree()
 {
@@ -290,6 +302,7 @@ void AEntity_Player::OpenSkillTree()
 	}
 }
 
+
 //void AEntity_Player::OpenMenuWidget(E_MenuWidgetTypes MenuType)
 //{
 //	Widget MenuClass;
@@ -305,6 +318,7 @@ void AEntity_Player::OpenSkillTree()
 //	CurrentOpenMenuWidget = CreateWidget<MenuClass>(GetWorld(), MenuSubClass);
 //}
 
+
 // ------------------------- HUD
 void AEntity_Player::CreateStatusEffectWidget(F_StatusEffect_Base StatusEffect)
 {
@@ -317,6 +331,7 @@ void AEntity_Player::CreateStatusEffectWidget(F_StatusEffect_Base StatusEffect)
 		//GEngine->AddOnScreenDebugMessage(-1, 15.f, FColor::Orange, FString::Printf(TEXT("Update Status Effects: %d"), Player_HUD_Reference->StatusEffects_ScrollBox->GetChildrenCount()));
 	}
 }
+
 
 void AEntity_Player::UpdateStatusEffectWidgets()
 {
@@ -333,6 +348,7 @@ void AEntity_Player::UpdateStatusEffectWidgets()
 		}
 	}
 }
+
 
 // ------------------------- Non-Player Characters
 void AEntity_Player::Interact()
@@ -352,21 +368,38 @@ void AEntity_Player::Interact()
 	}
 }
 
+
+// ------------------------- Player
+void AEntity_Player::GainExperience(int ExperienceToGrant)
+{
+	Experience += ExperienceToGrant;
+
+	if (Experience >= (Level * 100)) {
+		Experience -= (Level * 100);
+		Level++;
+		GEngine->AddOnScreenDebugMessage(-1, 15.f, FColor::Yellow, FString::Printf(TEXT("Level Up!")));
+	}
+}
+
+
 // ------------------------- Equipment
 void AEntity_Player::EquipPrimaryWeapon()
 {
 	CurrentEquippedWeapon = PrimaryWeapon;
 }
 
+
 void AEntity_Player::EquipSecondaryWeapon()
 {
 	CurrentEquippedWeapon = SecondaryWeapon;
 }
 
+
 void AEntity_Player::EquipTertiaryWeapon()
 {
 	CurrentEquippedWeapon = TertiaryWeapon;
 }
+
 
 F_Item_BaseStruct AEntity_Player::ReturnEquippedWeapon()
 {

@@ -153,6 +153,10 @@ public:
 	UFUNCTION()
 	void Interact();
 
+// ------------------------- Player
+	UFUNCTION()
+	void GainExperience(int ExperienceToGrant);
+
 // ------------------------- Equipment
 	UFUNCTION()
 	void EquipPrimaryWeapon();
