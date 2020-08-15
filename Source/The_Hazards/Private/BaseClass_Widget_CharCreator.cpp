@@ -1,11 +1,9 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
-
 #include "BaseClass_Widget_CharCreator.h"
 
 #include "Entity_Base.h"
 #include "Entity_Player.h"
 #include "Runtime/Engine/Classes/Kismet/GameplayStatics.h"
+
 
 void UBaseClass_Widget_CharCreator::FinalizeCharacter()
 {

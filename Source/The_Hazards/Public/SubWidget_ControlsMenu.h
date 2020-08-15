@@ -4,14 +4,12 @@
 #include "Blueprint/UserWidget.h"
 
 #include "Components/Image.h"
-#include "Components/TextBlock.h"
-#include "Components/ScrollBox.h"
 
-#include "BaseClass_Widget_SaveLoad.generated.h"
+#include "SubWidget_ControlsMenu.generated.h"
 
 
 UCLASS()
-class THE_HAZARDS_API UBaseClass_Widget_SaveLoad : public UUserWidget
+class THE_HAZARDS_API USubWidget_ControlsMenu : public UUserWidget
 {
 	GENERATED_BODY()
 	
@@ -23,13 +21,10 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Components", meta = (BindWidget))
 	UImage* BackgroundImage;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components", meta = (BindWidget))
-	UScrollBox* SaveFileScrollBox;
+	// Mouse Sensitivity
 
 // Functions
 // --------------------------------------------------
 
-// ------------------------- Save Files
-	UFUNCTION()
-	void GetSaveFiles(bool SaveMode);
+// ------------------------- 
 };

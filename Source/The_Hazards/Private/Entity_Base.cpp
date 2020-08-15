@@ -421,7 +421,7 @@ void AEntity_Base::CalculateTotalStats()
 	// Step 6: Set (Current = Total * Temporary) Stats
 	CurrentStats = TotalStats; // Temporary
 
-	//CurrentStats.HealthPoints = (TotalStats.HealthPoints * (TemporaryStats.HealthPoints * TemporaryStats.SecondaryStats.Maximum_HealthPoints_Multiplier));
+	CurrentStats.HealthPoints = (TotalStats.HealthPoints * (TemporaryStats.HealthPoints * TemporaryStats.SecondaryStats.Maximum_HealthPoints_Multiplier));
 	CurrentStats.Move_Speed = (TotalStats.Move_Speed * (TemporaryStats.Move_Speed * TemporaryStats.SecondaryStats.MoveSpeed_Multiplier));
 
 	// Step 7: Assign Unreal Engine Variables such as MaxWalkSpeed

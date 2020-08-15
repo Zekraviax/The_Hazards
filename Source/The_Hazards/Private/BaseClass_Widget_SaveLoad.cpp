@@ -1,5 +1,7 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
-
 #include "BaseClass_Widget_SaveLoad.h"
 
+
+void UBaseClass_Widget_SaveLoad::GetSaveFiles(bool SaveMode)
+{
+
+}

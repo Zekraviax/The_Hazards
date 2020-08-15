@@ -10,6 +10,13 @@
 #include "BaseClass_Widget_CharacterSheet.h"
 #include "BaseClass_Widget_CharCreator.h"
 #include "BaseClass_Widget_SkillTree.h"
+#include "BaseClass_Widget_Options.h"
+#include "BaseClass_Widget_MainMenu.h"
+#include "BaseClass_Widget_SaveLoad.h"
+#include "SubWidget_AudioMenu.h"
+#include "SubWidget_GraphicsMenu.h"
+#include "SubWidget_ControlsMenu.h"
+#include "SubWidget_KeybindsMenu.h"
 #include "SubWidget_StatusEffectIcon.h"
 
 #include "Entity_Player.generated.h"
@@ -83,6 +90,27 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Widgets")
 	TSubclassOf<UBaseClass_Widget_ItemCraft> ItemCraft_Class;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Widgets")
+	TSubclassOf<UBaseClass_Widget_Options> OptionsMenu_Class;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Widgets")
+	TSubclassOf<USubwidget_AudioMenu> AudioMenu_Class;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Widgets")
+	TSubclassOf<USubWidget_GraphicsMenu> GraphicsMenu_Class;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Widgets")
+	TSubclassOf<USubWidget_ControlsMenu> ControlsMenu_Class;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Widgets")
+	TSubclassOf<USubWidget_KeybindsMenu> KeybindsMenu_Class;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Widgets")
+	TSubclassOf<UBaseClass_Widget_MainMenu> MainMenu_Class;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Widgets")
+	TSubclassOf<UBaseClass_Widget_SaveLoad> SaveLoad_Class;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Widgets")
 	TSubclassOf<UUserWidget> CurrentOpenMenuWidget_Class;
