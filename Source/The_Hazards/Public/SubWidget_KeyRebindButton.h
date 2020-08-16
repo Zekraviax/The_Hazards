@@ -49,6 +49,10 @@ public:
 // Functions
 // --------------------------------------------------
 
+// ------------------------- Widget
+	UFUNCTION()
+	void OnKeybindMenuOpen();
+
 // ------------------------- Rebind
 	UFUNCTION(BlueprintCallable)
 	void EnableRebindKeyMode();

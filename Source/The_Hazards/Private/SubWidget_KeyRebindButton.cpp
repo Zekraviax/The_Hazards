@@ -5,6 +5,12 @@
 #include "SubWidget_KeybindsMenu.h"
 
 
+void USubWidget_KeyRebindButton::OnKeybindMenuOpen()
+{
+	//KeyName->SetText(FText::FromName(MappingName));
+}
+
+
 void USubWidget_KeyRebindButton::EnableRebindKeyMode()
 {
 	if (KeybindsMenuReference) {
