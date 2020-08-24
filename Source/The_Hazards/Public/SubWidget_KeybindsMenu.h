@@ -7,6 +7,7 @@
 #include "Runtime/Engine/Classes/GameFramework/InputSettings.h"
 #include "Runtime/CoreUObject/Public/UObject/UObjectGlobals.h"
 #include "Components/Image.h"
+#include "Components/Button.h"
 
 #include "SubWidget_KeybindsMenu.generated.h"
 
@@ -30,6 +31,9 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Components", meta = (BindWidget))
 	UImage* BackgroundImage;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Components", meta = (BindWidget))
+	UButton* ApplyButton;
+
 // ------------------------- Widgets
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Widgets")
 	TSubclassOf<UBaseClass_Widget_Options> Options_Class;
@@ -39,6 +43,15 @@ public:
 	AEntity_Player* PlayerReference;
 
 // ------------------------- Rebind
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Rebind")
+	UInputSettings* InputSettings;
+
+	//UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Rebind")
+	//TArray<FInputAxisKeyMapping>& AxisMappings;
+
+	//UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Rebind")
+	//TArray<FInputActionKeyMapping>& ActionMappings;
+
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Rebind")
 	FName KeyName;
 
@@ -67,4 +80,7 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	void CancelRebindKey();
+
+	UFUNCTION(BlueprintCallable)
+	void ApplyReboundKeys();
 };

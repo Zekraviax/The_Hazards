@@ -15,6 +15,7 @@
 // Forward Declarations
 class AEntity_Player_MainMenu;
 class AEntity_Player;
+class USaveFile_Settings;
 
 
 UCLASS()

@@ -51,7 +51,7 @@ public:
 
 // ------------------------- Widgets
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Widgets")
-	TSubclassOf< UBaseClass_Widget_Options> Options_Class;
+	TSubclassOf<UBaseClass_Widget_Options> Options_Class;
 
 // ------------------------- References
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "References")

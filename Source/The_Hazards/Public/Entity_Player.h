@@ -25,8 +25,7 @@
 class ABaseClass_PlayerController;
 class AEntity_NPC;
 
-
-// Exclusive enums
+// Exclusive enum
 UENUM(BlueprintType)
 enum class E_MenuWidgetTypes : uint8
 {
@@ -35,6 +34,7 @@ enum class E_MenuWidgetTypes : uint8
 	E_Inventory,
 	E_SkillTree,
 };
+
 
 UCLASS()
 class THE_HAZARDS_API AEntity_Player : public AEntity_Base

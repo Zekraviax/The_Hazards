@@ -167,25 +167,22 @@ void AEntity_Player::OpenPauseMenu()
 {
 	//GEngine->AddOnScreenDebugMessage(-1, 15.f, FColor::Green, FString::Printf(TEXT("Pause Menu Functions")));
 
-	//if (PauseMenu_Class && CurrentOpenMenuWidget) {
-		// Close pause menu widget and resume game
-		if (CurrentOpenMenuWidget_Class == PauseMenu_Class) {
-			GEngine->AddOnScreenDebugMessage(-1, 15.f, FColor::Yellow, FString::Printf(TEXT("Close PauseMenu and resume Game")));
-			UGameplayStatics::SetGamePaused(GetWorld(), false);
+	// Close pause menu widget and resume game
+	if (CurrentOpenMenuWidget_Class == PauseMenu_Class) {
+		//GEngine->AddOnScreenDebugMessage(-1, 15.f, FColor::Yellow, FString::Printf(TEXT("Close PauseMenu and resume Game")));
+		UGameplayStatics::SetGamePaused(GetWorld(), false);
 
-			CurrentOpenMenuWidget->RemoveFromParent();
-			CurrentOpenMenuWidget = NULL;
-			CurrentOpenMenuWidget_Class = NULL;
-		}
-	//} 
+		CurrentOpenMenuWidget->RemoveFromParent();
+		CurrentOpenMenuWidget = NULL;
+		CurrentOpenMenuWidget_Class = NULL;
+	}
 	// Create options menu widget and add to viewport
-	//else if (AudioMenu_Class && KeybindsMenu_Class && GraphicsMenu_Class && ControlsMenu_Class && CurrentOpenMenuWidget) {
 	else if (CurrentOpenMenuWidget_Class == AudioMenu_Class ||
 		CurrentOpenMenuWidget_Class == GraphicsMenu_Class ||
 		CurrentOpenMenuWidget_Class == KeybindsMenu_Class ||
 		CurrentOpenMenuWidget_Class == ControlsMenu_Class) {
 
-		GEngine->AddOnScreenDebugMessage(-1, 15.f, FColor::Yellow, FString::Printf(TEXT("Close Options SubMenu and open OptionsMenu")));
+		//GEngine->AddOnScreenDebugMessage(-1, 15.f, FColor::Yellow, FString::Printf(TEXT("Close Options SubMenu and open OptionsMenu")));
 		CurrentOpenMenuWidget->RemoveFromParent();
 		CurrentOpenMenuWidget = NULL;
 		CurrentOpenMenuWidget_Class = NULL;
@@ -196,14 +193,13 @@ void AEntity_Player::OpenPauseMenu()
 		CurrentOpenMenuWidget_Class = OptionsMenu_Class;
 	}
 	else if (CurrentOpenMenuWidget_Class == OptionsMenu_Class) {
-		GEngine->AddOnScreenDebugMessage(-1, 15.f, FColor::Yellow, FString::Printf(TEXT("Close OptionsMenu and open PauseMenu")));
+		//GEngine->AddOnScreenDebugMessage(-1, 15.f, FColor::Yellow, FString::Printf(TEXT("Close OptionsMenu and open PauseMenu")));
 
 		Cast<UBaseClass_Widget_Options>(CurrentOpenMenuWidget)->CloseMenu();
 	}
-	//}
 	// Create pause menu widget, add to viewport, and pause game
 	else {
-		GEngine->AddOnScreenDebugMessage(-1, 15.f, FColor::Yellow, FString::Printf(TEXT("Pause Game and open PauseMenu")));
+		//GEngine->AddOnScreenDebugMessage(-1, 15.f, FColor::Yellow, FString::Printf(TEXT("Pause Game and open PauseMenu")));
 		// Remove other widgets from screen
 		if (CurrentOpenMenuWidget) {
 			CurrentOpenMenuWidget->RemoveFromParent();

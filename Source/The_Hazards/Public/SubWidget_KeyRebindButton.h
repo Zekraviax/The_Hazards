@@ -38,6 +38,9 @@ public:
 	FName MappingName;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Mapping")
+	bool IsPrimaryKey;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Mapping")
 	bool IsAxisMapping;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Mapping")

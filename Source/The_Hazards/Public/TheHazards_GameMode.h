@@ -868,6 +868,34 @@ struct THE_HAZARDS_API F_AI_Behaviours
 	}
 };
 
+// ------------------------- Settings
+USTRUCT(BlueprintType)
+struct THE_HAZARDS_API F_Settings_VolumeSettings
+{
+	GENERATED_BODY()
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float MasterVolume;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float MusicVolume;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float AmbientVolume;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float EffectsVolume;
+
+	F_Settings_VolumeSettings()
+	{
+		MasterVolume = 0.75f;
+		MusicVolume = 0.75f;
+		AmbientVolume = 0.75f;
+		EffectsVolume = 0.75f;
+	}
+};
+
+
 // --------------------------------------------------
 
 UCLASS()
@@ -876,4 +904,12 @@ class THE_HAZARDS_API ATheHazards_GameMode : public AGameModeBase
 	GENERATED_BODY()
 
 	virtual void StartPlay() override;
+
+public:
+// Base Variables
+// --------------------------------------------------
+
+// ------------------------- Variables
+	UPROPERTY()
+	F_Settings_VolumeSettings VolumeSettings;
 };

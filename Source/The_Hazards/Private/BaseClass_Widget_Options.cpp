@@ -1,6 +1,7 @@
 #include "BaseClass_Widget_Options.h"
 
 #include "Entity_Player_MainMenu.h"
+#include "SaveFile_Settings.h"
 
 
 void UBaseClass_Widget_Options::OpenGraphicsMenu()
@@ -28,6 +29,8 @@ void UBaseClass_Widget_Options::OpenAudioMenu()
 		PlayerReference->CurrentOpenMenuWidget_Class = NULL;
 
 		CurrentOpenMenuWidget = CreateWidget<USubwidget_AudioMenu>(GetWorld(), AudioMenu_Class);
+		Cast<USubwidget_AudioMenu>(CurrentOpenMenuWidget)->PlayerReference = PlayerReference;
+		Cast<USubwidget_AudioMenu>(CurrentOpenMenuWidget)->OpenWidget();
 		CurrentOpenMenuWidget->AddToViewport();
 
 		PlayerReference->CurrentOpenMenuWidget = CurrentOpenMenuWidget;
@@ -61,7 +64,6 @@ void UBaseClass_Widget_Options::OpenKeybindsMenu()
 
 		CurrentOpenMenuWidget = CreateWidget<USubWidget_KeybindsMenu>(GetWorld(), KeybindsMenu_Class);
 		Cast<USubWidget_KeybindsMenu>(CurrentOpenMenuWidget)->PlayerReference = PlayerReference;
-		Cast<USubWidget_KeybindsMenu>(CurrentOpenMenuWidget)->OpenWidget();
 
 		if (!Cast<USubWidget_KeybindsMenu>(CurrentOpenMenuWidget)->Options_Class)
 			Cast<USubWidget_KeybindsMenu>(CurrentOpenMenuWidget)->Options_Class = this->GetClass();
@@ -70,6 +72,8 @@ void UBaseClass_Widget_Options::OpenKeybindsMenu()
 
 		PlayerReference->CurrentOpenMenuWidget = CurrentOpenMenuWidget;
 		PlayerReference->CurrentOpenMenuWidget_Class = KeybindsMenu_Class;
+
+		Cast<USubWidget_KeybindsMenu>(CurrentOpenMenuWidget)->OpenWidget();
 	}
 }
 
@@ -94,8 +98,7 @@ void UBaseClass_Widget_Options::CloseMenu()
 			PlayerReference->CurrentOpenMenuWidget = CurrentOpenMenuWidget;
 			PlayerReference->CurrentOpenMenuWidget_Class = PauseMenu_Class;
 		}
-		else {
 
-		}
+		// Save Settings
 	}
 }
