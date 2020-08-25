@@ -20,6 +20,7 @@ void USubWidget_KeyRebindButton::EnableRebindKeyMode()
 
 			KeybindsMenuReference->KeyName = MappingName;
 			KeybindsMenuReference->KeyIsAxis = IsAxisMapping;
+			KeybindsMenuReference->KeyIsPrimary = IsPrimaryKey;
 			KeybindsMenuReference->KeyAxisScale = AxisMappingScale;
 
 			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::White, TEXT("Press any key except Escape to rebind."));

@@ -59,6 +59,9 @@ public:
 	bool KeyIsAxis;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Rebind")
+	bool KeyIsPrimary;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Rebind")
 	float KeyAxisScale;
 
 // Functions

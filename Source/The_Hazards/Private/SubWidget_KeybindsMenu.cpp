@@ -8,6 +8,11 @@
 void USubWidget_KeybindsMenu::OpenWidget()
 {
 	InputSettings = const_cast<UInputSettings*>(GetDefault<UInputSettings>());
+	//TArray<FInputAxisKeyMapping>& AxisMappings = InputSettings->AxisMappings;
+	//TArray<FInputActionKeyMapping>& ActionMappings = InputSettings->ActionMappings;
+
+	TArray<FInputAxisKeyMapping> AxisKeybindsArray;
+	TArray<FInputActionKeyMapping> ActionKeybindsArray;
 
 	// Get all KeyRebindButtons and set their KeybindsMenu reference to this
 	for (TObjectIterator<USubWidget_KeyRebindButton> Itr; Itr; ++Itr) {
@@ -16,32 +21,34 @@ void USubWidget_KeybindsMenu::OpenWidget()
 		if (!FoundWidget->KeybindsMenuReference) {
 			//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Orange, FString::Printf(TEXT("Found KeyRebindButton")));
 			FoundWidget->KeybindsMenuReference = this;
+		}
 
-			if (FoundWidget->KeyName->IsValidLowLevel()) {
-				if (FoundWidget->IsAxisMapping) {
-					TArray<FInputAxisKeyMapping>& AxisMappings = InputSettings->AxisMappings;
-
-					for (FInputAxisKeyMapping& Key : AxisMappings) {
-						if (Key.AxisName.ToString() == FoundWidget->MappingName.ToString()) {
-							FoundWidget->KeyName->SetText(Key.Key.GetDisplayName());
-							break;
-						}
-					}
+		if (FoundWidget->KeyName->IsValidLowLevel()) {
+			if (FoundWidget->IsAxisMapping) {
+				AxisKeybindsArray = UGameplayStatics::GetPlayerController(GetWorld(), 0)->PlayerInput->GetKeysForAxis(FoundWidget->MappingName);
+				if (FoundWidget->IsPrimaryKey && AxisKeybindsArray.IsValidIndex(0)) {
+					FoundWidget->KeyName->SetText(AxisKeybindsArray[0].Key.GetDisplayName());
 				} else {
-					TArray<FInputActionKeyMapping>& ActionMappings = InputSettings->ActionMappings;
-
-					for (FInputActionKeyMapping& Key : ActionMappings) {
-						if (Key.ActionName.ToString() == FoundWidget->MappingName.ToString()) {
-							//GEngine->AddOnScreenDebugMessage(-1, 15.f, FColor::Orange, FString::Printf(TEXT("Action Key: %s"), *Key.ActionName.ToString()));
-							FoundWidget->KeyName->SetText(Key.Key.GetDisplayName());
-							break;
-						}
-						//else {
-						//	GEngine->AddOnScreenDebugMessage(-1, 15.f, FColor::Orange, FString::Printf(TEXT("%s != %s"), *Key.ActionName.ToString(), *FoundWidget->MappingName.ToString()));
-						//}
+					if (AxisKeybindsArray.IsValidIndex(1)) {
+						FoundWidget->KeyName->SetText(AxisKeybindsArray[1].Key.GetDisplayName());
+					} else {
+						FoundWidget->KeyName->SetText(FText::FromString("None"));
 					}
 				}
-			} 
+			} else {
+				ActionKeybindsArray = UGameplayStatics::GetPlayerController(GetWorld(), 0)->PlayerInput->GetKeysForAction(FoundWidget->MappingName);
+				if (FoundWidget->IsPrimaryKey && ActionKeybindsArray.IsValidIndex(0)) {
+					FoundWidget->KeyName->SetText(ActionKeybindsArray[0].Key.GetDisplayName());
+				}
+				else {
+					if (ActionKeybindsArray.IsValidIndex(1)) {
+						FoundWidget->KeyName->SetText(ActionKeybindsArray[1].Key.GetDisplayName());
+					}
+					else {
+						FoundWidget->KeyName->SetText(FText::FromString("None"));
+					}
+				}
+			}
 		}
 	}
 }
@@ -64,30 +71,49 @@ void USubWidget_KeybindsMenu::CloseWidget()
 
 void USubWidget_KeybindsMenu::RebindAxisKey(FInputAxisKeyMapping AxisKey)
 {
-	//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Purple, FString::Printf(TEXT("Rebind Axis Key")));
-
 	if (!InputSettings->IsValidLowLevel())
 		InputSettings = const_cast<UInputSettings*>(GetDefault<UInputSettings>());
 
 	//if (!InputSettings)
 	//	return false;
 
+	TArray<FInputAxisKeyMapping> AxisKeybindsArray = UGameplayStatics::GetPlayerController(GetWorld(), 0)->PlayerInput->GetKeysForAxis(KeyName);
+
 	if (InputSettings) {
 		TArray<FInputAxisKeyMapping>& AxisMappings = InputSettings->AxisMappings;
 
 		for (FInputAxisKeyMapping& Key : AxisMappings) {
-			if (Key.AxisName.ToString() == KeyName.ToString()) {
-				GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("Found %s"), *Key.AxisName.ToString()));
+			if (KeyIsPrimary && AxisKeybindsArray.IsValidIndex(0)) {
+				if (Key.AxisName.ToString() == AxisKeybindsArray[0].AxisName.ToString()) {
+					GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Green, FString::Printf(TEXT("Found %s"), *Key.AxisName.ToString()));
 
-				InputSettings->RemoveAxisMapping(Key, false);
-				InputSettings->AddAxisMapping(FInputAxisKeyMapping(KeyName, AxisKey.Key, KeyAxisScale), true);
+					InputSettings->RemoveAxisMapping(Key, false);
+					InputSettings->AddAxisMapping(FInputAxisKeyMapping(KeyName, AxisKey.Key, KeyAxisScale), true);
 
-				if (!ApplyButton->bIsEnabled) {
-					ApplyButton->SetIsEnabled(true);
+					if (!ApplyButton->bIsEnabled) {
+						ApplyButton->SetIsEnabled(true);
+					}
+
+					CancelRebindKey();
+					break;
 				}
+			} else if (AxisKeybindsArray.IsValidIndex(1)) {
+				GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Yellow, FString::Printf(TEXT("Found %s"), *Key.Key.GetDisplayName().ToString()));
+				GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Yellow, FString::Printf(TEXT("Key: %s"), *AxisKeybindsArray[1].Key.GetDisplayName().ToString()));
 
-				CancelRebindKey();
-				break;
+				if (Key.Key.GetDisplayName().ToString() == AxisKeybindsArray[1].Key.GetDisplayName().ToString()) {
+					InputSettings->RemoveAxisMapping(Key, false);
+					InputSettings->AddAxisMapping(FInputAxisKeyMapping(KeyName, AxisKey.Key, KeyAxisScale), true);
+
+					if (!ApplyButton->bIsEnabled) {
+						ApplyButton->SetIsEnabled(true);
+					}
+
+					CancelRebindKey();
+					break;
+				}
+			} else {
+				//CancelRebindKey();
 			}
 		}
 	}
@@ -96,31 +122,51 @@ void USubWidget_KeybindsMenu::RebindAxisKey(FInputAxisKeyMapping AxisKey)
 
 void USubWidget_KeybindsMenu::RebindActionKey(FInputActionKeyMapping ActionKey)
 {
-	//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Purple, FString::Printf(TEXT("Rebind Action Key")));
-
 	if (!InputSettings->IsValidLowLevel())
 		InputSettings = const_cast<UInputSettings*>(GetDefault<UInputSettings>());
 
 	//if (!InputSettings)
 	//	return false;
 
+	TArray<FInputActionKeyMapping> ActionKeybindsArray = UGameplayStatics::GetPlayerController(GetWorld(), 0)->PlayerInput->GetKeysForAction(KeyName);
+
 	if (InputSettings) {
 		TArray<FInputActionKeyMapping>& ActionMappings = InputSettings->ActionMappings;
 
 		for (FInputActionKeyMapping& Key : ActionMappings) {
-			if (Key.ActionName.ToString() == KeyName.ToString()) {
-				GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("Found %s"), *Key.ActionName.ToString()));
+			if (KeyIsPrimary && ActionKeybindsArray.IsValidIndex(0)) {
+				if (Key.ActionName.ToString() == ActionKeybindsArray[0].ActionName.ToString()) {
+					GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Green, FString::Printf(TEXT("Found %s"), *Key.ActionName.ToString()));
 
-				InputSettings->RemoveActionMapping(Key, false);
-				InputSettings->AddActionMapping(FInputActionKeyMapping(KeyName, ActionKey.Key, false, false, false, false), true);
+					InputSettings->RemoveActionMapping(Key, false);
+					InputSettings->AddActionMapping(FInputActionKeyMapping(KeyName, ActionKey.Key, false, false, false, false), true);
 
-				// Enable apply button
-				if (!ApplyButton->bIsEnabled) {
-					ApplyButton->SetIsEnabled(true);
+					if (!ApplyButton->bIsEnabled) {
+						ApplyButton->SetIsEnabled(true);
+					}
+
+					CancelRebindKey();
+					break;
 				}
+			}
+			else if (ActionKeybindsArray.IsValidIndex(1)) {
+				GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Yellow, FString::Printf(TEXT("Found %s"), *Key.Key.GetDisplayName().ToString()));
+				GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Yellow, FString::Printf(TEXT("Key: %s"), *ActionKeybindsArray[1].Key.GetDisplayName().ToString()));
 
-				CancelRebindKey();
-				break;
+				if (Key.Key.GetDisplayName().ToString() == ActionKeybindsArray[1].Key.GetDisplayName().ToString()) {
+					InputSettings->RemoveActionMapping(Key, false);
+					InputSettings->AddActionMapping(FInputActionKeyMapping(KeyName, ActionKey.Key, false, false, false, false), true);
+
+					if (!ApplyButton->bIsEnabled) {
+						ApplyButton->SetIsEnabled(true);
+					}
+
+					CancelRebindKey();
+					break;
+				}
+			}
+			else {
+				//CancelRebindKey();
 			}
 		}
 	}
