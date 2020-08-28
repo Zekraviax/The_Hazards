@@ -46,11 +46,8 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Rebind")
 	UInputSettings* InputSettings;
 
-	//UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Rebind")
-	//TArray<FInputAxisKeyMapping>& AxisMappings;
-
-	//UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Rebind")
-	//TArray<FInputActionKeyMapping>& ActionMappings;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Rebind")
+	USubWidget_KeyRebindButton* CurrentSelectedButton;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Rebind")
 	FName KeyName;

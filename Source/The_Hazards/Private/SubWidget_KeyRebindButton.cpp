@@ -11,6 +11,19 @@ void USubWidget_KeyRebindButton::OnKeybindMenuOpen()
 }
 
 
+void USubWidget_KeyRebindButton::UpdateText()
+{
+	if (KeyName->IsValidLowLevel()) {
+		if (AxisKey.Key.IsValid())
+			KeyName->SetText(AxisKey.Key.GetDisplayName());
+		else if (ActionKey.Key.IsValid())
+			KeyName->SetText(ActionKey.Key.GetDisplayName());
+		else
+			KeyName->SetText(FText::FromString("None"));
+	}
+}
+
+
 void USubWidget_KeyRebindButton::EnableRebindKeyMode()
 {
 	if (KeybindsMenuReference) {
@@ -22,6 +35,7 @@ void USubWidget_KeyRebindButton::EnableRebindKeyMode()
 			KeybindsMenuReference->KeyIsAxis = IsAxisMapping;
 			KeybindsMenuReference->KeyIsPrimary = IsPrimaryKey;
 			KeybindsMenuReference->KeyAxisScale = AxisMappingScale;
+			KeybindsMenuReference->CurrentSelectedButton = this;
 
 			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::White, TEXT("Press any key except Escape to rebind."));
 		}

@@ -34,6 +34,12 @@ public:
 	USubWidget_KeybindsMenu* KeybindsMenuReference;
 
 // ------------------------- Mapping
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Mapping")
+	FInputAxisKeyMapping AxisKey;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Mapping")
+	FInputActionKeyMapping ActionKey;
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Mapping")
 	FName MappingName;
 
@@ -55,6 +61,9 @@ public:
 // ------------------------- Widget
 	UFUNCTION()
 	void OnKeybindMenuOpen();
+
+	UFUNCTION()
+	void UpdateText();
 
 // ------------------------- Rebind
 	UFUNCTION(BlueprintCallable)
