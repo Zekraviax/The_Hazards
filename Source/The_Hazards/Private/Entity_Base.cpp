@@ -274,11 +274,11 @@ void AEntity_Base::CalculateTotalStats()
 	// Step 2: Get all stat changes from Skills
 	if (SkillsFunctionLibrary_Reference) {
 		if (KnownSkills.Num() > 0) {
-			for (int i = 0; i < KnownSkills.Num(); i++) {
-				if (SkillsFunctionLibrary_Reference && KnownSkills[i].CurrentLevel > 0 && KnownSkills[i].ActivationCondition == E_Skill_ActivationCondition::E_Passive) {
-					SkillsFunctionLibrary_Reference->CallSkillFunction(KnownSkills[i].SkillIndex);
-				}
-			}
+			//for (int i = 0; i < KnownSkills.Num(); i++) {
+			//	if (SkillsFunctionLibrary_Reference && KnownSkills[i].CurrentLevel > 0 && KnownSkills[i].ActivationCondition == E_Skill_ActivationCondition::E_Passive) {
+			//		SkillsFunctionLibrary_Reference->CallSkillFunction(KnownSkills[i].SkillIndex);
+			//	}
+			//}
 		}
 	}
 

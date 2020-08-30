@@ -6,6 +6,7 @@
 #include "Runtime/Engine/Classes/GameFramework/PlayerInput.h"
 #include "Runtime/Engine/Classes/GameFramework/InputSettings.h"
 #include "Runtime/CoreUObject/Public/UObject/UObjectGlobals.h"
+#include "Framework/Commands/InputChord.h"
 #include "Components/Image.h"
 #include "Components/Button.h"
 
@@ -77,6 +78,9 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	void RebindActionKey(FInputActionKeyMapping ActionKey);
+
+	UFUNCTION(BlueprintCallable)
+	void RebindAnyKey(FKey Key);
 
 	UFUNCTION(BlueprintCallable)
 	void CancelRebindKey();

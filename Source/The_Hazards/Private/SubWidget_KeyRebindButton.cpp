@@ -7,7 +7,7 @@
 
 void USubWidget_KeyRebindButton::OnKeybindMenuOpen()
 {
-	//KeyName->SetText(FText::FromName(MappingName));
+
 }
 
 

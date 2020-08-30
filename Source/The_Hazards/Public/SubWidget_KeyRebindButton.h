@@ -52,8 +52,6 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Mapping")
 	float AxisMappingScale;
 
-// ------------------------- 
-	//UInputSettings *Settings
 
 // Functions
 // --------------------------------------------------

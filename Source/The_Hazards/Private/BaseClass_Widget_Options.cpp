@@ -68,12 +68,11 @@ void UBaseClass_Widget_Options::OpenKeybindsMenu()
 		if (!Cast<USubWidget_KeybindsMenu>(CurrentOpenMenuWidget)->Options_Class)
 			Cast<USubWidget_KeybindsMenu>(CurrentOpenMenuWidget)->Options_Class = this->GetClass();
 
-		CurrentOpenMenuWidget->AddToViewport();
-
 		PlayerReference->CurrentOpenMenuWidget = CurrentOpenMenuWidget;
 		PlayerReference->CurrentOpenMenuWidget_Class = KeybindsMenu_Class;
-
 		Cast<USubWidget_KeybindsMenu>(CurrentOpenMenuWidget)->OpenWidget();
+
+		CurrentOpenMenuWidget->AddToViewport();
 	}
 }
 
