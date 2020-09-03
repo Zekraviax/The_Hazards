@@ -336,6 +336,16 @@ void AEntity_Player::OpenSkillTree()
 }
 
 
+void AEntity_Player::OpenMainMenu()
+{
+	if (MainMenu_Class) {
+		CurrentOpenMenuWidget = CreateWidget<UBaseClass_Widget_MainMenu>(GetWorld(), MainMenu_Class);
+		CurrentOpenMenuWidget->AddToViewport();
+		CurrentOpenMenuWidget = NULL;
+	}
+}
+
+
 //void AEntity_Player::OpenMenuWidget(E_MenuWidgetTypes MenuType)
 //{
 //	Widget MenuClass;

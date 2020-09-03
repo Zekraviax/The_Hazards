@@ -10,4 +10,11 @@ class THE_HAZARDS_API USaveFile_MetaList : public USaveGame
 {
 	GENERATED_BODY()
 	
+public:
+// Base Variables
+// --------------------------------------------------
+
+// ------------------------- Save Data
+	UPROPERTY()
+	TArray<FString> SaveFileNames;
 };

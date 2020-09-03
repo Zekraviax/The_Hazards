@@ -6,11 +6,15 @@
 #include "Components/Image.h"
 #include "Components/TextBlock.h"
 #include "Components/ScrollBox.h"
-#include "SubWidget_SaveLoadSlot.h"
 #include "Kismet/GameplayStatics.h"
-//#include "GameFramework/AsyncActionHandleSaveGame.h"
+#include "UObject/UObjectGlobals.h"
+#include "GameFramework/AsyncActionHandleSaveGame.h"
+#include "SubWidget_SaveLoadSlot.h"
 
 #include "BaseClass_Widget_SaveLoad.generated.h"
+
+// Forward Declarations
+class AEntity_Player;
 
 
 UCLASS()
@@ -35,6 +39,10 @@ public:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Widgets")
 	USubWidget_SaveLoadSlot* SaveLoadSlot_Reference;
+
+// ------------------------- References
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "References")
+	AEntity_Player* PlayerReference;
 
 // Functions
 // --------------------------------------------------

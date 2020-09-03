@@ -44,3 +44,9 @@ void UBaseClass_Widget_MainMenu::QuitGame()
 {
 	FWindowsPlatformMisc::RequestExit(false);
 }
+
+
+//void UBaseClass_Widget_MainMenu::OpenSaveLoadMenu(bool SaveMode)
+//{
+//
+//}

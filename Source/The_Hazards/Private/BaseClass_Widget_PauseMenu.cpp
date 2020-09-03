@@ -37,3 +37,19 @@ void UBaseClass_Widget_PauseMenu::OpenOptionsMenu()
 		LocalPlayerReference->CurrentOpenMenuWidget_Class = OptionsWidget_Class;
 	}
 }
+
+
+void UBaseClass_Widget_PauseMenu::OpenSaveLoadMenu(bool SaveMode)
+{
+	if (LocalPlayerReference && SaveLoadWidget_Class) {
+		LocalPlayerReference->CurrentOpenMenuWidget->RemoveFromParent();
+		LocalPlayerReference->CurrentOpenMenuWidget = NULL;
+		LocalPlayerReference->CurrentOpenMenuWidget_Class = NULL;
+
+		LocalPlayerReference->CurrentOpenMenuWidget = CreateWidget<UBaseClass_Widget_SaveLoad>(GetWorld(), SaveLoadWidget_Class);
+		Cast<UBaseClass_Widget_SaveLoad>(LocalPlayerReference->CurrentOpenMenuWidget)->PlayerReference = LocalPlayerReference;
+		Cast<UBaseClass_Widget_SaveLoad>(LocalPlayerReference->CurrentOpenMenuWidget)->GetSaveFiles(SaveMode);
+		LocalPlayerReference->CurrentOpenMenuWidget->AddToViewport();
+		LocalPlayerReference->CurrentOpenMenuWidget_Class = SaveLoadWidget_Class;
+	}
+}

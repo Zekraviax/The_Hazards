@@ -170,6 +170,9 @@ public:
 	UFUNCTION()
 	void OpenSkillTree();
 
+	UFUNCTION(BlueprintCallable)
+	void OpenMainMenu();
+
 // ------------------------- Widgets
 	UFUNCTION()
 	void CreateStatusEffectWidget(F_StatusEffect_Base StatusEffect);

@@ -16,10 +16,7 @@ void USubWidget_KeybindsMenu::OpenWidget()
 	for (TObjectIterator<USubWidget_KeyRebindButton> Itr; Itr; ++Itr) {
 		USubWidget_KeyRebindButton *FoundWidget = *Itr;
 
-		//if (!FoundWidget->KeybindsMenuReference) {
-			//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Orange, FString::Printf(TEXT("Found KeyRebindButton")));
 		FoundWidget->KeybindsMenuReference = this;
-		//}
 
 		if (FoundWidget->KeyName->IsValidLowLevel()) {
 			if (FoundWidget->IsAxisMapping) {
@@ -82,7 +79,7 @@ void USubWidget_KeybindsMenu::RebindAxisKey(FInputAxisKeyMapping AxisKey)
 	TArray<FInputAxisKeyMapping> AxisKeybindsArray = UGameplayStatics::GetPlayerController(GetWorld(), 0)->PlayerInput->GetKeysForAxis(KeyName);
 
 	if (InputSettings) {
-		TArray<FInputAxisKeyMapping>& AxisMappings = InputSettings->AxisMappings;
+		TArray<FInputAxisKeyMapping> AxisMappings = InputSettings->GetAxisMappings();
 		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Orange, FString::Printf(TEXT("Rebind Axis Key")));
 
 		for (FInputAxisKeyMapping& Key : AxisMappings) {
@@ -150,7 +147,7 @@ void USubWidget_KeybindsMenu::RebindActionKey(FInputActionKeyMapping ActionKey)
 	TArray<FInputActionKeyMapping> ActionKeybindsArray = UGameplayStatics::GetPlayerController(GetWorld(), 0)->PlayerInput->GetKeysForAction(KeyName);
 
 	if (InputSettings) {
-		TArray<FInputActionKeyMapping>& ActionMappings = InputSettings->ActionMappings;
+		TArray<FInputActionKeyMapping> ActionMappings = InputSettings->GetActionMappings();
 		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Orange, FString::Printf(TEXT("Rebind Action Key")));
 
 		for (FInputActionKeyMapping& Key : ActionMappings) {
