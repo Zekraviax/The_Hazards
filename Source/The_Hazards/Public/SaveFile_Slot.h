@@ -4,8 +4,13 @@
 #include "GameFramework/SaveGame.h"
 
 #include "TheHazards_GameMode.h"
+#include "Misc/DateTime.h"
 
 #include "SaveFile_Slot.generated.h"
+
+// Forward Declarations
+class AEntity_Player;
+class AEntity_EnemyNPC;
 
 
 UCLASS()
@@ -19,26 +24,35 @@ public:
 // Slot Variables
 // --------------------------------------------------
 	UPROPERTY()
-	FString SlotName;
+	FText SaveSlotName;
 
-// Player Variables
+	UPROPERTY()
+	FDateTime DateSaved;
+
+	UPROPERTY()
+	int SlotNumber;
+
+	UPROPERTY()
+	int CurrentTotalManualSaveCount;
+
+// ------------------------- References
+	UPROPERTY()
+	AEntity_Player* PlayerReference;
+
+	UPROPERTY()
+	TArray<AEntity_EnemyNPC*> EnemyReferencesArray;
+
+// Level Variables
 // --------------------------------------------------
 
-// ------------------------- Character
-	UPROPERTY()
-	F_Entity_CharacterSheet CharacterSheet;
+// ------------------------- Entities
 
-	UPROPERTY()
-	int32 Level;
-
-	UPROPERTY()
-	int32 Experience;
-
-	UPROPERTY()
-	int32 Money;
-
-	UPROPERTY()
-	int32 Scrap;
 	
 // ------------------------- Level
+
+
+// Save Functions
+// --------------------------------------------------
+	UFUNCTION()
+	void SaveGameDelegateFunction(const FString& SlotName, const int32 UserIndex, bool bSuccess);
 };

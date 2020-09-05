@@ -25,6 +25,7 @@
 class ABaseClass_PlayerController;
 class AEntity_NPC;
 
+
 // Exclusive enum
 UENUM(BlueprintType)
 enum class E_MenuWidgetTypes : uint8
@@ -134,6 +135,10 @@ public:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Technical Variables")
 	AEntity_NPC* ConversingActor;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Technical Variables")
+	bool LockMenuButtonActions;
+	
 
 // Functions
 // --------------------------------------------------

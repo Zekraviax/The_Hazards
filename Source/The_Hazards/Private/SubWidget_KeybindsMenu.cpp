@@ -56,6 +56,8 @@ void USubWidget_KeybindsMenu::OpenWidget()
 void USubWidget_KeybindsMenu::CloseWidget()
 {
 	if (PlayerReference && Options_Class) {
+		PlayerReference->LockMenuButtonActions = false;
+
 		PlayerReference->CurrentOpenMenuWidget->RemoveFromParent();
 		PlayerReference->CurrentOpenMenuWidget = NULL;
 		PlayerReference->CurrentOpenMenuWidget_Class = NULL;
@@ -235,7 +237,14 @@ void USubWidget_KeybindsMenu::RebindAnyKey(FKey Key)
 void USubWidget_KeybindsMenu::CancelRebindKey()
 {
 	//this->bIsFocusable = false;
+
+	//if (PlayerReference->LockMenuButtonActions) {
+	//	PlayerReference->LockMenuButtonActions = false;
+	//}
+
 	Cast<ABaseClass_PlayerController>(PlayerReference->GetController())->SetInputMode(FInputModeGameOnly());
+
+	//PlayerReference->LockMenuButtonActions = false;
 }
 
 
@@ -247,4 +256,6 @@ void USubWidget_KeybindsMenu::ApplyReboundKeys()
 	if (ApplyButton->bIsEnabled) {
 		ApplyButton->SetIsEnabled(false);
 	}
+
+	PlayerReference->LockMenuButtonActions = false;
 }

@@ -17,4 +17,7 @@ public:
 // ------------------------- Save Data
 	UPROPERTY()
 	TArray<FString> SaveFileNames;
+
+	UPROPERTY()
+	int TotalManualSaveCount;
 };

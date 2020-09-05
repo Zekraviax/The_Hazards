@@ -5,11 +5,15 @@
 
 #include "Components/TextBlock.h"
 #include "Components/Button.h"
+#include "GameFramework/SaveGame.h"
+#include "Kismet/GameplayStatics.h"
+#include "Misc/DateTime.h"
 
 #include "SubWidget_SaveLoadSlot.generated.h"
 
 // Forward Declarations
 class USaveFile_Slot;
+class USubWidget_NameSaveFile;
 
 
 // Exclusive enum
@@ -36,7 +40,35 @@ public:
 	UButton* SelectButton;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Components", meta = (BindWidget))
+	UTextBlock* SelectButtonText;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Components", meta = (BindWidget))
 	UTextBlock* SlotNameText;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Components", meta = (BindWidget))
+	UTextBlock* CharacterNameText;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Components", meta = (BindWidget))
+	UTextBlock* LevelText;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Components", meta = (BindWidget))
+	UTextBlock* PlaytimeText;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Components", meta = (BindWidget))
+	UTextBlock* DateSavedText;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Components", meta = (BindWidget))
+	UTextBlock* SlotNumberText;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Components", meta = (BindWidget))
+	UTextBlock* SaveCountText;
+
+// ------------------------- Widgets
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Widgets")
+	TSubclassOf<USubWidget_NameSaveFile> NameSaveFileWidget_Class;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Widgets")
+	USubWidget_NameSaveFile* NameSaveFileWidget_Reference;
 
 // ------------------------- Save/Load
 	UPROPERTY()
@@ -45,8 +77,12 @@ public:
 	UPROPERTY()
 	E_SaveLoadSlotFunctions SlotFunction;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Save/Load")
+	TSubclassOf<USaveFile_Slot> SlotClass;
+
 	UPROPERTY()
-	USaveFile_Slot* SlotData;
+	USaveFile_Slot* SlotReference;
+
 
 // Functions
 // --------------------------------------------------
@@ -57,4 +93,7 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	void SelectSlot();
+
+	UFUNCTION()
+	void CreateNewSaveFileSlot(FText SaveSlotName);
 };

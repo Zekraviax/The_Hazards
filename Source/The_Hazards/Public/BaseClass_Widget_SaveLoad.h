@@ -15,6 +15,7 @@
 
 // Forward Declarations
 class AEntity_Player;
+class UBaseClass_Widget_PauseMenu;
 
 
 UCLASS()
@@ -40,6 +41,12 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Widgets")
 	USubWidget_SaveLoadSlot* SaveLoadSlot_Reference;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Widgets")
+	TSubclassOf<UBaseClass_Widget_PauseMenu> PauseMenu_Class;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Widgets")
+	UBaseClass_Widget_PauseMenu* PauseMenu_Reference;
+
 // ------------------------- References
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "References")
 	AEntity_Player* PlayerReference;
@@ -50,4 +57,7 @@ public:
 // ------------------------- Save Files
 	UFUNCTION()
 	void GetSaveFiles(bool SaveMode);
+
+	UFUNCTION(BlueprintCallable)
+	void CloseWidget();
 };

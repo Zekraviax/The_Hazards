@@ -26,6 +26,7 @@ AEntity_Player::AEntity_Player()
 	UnspentSkillPoints = 3;
 	Money = 1000;
 	Experience = 95;
+	LockMenuButtonActions = false;
 }
 
 
@@ -165,8 +166,6 @@ void AEntity_Player::MoveLeftRight(float AxisValue)
 // ------------------------- Menu and Pause Screens
 void AEntity_Player::OpenPauseMenu()
 {
-	//GEngine->AddOnScreenDebugMessage(-1, 15.f, FColor::Green, FString::Printf(TEXT("Pause Menu Functions")));
-
 	// Close pause menu widget and resume game
 	if (CurrentOpenMenuWidget_Class == PauseMenu_Class) {
 		//GEngine->AddOnScreenDebugMessage(-1, 15.f, FColor::Yellow, FString::Printf(TEXT("Close PauseMenu and resume Game")));
@@ -220,118 +219,126 @@ void AEntity_Player::OpenPauseMenu()
 
 void AEntity_Player::OpenInventory()
 {
-	if (CurrentOpenMenuWidget) {
-		//Close widget and resume game
-		UGameplayStatics::SetGamePaused(GetWorld(), false);
+	if (!LockMenuButtonActions) {
+		if (CurrentOpenMenuWidget) {
+			//Close widget and resume game
+			UGameplayStatics::SetGamePaused(GetWorld(), false);
 
-		// Remove OnHoverDescription widgets
-		for (TObjectIterator<UBaseClass_Widget_OnHoverDescription> Itr; Itr; ++Itr) {
-			UBaseClass_Widget_OnHoverDescription *FoundWidget = *Itr;
-			FoundWidget->RemoveFromParent();
+			// Remove OnHoverDescription widgets
+			for (TObjectIterator<UBaseClass_Widget_OnHoverDescription> Itr; Itr; ++Itr) {
+				UBaseClass_Widget_OnHoverDescription *FoundWidget = *Itr;
+				FoundWidget->RemoveFromParent();
+			}
+
+			CurrentOpenMenuWidget->RemoveFromParent();
+			CurrentOpenMenuWidget = NULL;
 		}
 
-		CurrentOpenMenuWidget->RemoveFromParent();
-		CurrentOpenMenuWidget = NULL;
-	}
+		if (Inventory_Class && CurrentOpenMenuWidget_Class != Inventory_Class) {
+			// Create widget, add to viewport, and pause game
+			CurrentOpenMenuWidget = CreateWidget<UBaseClass_Widget_Inventory>(GetWorld(), Inventory_Class);
+			CurrentOpenMenuWidget_Class = Inventory_Class;
+			CurrentOpenMenuWidget->AddToViewport();
+			UGameplayStatics::SetGamePaused(GetWorld(), true);
 
-	if (Inventory_Class && CurrentOpenMenuWidget_Class != Inventory_Class) {
-		// Create widget, add to viewport, and pause game
-		CurrentOpenMenuWidget = CreateWidget<UBaseClass_Widget_Inventory>(GetWorld(), Inventory_Class);
-		CurrentOpenMenuWidget_Class = Inventory_Class;
-		CurrentOpenMenuWidget->AddToViewport();
-		UGameplayStatics::SetGamePaused(GetWorld(), true);
-
-		// Inventory specific variables and functions
-		Cast<UBaseClass_Widget_Inventory>(CurrentOpenMenuWidget)->PlayerReference = this;
-		Cast<UBaseClass_Widget_Inventory>(CurrentOpenMenuWidget)->OnInventoryOpened();
-		Cast<UBaseClass_Widget_Inventory>(CurrentOpenMenuWidget)->PopulateInventorySlots();
-	}
-	else {
-		CurrentOpenMenuWidget_Class = NULL;
+			// Inventory specific variables and functions
+			Cast<UBaseClass_Widget_Inventory>(CurrentOpenMenuWidget)->PlayerReference = this;
+			Cast<UBaseClass_Widget_Inventory>(CurrentOpenMenuWidget)->OnInventoryOpened();
+			Cast<UBaseClass_Widget_Inventory>(CurrentOpenMenuWidget)->PopulateInventorySlots();
+		}
+		else {
+			CurrentOpenMenuWidget_Class = NULL;
+		}
 	}
 }
 
 
 void AEntity_Player::OpenCharacterSheet()
 {
-	if (CurrentOpenMenuWidget) {
-		// Close widget and resume game
-		UGameplayStatics::SetGamePaused(GetWorld(), false);
-		CurrentOpenMenuWidget->RemoveFromParent();
-		CurrentOpenMenuWidget = NULL;
-	}
+	if (!LockMenuButtonActions) {
+		if (CurrentOpenMenuWidget) {
+			// Close widget and resume game
+			UGameplayStatics::SetGamePaused(GetWorld(), false);
+			CurrentOpenMenuWidget->RemoveFromParent();
+			CurrentOpenMenuWidget = NULL;
+		}
 
-	if (CharacterSheet_Class && CurrentOpenMenuWidget_Class != CharacterSheet_Class) {
-		// Create widget, add to viewport, and pause game
-		CurrentOpenMenuWidget = CreateWidget<UBaseClass_Widget_CharacterSheet>(GetWorld(), CharacterSheet_Class);
-		CurrentOpenMenuWidget_Class = CharacterSheet_Class;
-		CurrentOpenMenuWidget->AddToViewport();
-		UGameplayStatics::SetGamePaused(GetWorld(), true);
+		if (CharacterSheet_Class && CurrentOpenMenuWidget_Class != CharacterSheet_Class) {
+			// Create widget, add to viewport, and pause game
+			CurrentOpenMenuWidget = CreateWidget<UBaseClass_Widget_CharacterSheet>(GetWorld(), CharacterSheet_Class);
+			CurrentOpenMenuWidget_Class = CharacterSheet_Class;
+			CurrentOpenMenuWidget->AddToViewport();
+			UGameplayStatics::SetGamePaused(GetWorld(), true);
 
-		// Character Sheet specific variables and functions
-		Cast<UBaseClass_Widget_CharacterSheet>(CurrentOpenMenuWidget)->PlayerReference = this;
-		Cast<UBaseClass_Widget_CharacterSheet>(CurrentOpenMenuWidget)->OpenCharacterSheet();
-	}
-	else {
-		CurrentOpenMenuWidget_Class = NULL;
+			// Character Sheet specific variables and functions
+			Cast<UBaseClass_Widget_CharacterSheet>(CurrentOpenMenuWidget)->PlayerReference = this;
+			Cast<UBaseClass_Widget_CharacterSheet>(CurrentOpenMenuWidget)->OpenCharacterSheet();
+		}
+		else {
+			CurrentOpenMenuWidget_Class = NULL;
+		}
 	}
 }
 
 
 void AEntity_Player::OpenCharacterCreator()
 {
-	if (CurrentOpenMenuWidget) {
-		// Close widget and resume game
-		UGameplayStatics::SetGamePaused(GetWorld(), false);
-		CurrentOpenMenuWidget->RemoveFromParent();
-		CurrentOpenMenuWidget = NULL;
-	}
+	if (!LockMenuButtonActions) {
+		if (CurrentOpenMenuWidget) {
+			// Close widget and resume game
+			UGameplayStatics::SetGamePaused(GetWorld(), false);
+			CurrentOpenMenuWidget->RemoveFromParent();
+			CurrentOpenMenuWidget = NULL;
+		}
 
-	if (CharacterCreator_Class && CurrentOpenMenuWidget_Class != CharacterCreator_Class) {
-		// Create widget, add to viewport, and pause game
-		CurrentOpenMenuWidget = CreateWidget<UBaseClass_Widget_CharCreator>(GetWorld(), CharacterCreator_Class);
-		CurrentOpenMenuWidget_Class = CharacterCreator_Class;
-		CurrentOpenMenuWidget->AddToViewport();
-		UGameplayStatics::SetGamePaused(GetWorld(), true);
+		if (CharacterCreator_Class && CurrentOpenMenuWidget_Class != CharacterCreator_Class) {
+			// Create widget, add to viewport, and pause game
+			CurrentOpenMenuWidget = CreateWidget<UBaseClass_Widget_CharCreator>(GetWorld(), CharacterCreator_Class);
+			CurrentOpenMenuWidget_Class = CharacterCreator_Class;
+			CurrentOpenMenuWidget->AddToViewport();
+			UGameplayStatics::SetGamePaused(GetWorld(), true);
 
-		// Character Creator specific variables and functions
-		Cast<UBaseClass_Widget_CharCreator>(CurrentOpenMenuWidget)->PlayerReference = this;
-	}
-	else {
-		CurrentOpenMenuWidget_Class = NULL;
+			// Character Creator specific variables and functions
+			Cast<UBaseClass_Widget_CharCreator>(CurrentOpenMenuWidget)->PlayerReference = this;
+		}
+		else {
+			CurrentOpenMenuWidget_Class = NULL;
+		}
 	}
 }
 
 
 void AEntity_Player::OpenSkillTree()
 {
-	if (CurrentOpenMenuWidget) {
-		//Close widget and resume game
-		UGameplayStatics::SetGamePaused(GetWorld(), false);
+	if (!LockMenuButtonActions) {
+		if (CurrentOpenMenuWidget) {
+			//Close widget and resume game
+			UGameplayStatics::SetGamePaused(GetWorld(), false);
 
-		// Remove OnHoverDescription widgets
-		for (TObjectIterator<UBaseClass_Widget_OnHoverDescription> Itr; Itr; ++Itr) {
-			UBaseClass_Widget_OnHoverDescription *FoundWidget = *Itr;
-			FoundWidget->RemoveFromParent();
+			// Remove OnHoverDescription widgets
+			for (TObjectIterator<UBaseClass_Widget_OnHoverDescription> Itr; Itr; ++Itr) {
+				UBaseClass_Widget_OnHoverDescription *FoundWidget = *Itr;
+				FoundWidget->RemoveFromParent();
+			}
+
+			CurrentOpenMenuWidget->RemoveFromParent();
+			CurrentOpenMenuWidget = NULL;
 		}
 
-		CurrentOpenMenuWidget->RemoveFromParent();
-		CurrentOpenMenuWidget = NULL;
-	}
+		if (SkillTree_Class && CurrentOpenMenuWidget_Class != SkillTree_Class) {
+			// Create widget, add to viewport, and pause game
+			CurrentOpenMenuWidget = CreateWidget<UBaseClass_Widget_SkillTree>(GetWorld(), SkillTree_Class);
+			CurrentOpenMenuWidget_Class = SkillTree_Class;
+			CurrentOpenMenuWidget->AddToViewport();
+			UGameplayStatics::SetGamePaused(GetWorld(), true);
 
-	if (SkillTree_Class && CurrentOpenMenuWidget_Class != SkillTree_Class) {
-		// Create widget, add to viewport, and pause game
-		CurrentOpenMenuWidget = CreateWidget<UBaseClass_Widget_SkillTree>(GetWorld(), SkillTree_Class);
-		CurrentOpenMenuWidget_Class = SkillTree_Class;
-		CurrentOpenMenuWidget->AddToViewport();
-		UGameplayStatics::SetGamePaused(GetWorld(), true);
-
-		// Inventory specific variables and functions
-		Cast<UBaseClass_Widget_SkillTree>(CurrentOpenMenuWidget)->PlayerReference = this;
-		Cast<UBaseClass_Widget_SkillTree>(CurrentOpenMenuWidget)->UpdateAllSkillSlots();
-	}
-	else {
-		CurrentOpenMenuWidget_Class = NULL;
+			// Inventory specific variables and functions
+			Cast<UBaseClass_Widget_SkillTree>(CurrentOpenMenuWidget)->PlayerReference = this;
+			Cast<UBaseClass_Widget_SkillTree>(CurrentOpenMenuWidget)->UpdateAllSkillSlots();
+		}
+		else {
+			CurrentOpenMenuWidget_Class = NULL;
+		}
 	}
 }
 
