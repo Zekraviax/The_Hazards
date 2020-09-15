@@ -16,6 +16,7 @@
 // Forward Declarations
 class AEntity_Player;
 class UBaseClass_Widget_PauseMenu;
+class USubWidget_WarningAndErrorPrompt;
 
 
 UCLASS()
@@ -46,6 +47,12 @@ public:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Widgets")
 	UBaseClass_Widget_PauseMenu* PauseMenu_Reference;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Widgets")
+	TSubclassOf<USubWidget_WarningAndErrorPrompt> WarningAndErrorPrompt_Class;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Widgets")
+	USubWidget_WarningAndErrorPrompt* WarningAndErrorPrompt_Reference;
 
 // ------------------------- References
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "References")

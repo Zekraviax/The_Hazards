@@ -14,6 +14,7 @@
 // Forward Declarations
 class USaveFile_Slot;
 class USubWidget_NameSaveFile;
+class USubWidget_WarningAndErrorPrompt;
 
 
 // Exclusive enum
@@ -69,6 +70,12 @@ public:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Widgets")
 	USubWidget_NameSaveFile* NameSaveFileWidget_Reference;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Widgets")
+	TSubclassOf<USubWidget_WarningAndErrorPrompt> WarningAndErrorPrompt_Class;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Widgets")
+	USubWidget_WarningAndErrorPrompt* WarningAndErrorPrompt_Reference;
 
 // ------------------------- Save/Load
 	UPROPERTY()

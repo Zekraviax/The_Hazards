@@ -35,11 +35,10 @@ void AEntity_Player::BeginPlay()
 {
 	Super::BeginPlay();
 
-	// Spawn the HUD widget
-	if (Player_HUD_Class) {
-		Player_HUD_Reference = CreateWidget<UBaseClass_Widget_PlayerHUD>(GetWorld(), Player_HUD_Class);
-		Player_HUD_Reference->PlayerReference = this;
-		Player_HUD_Reference->AddToViewport();
+	if (MainMenu_Class) {
+		CurrentOpenMenuWidget = CreateWidget<UBaseClass_Widget_MainMenu>(GetWorld(), MainMenu_Class);
+		CurrentOpenMenuWidget->AddToViewport();
+		CurrentOpenMenuWidget = NULL;
 	}
 
 	// Setup Hitbox collisions
@@ -129,24 +128,36 @@ void AEntity_Player::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 }
 
 
+// ------------------------- BeginPlay
+void AEntity_Player::ManualBeginPlay()
+{
+	//Super::BeginPlay();
+
+	// Spawn the HUD widget
+	if (Player_HUD_Class) {
+		Player_HUD_Reference = CreateWidget<UBaseClass_Widget_PlayerHUD>(GetWorld(), Player_HUD_Class);
+		Player_HUD_Reference->PlayerReference = this;
+		Player_HUD_Reference->AddToViewport();
+	}
+}
+
+
 //  ------------------------- Tick
 void AEntity_Player::RotatePlayerTowardsMouse()
 {
-	//if () {
-
-	//}
-
-	if (!LocalPlayerControllerReference)
-		LocalPlayerControllerReference = Cast<ABaseClass_PlayerController>(GetWorld()->GetFirstPlayerController());
-	
 	FHitResult HitResult;
 	FRotator LookAtRotation;
 
-	LocalPlayerControllerReference->GetHitResultUnderCursorByChannel(UEngineTypes::ConvertToTraceType(ECC_Camera), false, HitResult);
-	LookAtRotation = UKismetMathLibrary::FindLookAtRotation(GetActorLocation(), HitResult.Location);
+	if (!LocalPlayerControllerReference)
+		LocalPlayerControllerReference = Cast<ABaseClass_PlayerController>(GetWorld()->GetFirstPlayerController());
+	else {
+		if (LocalPlayerControllerReference->GetHitResultUnderCursorByChannel(UEngineTypes::ConvertToTraceType(ECC_Camera), false, HitResult)) {
+			LookAtRotation = UKismetMathLibrary::FindLookAtRotation(GetActorLocation(), HitResult.Location);
 
-	PlayerRotationTowardsMouseValue = FRotator(this->GetActorRotation().Pitch, LookAtRotation.Yaw, this->GetActorRotation().Roll);
-	CubeMesh->SetWorldRotation(PlayerRotationTowardsMouseValue);
+			PlayerRotationTowardsMouseValue = FRotator(this->GetActorRotation().Pitch, LookAtRotation.Yaw, this->GetActorRotation().Roll);
+			CubeMesh->SetWorldRotation(PlayerRotationTowardsMouseValue);
+		}
+	}
 }
 
 

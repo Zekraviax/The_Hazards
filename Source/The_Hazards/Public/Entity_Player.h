@@ -23,6 +23,7 @@
 
 // Forward Declarations
 class ABaseClass_PlayerController;
+class ABaseClass_MainMenuController;
 class AEntity_NPC;
 
 
@@ -121,7 +122,7 @@ public:
 
 // Technical Variables
 // --------------------------------------------------
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Technical Variables")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Technical Variables")
 	ABaseClass_PlayerController* LocalPlayerControllerReference;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Technical Variables")
@@ -139,11 +140,12 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Technical Variables")
 	bool LockMenuButtonActions;
 	
-
 // Functions
 // --------------------------------------------------
 
 // ------------------------- BeginPlay
+	UFUNCTION(BlueprintCallable)
+	void ManualBeginPlay();
 
 // ------------------------- Tick
 	UFUNCTION()

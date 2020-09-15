@@ -4,6 +4,7 @@
 #include "SaveFile_MetaList.h"
 #include "Entity_Player.h"
 #include "SubWidget_NameSaveFile.h"
+#include "SubWidget_WarningAndErrorPrompt.h"
 #include "BaseClass_Widget_SaveLoad.h"
 
 
@@ -45,10 +46,24 @@ void USubWidget_SaveLoadSlot::SelectSlot()
 		}
 		break;
 	case (E_SaveLoadSlotFunctions::E_SaveExistingSlot):
-
+		if (WarningAndErrorPrompt_Class) {
+			WarningAndErrorPrompt_Reference = CreateWidget<USubWidget_WarningAndErrorPrompt>(GetWorld(), WarningAndErrorPrompt_Class);
+			WarningAndErrorPrompt_Reference->ParentWidget_Reference = this;
+			WarningAndErrorPrompt_Reference->SetPromptText(E_WarningAndError_Types::E_OverwriteSaveFile);
+			WarningAndErrorPrompt_Reference->ConfirmFunctionEnum = E_WarningAndError_ConfirmButtonFunctions::E_OverwriteSaveFile;
+			WarningAndErrorPrompt_Reference->DenyFunctionEnum = E_WarningAndError_DenyButtonFunctions::E_ClosePromptWidget;
+			WarningAndErrorPrompt_Reference->AddToViewport();
+		}
 		break;
 	case (E_SaveLoadSlotFunctions::E_LoadExistingSLot):
-
+		if (WarningAndErrorPrompt_Class) {
+			WarningAndErrorPrompt_Reference = CreateWidget<USubWidget_WarningAndErrorPrompt>(GetWorld(), WarningAndErrorPrompt_Class);
+			WarningAndErrorPrompt_Reference->ParentWidget_Reference = this;
+			WarningAndErrorPrompt_Reference->SetPromptText(E_WarningAndError_Types::E_DoubleCheckLoadGame);
+			WarningAndErrorPrompt_Reference->ConfirmFunctionEnum = E_WarningAndError_ConfirmButtonFunctions::E_LoadGame;
+			WarningAndErrorPrompt_Reference->DenyFunctionEnum = E_WarningAndError_DenyButtonFunctions::E_ClosePromptWidget;
+			WarningAndErrorPrompt_Reference->AddToViewport();
+		}
 		break;
 	default:
 		break;
