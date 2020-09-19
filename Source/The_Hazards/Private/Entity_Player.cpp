@@ -35,11 +35,18 @@ void AEntity_Player::BeginPlay()
 {
 	Super::BeginPlay();
 
-	if (MainMenu_Class) {
-		CurrentOpenMenuWidget = CreateWidget<UBaseClass_Widget_MainMenu>(GetWorld(), MainMenu_Class);
-		CurrentOpenMenuWidget->AddToViewport();
-		CurrentOpenMenuWidget = NULL;
-	}
+	// Spawn the HUD widget
+	//if (Player_HUD_Class) {
+	//	Player_HUD_Reference = CreateWidget<UBaseClass_Widget_PlayerHUD>(GetWorld(), Player_HUD_Class);
+	//	Player_HUD_Reference->PlayerReference = this;
+	//	Player_HUD_Reference->AddToViewport();
+	//}
+
+	//if (MainMenu_Class) {
+	//	CurrentOpenMenuWidget = CreateWidget<UBaseClass_Widget_MainMenu>(GetWorld(), MainMenu_Class);
+	//	CurrentOpenMenuWidget->AddToViewport();
+	//	CurrentOpenMenuWidget = NULL;
+	//}
 
 	// Setup Hitbox collisions
 	//WeaponCollider->SetCollisionProfileName(TEXT("Trigger"));
@@ -131,8 +138,6 @@ void AEntity_Player::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 // ------------------------- BeginPlay
 void AEntity_Player::ManualBeginPlay()
 {
-	//Super::BeginPlay();
-
 	// Spawn the HUD widget
 	if (Player_HUD_Class) {
 		Player_HUD_Reference = CreateWidget<UBaseClass_Widget_PlayerHUD>(GetWorld(), Player_HUD_Class);

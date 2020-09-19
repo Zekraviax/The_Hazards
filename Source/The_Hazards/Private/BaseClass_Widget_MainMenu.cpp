@@ -6,18 +6,10 @@
 #include "BaseClass_MainMenuController.h"
 #include "GameFramework/PlayerStart.h"
 #include "GameFramework/Controller.h"
-
-
-// Constructor
-UBaseClass_Widget_MainMenu::UBaseClass_Widget_MainMenu(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer)
-{
-	//Blueprint'/Game/Blueprints/Entity_Player_Blueprint.Entity_Player_Blueprint'
-	//static ConstructorHelpers::FObjectFinder<UClass> EntityPlayerBlueprintReference(TEXT("Blueprint'/Game/Blueprints/Entity_Player_Blueprint.Entity_Player_Blueprint_C'"));
-	//if (EntityPlayerBlueprintReference.Object != NULL) {
-	//	Player_Entity_Class = EntityPlayerBlueprintReference.Object;
-	//}
-}
-
+#include "GameFramework/Actor.h"
+#include "Engine/EngineTypes.h"
+#include "Engine/World.h"
+#include "TimerManager.h"
 
 
 void UBaseClass_Widget_MainMenu::ResumeGame()
@@ -26,54 +18,63 @@ void UBaseClass_Widget_MainMenu::ResumeGame()
 }
 
 
-void UBaseClass_Widget_MainMenu::NewGame(TSubclassOf<AEntity_Player> EntityPlayerBlueprintClass)
+void UBaseClass_Widget_MainMenu::NewGame()
 {
+	FTimerHandle TimerHandle;
 	FLatentActionInfo LatentActionInfo;
 	FActorSpawnParameters ActorSpawnParameters;
-	UWorld* WorldReference = GetWorld();
 	TArray<AActor*> PlayerStartActors, PlayerMainMenuActors;
 
 	ActorSpawnParameters.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
 
-	// Add loadscreen to player screen
+	// Add loading screen to player viewport
 	if (LoadScreen_Class) {
-		CurrentOpenMenuWidget = CreateWidget<UBaseClass_Widget_LoadScreen>(WorldReference, LoadScreen_Class);
-		CurrentOpenMenuWidget->AddToViewport();
+		LoadScreen_Widget = CreateWidget<UBaseClass_Widget_LoadScreen>(GetWorld(), LoadScreen_Class);
+		LoadScreen_Widget->AddToViewport();
 	}
-
-	RemoveFromViewport();
 
 	// Load first level
 	UGameplayStatics::LoadStreamLevel(GetWorld(), "TestTwo", true, false, LatentActionInfo);
 
-	// Spawn player
-	if (EntityPlayerBlueprintClass) {
-		//UGameplayStatics::GetAllActorsOfClass(WorldReference, APlayerStart::StaticClass(), PlayerStartActors);
-		//if (PlayerStartActors.IsValidIndex(0)) {
-		//	Player_Entity_Reference = WorldReference->SpawnActor<AEntity_Player>(EntityPlayerBlueprintClass, PlayerStartActors[0]->GetActorLocation(), PlayerStartActors[0]->GetActorRotation(), ActorSpawnParameters);
-		//}
+	RemoveFromParent();
+
+	// Begin Minimum time delay for displaying the loading screen
+	GetWorld()->GetTimerManager().SetTimer(TimerHandle, this, &UBaseClass_Widget_MainMenu::ClearLoadingScreen, 0.2f);
+	//LoadScreen_Widget->BeginDelayedClearFunction();
+}
+
+
+void UBaseClass_Widget_MainMenu::ClearLoadingScreen()
+{
+	// Spawn Player
+	TArray<AActor*> PlayerStartActors;
+	FActorSpawnParameters ActorSpawnParameters;
+
+	if (Player_Entity_Class && GetWorld()) {
+		UGameplayStatics::GetAllActorsOfClass(GetWorld(), APlayerStart::StaticClass(), PlayerStartActors);
+		for (int i = 0; i < PlayerStartActors.Num(); i++) {
+			if (PlayerStartActors.IsValidIndex(i)) {
+				ABaseClass_PlayerController* PlayerControllerRef = Cast<ABaseClass_PlayerController>(UGameplayStatics::GetPlayerController(GetWorld(), 0));
+
+				Player_Entity_Reference = GetWorld()->SpawnActor<AEntity_Player>(Player_Entity_Class, PlayerStartActors[i]->GetActorLocation(), PlayerStartActors[i]->GetActorRotation(), ActorSpawnParameters);
+				PlayerControllerRef->Possess(Player_Entity_Reference);
+				Player_Entity_Reference->LocalPlayerControllerReference = PlayerControllerRef;
+				Player_Entity_Reference->ManualBeginPlay();
+
+				break;
+			}
+		}
 	}
 
-	// Set up player actor
-	//UGameplayStatics::GetGameMode(WorldReference)->SwapPlayerControllers(Cast<APlayerController>(UGameplayStatics::GetPlayerController(WorldReference, 0)), Cast<APlayerController>(PlayerController_Standard_Reference));
-	//Player_Entity_Reference->LocalPlayerControllerReference = Cast<ABaseClass_PlayerController>(UGameplayStatics::GetPlayerController(WorldReference, 0));
-	//Player_Entity_Reference->LocalPlayerControllerReference->Possess(Player_Entity_Reference);
-
-	// Destroy main menu player actors
-	//UGameplayStatics::GetAllActorsOfClass(WorldReference, AEntity_Player_MainMenu::StaticClass(), PlayerMainMenuActors);
-	//for (int i = 0; i < PlayerMainMenuActors.Num(); i++) {
-	//	PlayerMainMenuActors[i]->Destroy();
-	//}
-
-	// Unload main menu level
-	//UGameplayStatics::UnloadStreamLevel(WorldReference, "MainMenu", LatentActionInfo, false);
-
-	// Remove widgets
-	CurrentOpenMenuWidget->RemoveFromViewport();
-
-	// Call Player BeginPlay
-	//Player_Entity_Reference->ManualBeginPlay();
+	// Clear Loading Screens
+	for (TObjectIterator<UBaseClass_Widget_LoadScreen> Itr; Itr; ++Itr) {
+		UBaseClass_Widget_LoadScreen* FoundWidget = *Itr;
+		
+		if (FoundWidget->IsValidLowLevel())
+			FoundWidget->RemoveFromParent();
+	}
 }
+
 
 
 void UBaseClass_Widget_MainMenu::OpenLoadGameMenu()

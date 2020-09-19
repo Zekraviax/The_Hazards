@@ -23,8 +23,6 @@ class THE_HAZARDS_API UBaseClass_Widget_MainMenu : public UUserWidget
 {
 	GENERATED_BODY()
 
-	UBaseClass_Widget_MainMenu(const FObjectInitializer& ObjectInitializer);
-
 public:
 // Base Variables
 // --------------------------------------------------
@@ -39,6 +37,9 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Widgets")
 	TSubclassOf<UBaseClass_Widget_LoadScreen> LoadScreen_Class;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Widgets")
+	UBaseClass_Widget_LoadScreen* LoadScreen_Widget;
+
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Widgets")
 	UUserWidget* CurrentOpenMenuWidget;
 
@@ -47,7 +48,7 @@ public:
 	AEntity_Player_MainMenu* PlayerReference;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "References")
-	UClass* Player_Entity_Class;
+	TSubclassOf<AEntity_Player> Player_Entity_Class;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "References")
 	AEntity_Player* Player_Entity_Reference;
@@ -61,9 +62,6 @@ public:
 
 // Functions
 // --------------------------------------------------
-	//virtual ~UBaseClass_Widget_MainMenu();
-//private:
-//	UBaseClass_Widget_MainMenu(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer);
 
 // ------------------------- Menus
 public:
@@ -71,7 +69,10 @@ public:
 	void ResumeGame();
 
 	UFUNCTION(BlueprintCallable)
-	void NewGame(TSubclassOf<AEntity_Player> EntityPlayerBlueprintClass);
+	void NewGame();
+
+	UFUNCTION(BlueprintCallable)
+	void ClearLoadingScreen();
 
 	UFUNCTION(BlueprintCallable)
 	void OpenLoadGameMenu();

@@ -24,5 +24,10 @@ public:
 // Functions
 // --------------------------------------------------
 
-// ------------------------- 
+// ------------------------- Loading Screen
+	UFUNCTION()
+	void BeginDelayedClearFunction();
+
+	UFUNCTION()
+	void ExecuteDelayedClearFunction();
 };
