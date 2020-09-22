@@ -73,6 +73,8 @@ void USubWidget_SaveLoadSlot::SelectSlot()
 
 void USubWidget_SaveLoadSlot::CreateNewSaveFileSlot(FText SaveSlotName)
 {
+	USaveFile_MetaList* MetaList = Cast<USaveFile_MetaList>(UGameplayStatics::LoadGameFromSlot("MetaList", 0));
+
 	if (SlotClass) {
 		// Get Player
 		AEntity_Player* PlayerPawn = Cast<AEntity_Player>(UGameplayStatics::GetPlayerPawn(GetWorld(), 0));
@@ -80,37 +82,33 @@ void USubWidget_SaveLoadSlot::CreateNewSaveFileSlot(FText SaveSlotName)
 
 		// Set Slot Variables
 		SlotReference = Cast<USaveFile_Slot>(UGameplayStatics::CreateSaveGameObject(SlotClass));
-		SlotReference->SaveSlotName = SaveSlotName;
-		SlotReference->DateSaved = FDateTime::Now();
+		if (SlotReference->IsValidLowLevel()) {
+			SlotReference->SaveSlotName = SaveSlotName;
+			SlotReference->DateSaved = FDateTime::Now();
+			UGameplayStatics::SaveGameToSlot(SlotReference, SaveSlotName.ToString(), 0);
 
-		// Get the MetaList in order to increase the TotalManualSave count
-		if (USaveFile_MetaList* MetaList = Cast<USaveFile_MetaList>(UGameplayStatics::LoadGameFromSlot("MetaList", 0))) {
-			MetaList->TotalManualSaveCount++;
-			SlotReference->CurrentTotalManualSaveCount = MetaList->TotalManualSaveCount;
-			UGameplayStatics::SaveGameToSlot(MetaList, "MetaList", 0);
-		}
+			// Get the MetaList in order to increase the TotalManualSave count
+			if (MetaList->IsValidLowLevel()) {
+				MetaList->TotalManualSaveCount++;
+				SlotReference->CurrentTotalManualSaveCount = MetaList->TotalManualSaveCount;
 
-		SaveDelegate.BindUObject(SlotReference, &USaveFile_Slot::SaveGameDelegateFunction);
-
-		// Set Player Variables
-		SlotReference->PlayerReference = PlayerPawn;
-
-		// Set Enemy Variables
-		for (TObjectIterator<AEntity_EnemyNPC> Itr; Itr; ++Itr) {
-			AEntity_EnemyNPC* FoundEnemy = *Itr;
-			SlotReference->EnemyReferencesArray.AddUnique(FoundEnemy);
-		}
-
-		UGameplayStatics::AsyncSaveGameToSlot(SlotReference, SaveSlotName.ToString(), 0, SaveDelegate);
-
-		// Refresh save file slots list
-		for (TObjectIterator<UBaseClass_Widget_SaveLoad> Itr; Itr; ++Itr) {
-			UBaseClass_Widget_SaveLoad *FoundWidget = *Itr;
-
-			if (FoundWidget) {
-				FoundWidget->GetSaveFiles(true);
-				//break;
+				//SaveDelegate.BindUObject(MetaList, &USaveFile_MetaList::SaveGameDelegateFunction);
+				//UGameplayStatics::AsyncSaveGameToSlot(MetaList, "MetaList", 0, SaveDelegate);
+				UGameplayStatics::SaveGameToSlot(MetaList, "MetaList", 0);
 			}
+
+			// Set Player Variables
+			SlotReference->PlayerReference = PlayerPawn;
+
+			// Set Enemy Variables
+			for (TObjectIterator<AEntity_EnemyNPC> Itr; Itr; ++Itr) {
+				AEntity_EnemyNPC* FoundEnemy = *Itr;
+				SlotReference->EnemyReferencesArray.AddUnique(FoundEnemy);
+			}
+
+			// Bind UObject
+			SaveDelegate.BindUObject(SlotReference, &USaveFile_Slot::SaveGameDelegateFunction);
+			UGameplayStatics::AsyncSaveGameToSlot(SlotReference, SaveSlotName.ToString(), 0, SaveDelegate);
 		}
 	}
 }

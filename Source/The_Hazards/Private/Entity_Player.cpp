@@ -182,52 +182,56 @@ void AEntity_Player::MoveLeftRight(float AxisValue)
 // ------------------------- Menu and Pause Screens
 void AEntity_Player::OpenPauseMenu()
 {
+	if (!Player_Controller_Reference && GetWorld()) {
+		Player_Controller_Reference = Cast<ABaseClass_PlayerController>(GetWorld()->GetFirstPlayerController());
+	}
+
 	// Close pause menu widget and resume game
-	if (CurrentOpenMenuWidget_Class == PauseMenu_Class) {
+	if (Player_Controller_Reference->CurrentOpenMenuWidget_Class == PauseMenu_Class) {
 		//GEngine->AddOnScreenDebugMessage(-1, 15.f, FColor::Yellow, FString::Printf(TEXT("Close PauseMenu and resume Game")));
 		UGameplayStatics::SetGamePaused(GetWorld(), false);
 
-		CurrentOpenMenuWidget->RemoveFromParent();
-		CurrentOpenMenuWidget = NULL;
-		CurrentOpenMenuWidget_Class = NULL;
+		Player_Controller_Reference->CurrentOpenMenuWidget->RemoveFromParent();
+		Player_Controller_Reference->CurrentOpenMenuWidget = NULL;
+		Player_Controller_Reference->CurrentOpenMenuWidget_Class = NULL;
 	}
 	// Create options menu widget and add to viewport
-	else if (CurrentOpenMenuWidget_Class == AudioMenu_Class ||
-		CurrentOpenMenuWidget_Class == GraphicsMenu_Class ||
-		CurrentOpenMenuWidget_Class == KeybindsMenu_Class ||
-		CurrentOpenMenuWidget_Class == ControlsMenu_Class) {
+	else if (Player_Controller_Reference->CurrentOpenMenuWidget_Class == AudioMenu_Class ||
+		Player_Controller_Reference->CurrentOpenMenuWidget_Class == GraphicsMenu_Class ||
+		Player_Controller_Reference->CurrentOpenMenuWidget_Class == KeybindsMenu_Class ||
+		Player_Controller_Reference->CurrentOpenMenuWidget_Class == ControlsMenu_Class) {
 
 		//GEngine->AddOnScreenDebugMessage(-1, 15.f, FColor::Yellow, FString::Printf(TEXT("Close Options SubMenu and open OptionsMenu")));
-		CurrentOpenMenuWidget->RemoveFromParent();
-		CurrentOpenMenuWidget = NULL;
-		CurrentOpenMenuWidget_Class = NULL;
+		Player_Controller_Reference->CurrentOpenMenuWidget->RemoveFromParent();
+		Player_Controller_Reference->CurrentOpenMenuWidget = NULL;
+		Player_Controller_Reference->CurrentOpenMenuWidget_Class = NULL;
 
-		CurrentOpenMenuWidget = CreateWidget<UBaseClass_Widget_Options>(GetWorld(), OptionsMenu_Class);
-		Cast<UBaseClass_Widget_Options>(CurrentOpenMenuWidget)->PlayerReference = this;
-		CurrentOpenMenuWidget->AddToViewport();
-		CurrentOpenMenuWidget_Class = OptionsMenu_Class;
+		Player_Controller_Reference->CurrentOpenMenuWidget = CreateWidget<UBaseClass_Widget_Options>(GetWorld(), OptionsMenu_Class);
+		//Cast<UBaseClass_Widget_Options>(CurrentOpenMenuWidget)->PlayerReference = this;
+		Player_Controller_Reference->CurrentOpenMenuWidget->AddToViewport();
+		Player_Controller_Reference->CurrentOpenMenuWidget_Class = OptionsMenu_Class;
 	}
 	else if (CurrentOpenMenuWidget_Class == OptionsMenu_Class) {
 		//GEngine->AddOnScreenDebugMessage(-1, 15.f, FColor::Yellow, FString::Printf(TEXT("Close OptionsMenu and open PauseMenu")));
 
-		Cast<UBaseClass_Widget_Options>(CurrentOpenMenuWidget)->CloseMenu();
+		Cast<UBaseClass_Widget_Options>(Player_Controller_Reference->CurrentOpenMenuWidget)->CloseMenu();
 	}
 	// Create pause menu widget, add to viewport, and pause game
 	else {
 		//GEngine->AddOnScreenDebugMessage(-1, 15.f, FColor::Yellow, FString::Printf(TEXT("Pause Game and open PauseMenu")));
 		// Remove other widgets from screen
-		if (CurrentOpenMenuWidget) {
-			CurrentOpenMenuWidget->RemoveFromParent();
-			CurrentOpenMenuWidget = NULL;
+		if (Player_Controller_Reference->CurrentOpenMenuWidget) {
+			Player_Controller_Reference->CurrentOpenMenuWidget->RemoveFromParent();
+			Player_Controller_Reference->CurrentOpenMenuWidget = NULL;
 		}
-		if (CurrentOpenMenuWidget_Class) {
-			CurrentOpenMenuWidget_Class = NULL;
+		if (Player_Controller_Reference->CurrentOpenMenuWidget_Class) {
+			Player_Controller_Reference->CurrentOpenMenuWidget_Class = NULL;
 		}
 
-		CurrentOpenMenuWidget = CreateWidget<UBaseClass_Widget_PauseMenu>(GetWorld(), PauseMenu_Class);
-		CurrentOpenMenuWidget_Class = CurrentOpenMenuWidget->GetClass();
-		Cast<UBaseClass_Widget_PauseMenu>(CurrentOpenMenuWidget)->LocalPlayerReference = this;
-		CurrentOpenMenuWidget->AddToViewport();
+		Player_Controller_Reference->CurrentOpenMenuWidget = CreateWidget<UBaseClass_Widget_PauseMenu>(GetWorld(), PauseMenu_Class);
+		Player_Controller_Reference->CurrentOpenMenuWidget_Class = Player_Controller_Reference->CurrentOpenMenuWidget->GetClass();
+		Cast<UBaseClass_Widget_PauseMenu>(Player_Controller_Reference->CurrentOpenMenuWidget)->LocalPlayerReference = this;
+		Player_Controller_Reference->CurrentOpenMenuWidget->AddToViewport();
 		UGameplayStatics::SetGamePaused(GetWorld(), true);
 	}
 }

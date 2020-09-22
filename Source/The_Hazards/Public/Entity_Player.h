@@ -120,6 +120,10 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Widgets")
 	UUserWidget* CurrentOpenMenuWidget;
 
+// ------------------------- References
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "References")
+	ABaseClass_PlayerController* Player_Controller_Reference;
+
 // Technical Variables
 // --------------------------------------------------
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Technical Variables")

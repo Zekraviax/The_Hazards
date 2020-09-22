@@ -14,6 +14,7 @@
 // Forward Declarations
 class AEntity_Player;
 class AEntity_Player_MainMenu;
+class ATheHazards_PlayerState;
 class ABaseClass_PlayerController;
 class ABaseClass_MainMenuController;
 
@@ -47,10 +48,13 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "References")
 	AEntity_Player_MainMenu* PlayerReference;
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "References")
+	ABaseClass_PlayerController* Player_Controller_Reference;
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "References")
 	TSubclassOf<AEntity_Player> Player_Entity_Class;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "References")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "References")
 	AEntity_Player* Player_Entity_Reference;
 
 // ------------------------- Technical Variables

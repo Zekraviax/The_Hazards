@@ -9,6 +9,8 @@ public class The_HazardsTarget : TargetRules
 	{
 		Type = TargetType.Game;
 
+        //bUseLoggingInShipping = true;
+
 		ExtraModuleNames.AddRange( new string[] { "The_Hazards" } );
 	}
 }

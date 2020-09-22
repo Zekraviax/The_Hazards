@@ -13,6 +13,7 @@
 
 // Forward Declarations
 class USaveFile_Slot;
+class UBaseClass_Widget_SaveLoad;
 class USubWidget_NameSaveFile;
 class USubWidget_WarningAndErrorPrompt;
 
@@ -70,6 +71,9 @@ public:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Widgets")
 	USubWidget_NameSaveFile* NameSaveFileWidget_Reference;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Widgets")
+	TSubclassOf<UBaseClass_Widget_SaveLoad> SaveLoadWidget_Class;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Widgets")
 	TSubclassOf<USubWidget_WarningAndErrorPrompt> WarningAndErrorPrompt_Class;

@@ -6,6 +6,7 @@
 
 // Forward Declarations
 class AEntity_Player;
+class ABaseClass_PlayerController;
 class UBaseClass_Widget_Options;
 class UBaseClass_Widget_SaveLoad;
 
@@ -22,6 +23,9 @@ public:
 // ------------------------- References
 	UPROPERTY()
 	AEntity_Player* LocalPlayerReference;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "References")
+	ABaseClass_PlayerController* Player_Controller_Reference;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Widgets")
 	TSubclassOf<UBaseClass_Widget_SaveLoad> SaveLoadWidget_Class;

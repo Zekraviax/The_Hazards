@@ -1,5 +1,3 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
 #pragma once
 
 #include "CoreMinimal.h"
@@ -17,6 +15,7 @@ class THE_HAZARDS_API ABaseClass_EnemyController : public AAIController
 {
 	GENERATED_BODY()
 
+public:
 	ABaseClass_EnemyController(const class FObjectInitializer& ObjectInitializer);
 
 	virtual void OnPossess(class APawn* InPawn) override;
@@ -25,9 +24,7 @@ class THE_HAZARDS_API ABaseClass_EnemyController : public AAIController
 
 	UBehaviorTreeComponent* BehaviourComponent;
 
-protected:
 
-public:
 // Variables
 // --------------------------------------------------
 

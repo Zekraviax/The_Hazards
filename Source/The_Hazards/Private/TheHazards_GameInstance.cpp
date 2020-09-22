@@ -23,6 +23,6 @@ void UTheHazards_GameInstance::LoadSaveFile(USaveFile_Slot* SlotReference)
 		Widget->RemoveFromParent();
 	}
 
-	// Async load level
-	//StreamableManager.RequestAsyncLoad();
+	// load level
+	//UGameplayStatics::LoadStreamLevel(GetWorld(), "TestTwo", true, false, LatentActionInfo);
 }

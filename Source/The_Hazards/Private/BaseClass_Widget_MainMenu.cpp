@@ -4,6 +4,7 @@
 #include "Entity_Player.h"
 #include "BaseClass_PlayerController.h"
 #include "BaseClass_MainMenuController.h"
+#include "TheHazards_PlayerState.h"
 #include "GameFramework/PlayerStart.h"
 #include "GameFramework/Controller.h"
 #include "GameFramework/Actor.h"
@@ -34,7 +35,10 @@ void UBaseClass_Widget_MainMenu::NewGame()
 	}
 
 	// Load first level
-	UGameplayStatics::LoadStreamLevel(GetWorld(), "TestTwo", true, false, LatentActionInfo);
+	UGameplayStatics::LoadStreamLevel(GetWorld(), "TestTwo", true, true, LatentActionInfo);
+
+	// Set main menu mode
+	Cast<ABaseClass_PlayerController>(GetWorld()->GetFirstPlayerController())->MainMenuMode = false;
 
 	RemoveFromParent();
 
@@ -51,7 +55,10 @@ void UBaseClass_Widget_MainMenu::ClearLoadingScreen()
 	FActorSpawnParameters ActorSpawnParameters;
 
 	if (Player_Entity_Class && GetWorld()) {
-		UGameplayStatics::GetAllActorsOfClass(GetWorld(), APlayerStart::StaticClass(), PlayerStartActors);
+		while (PlayerStartActors.Num() <= 0) {
+			UGameplayStatics::GetAllActorsOfClass(GetWorld(), APlayerStart::StaticClass(), PlayerStartActors);
+		}
+
 		for (int i = 0; i < PlayerStartActors.Num(); i++) {
 			if (PlayerStartActors.IsValidIndex(i)) {
 				ABaseClass_PlayerController* PlayerControllerRef = Cast<ABaseClass_PlayerController>(UGameplayStatics::GetPlayerController(GetWorld(), 0));
@@ -79,25 +86,33 @@ void UBaseClass_Widget_MainMenu::ClearLoadingScreen()
 
 void UBaseClass_Widget_MainMenu::OpenLoadGameMenu()
 {
-	if (SaveLoad_Class && PlayerReference) {
+	if (!Player_Controller_Reference && GetWorld()) {
+		Player_Controller_Reference = Cast<ABaseClass_PlayerController>(GetWorld()->GetFirstPlayerController());
+	}
+
+	if (SaveLoad_Class && Player_Controller_Reference) {
 		CurrentOpenMenuWidget = CreateWidget<UBaseClass_Widget_SaveLoad>(GetWorld(), SaveLoad_Class);
+		Cast<UBaseClass_Widget_SaveLoad>(CurrentOpenMenuWidget)->GetSaveFiles(false);
 		CurrentOpenMenuWidget->AddToViewport();
 
-		PlayerReference->CurrentOpenMenuWidget = CurrentOpenMenuWidget;
-		PlayerReference->CurrentOpenMenuWidget_Class = SaveLoad_Class;
+		Player_Controller_Reference->CurrentOpenMenuWidget = CurrentOpenMenuWidget;
+		Player_Controller_Reference->CurrentOpenMenuWidget_Class = SaveLoad_Class;
 	}
 }
 
 
 void UBaseClass_Widget_MainMenu::OpenOptionsMenu()
 {
-	if (Options_Class && PlayerReference) {
+	if (!Player_Controller_Reference && GetWorld()) {
+		Player_Controller_Reference = Cast<ABaseClass_PlayerController>(GetWorld()->GetFirstPlayerController());
+	}
+
+	if (Options_Class && Player_Controller_Reference) {
 		CurrentOpenMenuWidget = CreateWidget<UBaseClass_Widget_Options>(GetWorld(), Options_Class);
-		Cast<UBaseClass_Widget_Options>(CurrentOpenMenuWidget)->PlayerReference = PlayerReference;
 		CurrentOpenMenuWidget->AddToViewport();
 
-		PlayerReference->CurrentOpenMenuWidget = CurrentOpenMenuWidget;
-		PlayerReference->CurrentOpenMenuWidget_Class = Options_Class;
+		Player_Controller_Reference->CurrentOpenMenuWidget = CurrentOpenMenuWidget;
+		Player_Controller_Reference->CurrentOpenMenuWidget_Class = Options_Class;
 	}
 }
 
@@ -106,9 +121,3 @@ void UBaseClass_Widget_MainMenu::QuitGame()
 {
 	FWindowsPlatformMisc::RequestExit(false);
 }
-
-
-//void UBaseClass_Widget_MainMenu::OpenSaveLoadMenu(bool SaveMode)
-//{
-//
-//}

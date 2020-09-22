@@ -20,4 +20,9 @@ public:
 
 	UPROPERTY()
 	int TotalManualSaveCount;
+
+// Save/Load Functions
+// --------------------------------------------------
+	UFUNCTION()
+	void SaveGameDelegateFunction(const FString& SlotName, const int32 UserIndex, bool bSuccess);
 };

@@ -1,32 +1,29 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "GameFramework/PlayerController.h"
+#include "GameFramework/PlayerState.h"
 
 #include "SubWidget_AudioMenu.h"
 #include "SubWidget_GraphicsMenu.h"
 #include "SubWidget_ControlsMenu.h"
 #include "SubWidget_KeybindsMenu.h"
 
-#include "BaseClass_PlayerController.generated.h"
+#include "TheHazards_PlayerState.generated.h"
 
 // Forward Declarations
 class UBaseClass_Widget_Options;
 class UBaseClass_Widget_MainMenu;
 class UBaseClass_Widget_SaveLoad;
-
+//class USubwidget_AudioMenu;
+//class USubWidget_ControlsMenu;
+//class USubWidget_GraphicsMenu;
+//class USubWidget_KeybindsMenu;
 
 UCLASS()
-class THE_HAZARDS_API ABaseClass_PlayerController : public APlayerController
+class THE_HAZARDS_API ATheHazards_PlayerState : public APlayerState
 {
 	GENERATED_BODY()
-
-public:
-	ABaseClass_PlayerController();
-
-protected:
-	virtual void SetupInputComponent() override;
-
+	
 public:
 // Base Variables
 // --------------------------------------------------
@@ -58,8 +55,4 @@ public:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Widgets")
 	UUserWidget* CurrentOpenMenuWidget;
-
-// ------------------------- Menus
-	UPROPERTY()
-	bool MainMenuMode;
 };
