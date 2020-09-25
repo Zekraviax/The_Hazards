@@ -25,4 +25,7 @@ public:
 // --------------------------------------------------
 	UFUNCTION()
 	void SaveGameDelegateFunction(const FString& SlotName, const int32 UserIndex, bool bSuccess);
+
+	UFUNCTION()
+	void LoadGameDelegateFunction(const FString& SlotName, const int32 UserIndex, USaveGame* LoadedData);
 };

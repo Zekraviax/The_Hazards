@@ -6,9 +6,7 @@
 #include "Components/Image.h"
 #include "Components/TextBlock.h"
 #include "Components/ScrollBox.h"
-#include "Kismet/GameplayStatics.h"
 #include "UObject/UObjectGlobals.h"
-#include "GameFramework/AsyncActionHandleSaveGame.h"
 #include "SubWidget_SaveLoadSlot.h"
 
 #include "BaseClass_Widget_SaveLoad.generated.h"
@@ -70,15 +68,22 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "References")
 	ABaseClass_PlayerController* Player_Controller_Reference;
 
-	//UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "References")
-	//USaveFile_MetaList* MetaList;
+// ------------------------- Save/Load
+	UPROPERTY()
+	USaveFile_MetaList* MetaList;
+
+	UPROPERTY()
+	bool SaveMode;
 
 // Functions
 // --------------------------------------------------
 
-// ------------------------- Save Files
-	UFUNCTION()
-	void GetSaveFiles(bool SaveMode);
+// ------------------------- Save/Load
+	UFUNCTION(BlueprintCallable)
+	void GetSaveFilesPartOne(bool SetSaveMode);
+
+	UFUNCTION(BlueprintCallable)
+	void GetSaveFilesPartTwo();
 
 	UFUNCTION(BlueprintCallable)
 	void CloseWidget();

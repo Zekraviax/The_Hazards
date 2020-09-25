@@ -153,10 +153,10 @@ void AEntity_Player::RotatePlayerTowardsMouse()
 	FHitResult HitResult;
 	FRotator LookAtRotation;
 
-	if (!LocalPlayerControllerReference)
-		LocalPlayerControllerReference = Cast<ABaseClass_PlayerController>(GetWorld()->GetFirstPlayerController());
+	if (!Player_Controller_Reference)
+		Player_Controller_Reference = Cast<ABaseClass_PlayerController>(GetWorld()->GetFirstPlayerController());
 	else {
-		if (LocalPlayerControllerReference->GetHitResultUnderCursorByChannel(UEngineTypes::ConvertToTraceType(ECC_Camera), false, HitResult)) {
+		if (Player_Controller_Reference->GetHitResultUnderCursorByChannel(UEngineTypes::ConvertToTraceType(ECC_Camera), false, HitResult)) {
 			LookAtRotation = UKismetMathLibrary::FindLookAtRotation(GetActorLocation(), HitResult.Location);
 
 			PlayerRotationTowardsMouseValue = FRotator(this->GetActorRotation().Pitch, LookAtRotation.Yaw, this->GetActorRotation().Roll);

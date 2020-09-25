@@ -88,8 +88,8 @@ public:
 	UPROPERTY()
 	E_SaveLoadSlotFunctions SlotFunction;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Save/Load")
-	TSubclassOf<USaveFile_Slot> SlotClass;
+	//UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Save/Load")
+	//TSubclassOf<USaveFile_Slot> SlotClass;
 
 	UPROPERTY()
 	USaveFile_Slot* SlotReference;

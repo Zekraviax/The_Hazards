@@ -40,8 +40,8 @@ public:
 	AEntity_Player* PlayerReference;
 
 // ------------------------- Save/Load
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Save/Load")
-	TSubclassOf<USaveFile_MetaList> MetaList_Class;
+	//UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Save/Load")
+	//TSubclassOf<USaveFile_MetaList> MetaList_Class;
 
 // Functions
 // --------------------------------------------------

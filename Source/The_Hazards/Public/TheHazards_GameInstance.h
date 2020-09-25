@@ -11,6 +11,7 @@
 
 // Forward Declarations
 class USaveFile_Slot;
+class USaveFile_MetaList;
 class UBaseClass_Widget_LoadScreen;
 
 UCLASS()
@@ -23,13 +24,15 @@ public:
 // --------------------------------------------------
 
 // ------------------------- Widgets
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Widgets")
-	TSubclassOf<UBaseClass_Widget_LoadScreen> LoadScreen_Class;
+	//UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Widgets")
+	//TSubclassOf<UBaseClass_Widget_LoadScreen> LoadScreen_Class;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Widgets")
-	UBaseClass_Widget_LoadScreen* LoadScreen_Widget;
+	//UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Widgets")
+	//UBaseClass_Widget_LoadScreen* LoadScreen_Widget;
 
 // ------------------------- Save/Load
+	UPROPERTY()
+	USaveFile_MetaList* MetaListReference;
 
 
 // Functions
@@ -37,5 +40,12 @@ public:
 
 // ------------------------- Save/Load
 	UFUNCTION()
-	void LoadSaveFile(USaveFile_Slot* SlotReference);
+	USaveFile_MetaList* ReturnMetaList();
+
+	UFUNCTION()
+	void LoadSaveFile(USaveFile_Slot* SlotReference, UWorld* WorldReference);
+
+// -------------------------
+	UFUNCTION()
+	void ClearLoadingScreen();
 };

@@ -73,27 +73,24 @@ void USubWidget_SaveLoadSlot::SelectSlot()
 
 void USubWidget_SaveLoadSlot::CreateNewSaveFileSlot(FText SaveSlotName)
 {
+	// Get Player
+	AEntity_Player* PlayerPawn = Cast<AEntity_Player>(UGameplayStatics::GetPlayerPawn(GetWorld(), 0));
 	USaveFile_MetaList* MetaList = Cast<USaveFile_MetaList>(UGameplayStatics::LoadGameFromSlot("MetaList", 0));
+	FAsyncSaveGameToSlotDelegate SaveDelegate;
 
-	if (SlotClass) {
-		// Get Player
-		AEntity_Player* PlayerPawn = Cast<AEntity_Player>(UGameplayStatics::GetPlayerPawn(GetWorld(), 0));
-		FAsyncSaveGameToSlotDelegate SaveDelegate;
-
+	if (MetaList != nullptr) {
 		// Set Slot Variables
-		SlotReference = Cast<USaveFile_Slot>(UGameplayStatics::CreateSaveGameObject(SlotClass));
+		SlotReference = Cast<USaveFile_Slot>(UGameplayStatics::CreateSaveGameObject(USaveFile_Slot::StaticClass()));
+
 		if (SlotReference->IsValidLowLevel()) {
 			SlotReference->SaveSlotName = SaveSlotName;
 			SlotReference->DateSaved = FDateTime::Now();
-			UGameplayStatics::SaveGameToSlot(SlotReference, SaveSlotName.ToString(), 0);
 
 			// Get the MetaList in order to increase the TotalManualSave count
 			if (MetaList->IsValidLowLevel()) {
 				MetaList->TotalManualSaveCount++;
 				SlotReference->CurrentTotalManualSaveCount = MetaList->TotalManualSaveCount;
 
-				//SaveDelegate.BindUObject(MetaList, &USaveFile_MetaList::SaveGameDelegateFunction);
-				//UGameplayStatics::AsyncSaveGameToSlot(MetaList, "MetaList", 0, SaveDelegate);
 				UGameplayStatics::SaveGameToSlot(MetaList, "MetaList", 0);
 			}
 
@@ -110,5 +107,7 @@ void USubWidget_SaveLoadSlot::CreateNewSaveFileSlot(FText SaveSlotName)
 			SaveDelegate.BindUObject(SlotReference, &USaveFile_Slot::SaveGameDelegateFunction);
 			UGameplayStatics::AsyncSaveGameToSlot(SlotReference, SaveSlotName.ToString(), 0, SaveDelegate);
 		}
+	} else {
+
 	}
 }

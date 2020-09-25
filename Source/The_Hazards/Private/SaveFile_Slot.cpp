@@ -13,15 +13,15 @@ void USaveFile_Slot::SaveGameDelegateFunction(const FString &SlotName, const int
 		for (TObjectIterator<UBaseClass_Widget_SaveLoad> Itr; Itr; ++Itr) {
 			UBaseClass_Widget_SaveLoad *FoundWidget = *Itr;
 
-			if (FoundWidget->IsValidLowLevel()) {
-				FoundWidget->GetSaveFiles(true);
-				//FoundWidget->RemoveFromParent();
-				//break;
+			if (FoundWidget->IsValidLowLevel() && FoundWidget->IsInViewport()) {
+				GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Green, FString::Printf(TEXT("Message: Found SaveLoad Widget in Viewport")));
+				UE_LOG(LogTemp, Display, TEXT("Message: Found SaveLoad Widget in Viewport"));
+				FoundWidget->GetSaveFilesPartOne(true);
 			}
 		}
 	}
 	else {
 		GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Red, FString::Printf(TEXT("Error: File %s failed to save."), *SlotName));
-		UE_LOG(LogTemp, Warning, TEXT("Error: File %s failed to save."), *SlotName);
+		UE_LOG(LogTemp, Error, TEXT("Error: File %s failed to save."), *SlotName);
 	}
 }

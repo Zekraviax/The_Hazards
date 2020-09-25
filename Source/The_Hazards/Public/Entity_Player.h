@@ -126,8 +126,8 @@ public:
 
 // Technical Variables
 // --------------------------------------------------
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Technical Variables")
-	ABaseClass_PlayerController* LocalPlayerControllerReference;
+	//UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Technical Variables")
+	//ABaseClass_PlayerController* LocalPlayerControllerReference;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Technical Variables")
 	FRotator PlayerRotationTowardsMouseValue;

@@ -65,8 +65,11 @@ void UBaseClass_Widget_MainMenu::ClearLoadingScreen()
 
 				Player_Entity_Reference = GetWorld()->SpawnActor<AEntity_Player>(Player_Entity_Class, PlayerStartActors[i]->GetActorLocation(), PlayerStartActors[i]->GetActorRotation(), ActorSpawnParameters);
 				PlayerControllerRef->Possess(Player_Entity_Reference);
-				Player_Entity_Reference->LocalPlayerControllerReference = PlayerControllerRef;
+				Player_Entity_Reference->Player_Controller_Reference = PlayerControllerRef;
 				Player_Entity_Reference->ManualBeginPlay();
+
+				//GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Green, FString::Printf(TEXT("Possess Player?")));
+				//UE_LOG(LogTemp, Display, TEXT("Possess Player?"));
 
 				break;
 			}
@@ -92,7 +95,7 @@ void UBaseClass_Widget_MainMenu::OpenLoadGameMenu()
 
 	if (SaveLoad_Class && Player_Controller_Reference) {
 		CurrentOpenMenuWidget = CreateWidget<UBaseClass_Widget_SaveLoad>(GetWorld(), SaveLoad_Class);
-		Cast<UBaseClass_Widget_SaveLoad>(CurrentOpenMenuWidget)->GetSaveFiles(false);
+		Cast<UBaseClass_Widget_SaveLoad>(CurrentOpenMenuWidget)->GetSaveFilesPartOne(false);
 		CurrentOpenMenuWidget->AddToViewport();
 
 		Player_Controller_Reference->CurrentOpenMenuWidget = CurrentOpenMenuWidget;
@@ -103,7 +106,7 @@ void UBaseClass_Widget_MainMenu::OpenLoadGameMenu()
 
 void UBaseClass_Widget_MainMenu::OpenOptionsMenu()
 {
-	if (!Player_Controller_Reference && GetWorld()) {
+	if (!Player_Controller_Reference->IsValidLowLevel() && GetWorld()->IsValidLowLevel()) {
 		Player_Controller_Reference = Cast<ABaseClass_PlayerController>(GetWorld()->GetFirstPlayerController());
 	}
 

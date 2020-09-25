@@ -43,7 +43,7 @@ void USubWidget_WarningAndErrorPrompt::ConfirmButtonSwitchFunction()
 
 		// Tell the GameInstance to load the level
 		SaveFileSlot = Cast<USubWidget_SaveLoadSlot>(ParentWidget_Reference)->SlotReference;
-		Cast<UTheHazards_GameInstance>(UGameplayStatics::GetGameInstance(GetWorld()))->LoadSaveFile(SaveFileSlot);
+		//Cast<UTheHazards_GameInstance>(UGameplayStatics::GetGameInstance(GetWorld()))->LoadSaveFile(SaveFileSlot, GetWorld());
 		break;
 	default:
 		break;

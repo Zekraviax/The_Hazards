@@ -3,18 +3,16 @@
 #include "SaveFile_MetaList.h"
 #include "SaveFile_Slot.h"
 #include "Entity_Player.h"
+#include "Delegates/Delegate.h"
+#include "Kismet/GameplayStatics.h"
+#include "GameFramework/AsyncActionHandleSaveGame.h"
+#include "SaveGameSystem.h"
 
-void UBaseClass_Widget_SaveLoad::GetSaveFiles(bool SaveMode)
+
+void UBaseClass_Widget_SaveLoad::GetSaveFilesPartOne(bool SetSaveMode)
 {
-	FAsyncLoadGameFromSlotDelegate LoadDelegate;
-
-	// Pre-emptively load the Meta List
-	USaveFile_MetaList* MetaList = Cast<USaveFile_MetaList>(UGameplayStatics::LoadGameFromSlot("MetaList", 0));
-	//LoadDelegate.BindUObject(MetaList, MetaList->GetClass().Load);
-
-	if (!MetaList->IsValidLowLevel()) {
-		MetaList = Cast<USaveFile_MetaList>(UGameplayStatics::CreateSaveGameObject(USaveFile_MetaList::StaticClass()));
-	}
+	//FAsyncLoadGameFromSlotDelegate LoadDelegate;
+	SaveMode = SetSaveMode;
 
 	// Clear the SaveFileScrollBox widget
 	if (SaveFileScrollBox->IsValidLowLevel()) {
@@ -41,7 +39,29 @@ void UBaseClass_Widget_SaveLoad::GetSaveFiles(bool SaveMode)
 			SaveLoadSlot_Reference->SetSlotData();
 			SaveFileScrollBox->AddChild(SaveLoadSlot_Reference);
 		}
+	}
+	
+	MetaList = Cast<USaveFile_MetaList>(UGameplayStatics::LoadGameFromSlot("MetaList", 0));
 
+	if (MetaList == nullptr) {
+		MetaList = Cast<USaveFile_MetaList>(UGameplayStatics::CreateSaveGameObject(USaveFile_MetaList::StaticClass()));
+		if (UGameplayStatics::SaveGameToSlot(MetaList, "MetaList", 0)) {
+
+		}
+	}
+
+	if (MetaList != NULL) {
+		if (MetaList->IsValidLowLevel()) {
+			// Only move to part two if all save files are loaded
+			GetSaveFilesPartTwo();
+		}
+	}
+}
+
+
+void UBaseClass_Widget_SaveLoad::GetSaveFilesPartTwo()
+{
+	if (SaveLoadSlot_Class->IsValidLowLevel()) {
 		// Get all existing saves, if any
 		if (MetaList->IsValidLowLevel()) {
 			if (MetaList->SaveFileNames.Num() > 0) {
@@ -67,28 +87,34 @@ void UBaseClass_Widget_SaveLoad::GetSaveFiles(bool SaveMode)
 
 							// Set Save Slot texts
 							SaveLoadSlot_Reference->SlotNameText->SetText(FText::FromString(MetaList->SaveFileNames[i]));
-							SaveLoadSlot_Reference->CharacterNameText->SetText(FText::FromString(LoadedSlot->PlayerReference->CharacterSheet.Name));
-							//SaveLoadSlot_Reference->LevelText->SetText(FText::FromString("Level " + FString::FromInt(LoadedSlot->PlayerReference->Level)));
-							//SaveLoadSlot_Reference->PlaytimeText->SetText(FText::FromString("00:00"));
-							//SaveLoadSlot_Reference->DateSavedText->SetText(FText::FromString(LoadedSlot->DateSaved.ToString()));
-							//SaveLoadSlot_Reference->SlotNumberText->SetText(FText::FromString("Slot " + FString::FromInt(i)));
-							//SaveLoadSlot_Reference->SaveCountText->SetText(FText::FromString("#" + FString::FromInt(LoadedSlot->CurrentTotalManualSaveCount)));
+							if (LoadedSlot->PlayerReference != NULL) {
+								SaveLoadSlot_Reference->CharacterNameText->SetText(FText::FromString(LoadedSlot->PlayerReference->CharacterSheet.Name));
+								SaveLoadSlot_Reference->LevelText->SetText(FText::FromString("Level " + FString::FromInt(LoadedSlot->PlayerReference->Level)));
+							}
+							SaveLoadSlot_Reference->PlaytimeText->SetText(FText::FromString("00:00"));
+							SaveLoadSlot_Reference->DateSavedText->SetText(FText::FromString(LoadedSlot->DateSaved.ToString()));
+							SaveLoadSlot_Reference->SlotNumberText->SetText(FText::FromString("Slot " + FString::FromInt(i)));
+							SaveLoadSlot_Reference->SaveCountText->SetText(FText::FromString("#" + FString::FromInt(LoadedSlot->CurrentTotalManualSaveCount)));
 
 							SaveFileScrollBox->AddChild(SaveLoadSlot_Reference);
-						} else {
+						}
+						else {
 							GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Red, FString::Printf(TEXT("Error: Failed to create Save File Slot widget.")));
-							UE_LOG(LogTemp, Warning, TEXT("Error: Failed to create Save File Slot widget."));
+							UE_LOG(LogTemp, Error, TEXT("Error: Failed to create Save File Slot widget."));
 						}
 					}
 					else {
 						GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Red, FString::Printf(TEXT("Error: Failed to load Save File %s."), *MetaList->SaveFileNames[i]));
-						UE_LOG(LogTemp, Warning, TEXT("Error: Failed to load Save File %s."), *MetaList->SaveFileNames[i]);
+						UE_LOG(LogTemp, Error, TEXT("Error: Failed to load Save File %s."), *MetaList->SaveFileNames[i]);
 					}
 				}
+
+				MetaList = nullptr;
 			}
-		} else {
+		}
+		else {
 			GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Red, FString::Printf(TEXT("Meta List Error!")));
-			UE_LOG(LogTemp, Warning, TEXT("Error: Meta List Error!"));
+			UE_LOG(LogTemp, Error, TEXT("Error: Meta List Error!"));
 		}
 	}
 }
