@@ -2,10 +2,14 @@
 
 #include "SaveFile_Slot.h"
 #include "SaveFile_MetaList.h"
-#include "Entity_Player.h"
 #include "SubWidget_NameSaveFile.h"
 #include "SubWidget_WarningAndErrorPrompt.h"
 #include "BaseClass_Widget_SaveLoad.h"
+#include "GameFramework/SaveGame.h"
+#include "Kismet/GameplayStatics.h"
+#include "Misc/DateTime.h"
+#include "Entity_Player.h"
+#include "TheHazards_GameInstance.h"
 
 
 void USubWidget_SaveLoadSlot::SetSlotData()
@@ -75,39 +79,56 @@ void USubWidget_SaveLoadSlot::CreateNewSaveFileSlot(FText SaveSlotName)
 {
 	// Get Player
 	AEntity_Player* PlayerPawn = Cast<AEntity_Player>(UGameplayStatics::GetPlayerPawn(GetWorld(), 0));
-	USaveFile_MetaList* MetaList = Cast<USaveFile_MetaList>(UGameplayStatics::LoadGameFromSlot("MetaList", 0));
+	//USaveFile_MetaList* MetaList = Cast<UTheHazards_GameInstance>(GetWorld()->GetGameInstance())->ReturnMetaList();
 	FAsyncSaveGameToSlotDelegate SaveDelegate;
+	USaveFile_MetaList* MetaList;
 
-	if (MetaList != nullptr) {
-		// Set Slot Variables
-		SlotReference = Cast<USaveFile_Slot>(UGameplayStatics::CreateSaveGameObject(USaveFile_Slot::StaticClass()));
+	// Clear NameSaveFile widget
+	NameSaveFileWidget_Reference->RemoveFromParent();
+	NameSaveFileWidget_Reference = NULL;
 
-		if (SlotReference->IsValidLowLevel()) {
-			SlotReference->SaveSlotName = SaveSlotName;
-			SlotReference->DateSaved = FDateTime::Now();
+	MetaList = Cast<USaveFile_MetaList>(UGameplayStatics::LoadGameFromSlot("MetaList", 0));
 
-			// Get the MetaList in order to increase the TotalManualSave count
-			if (MetaList->IsValidLowLevel()) {
-				MetaList->TotalManualSaveCount++;
-				SlotReference->CurrentTotalManualSaveCount = MetaList->TotalManualSaveCount;
-
-				UGameplayStatics::SaveGameToSlot(MetaList, "MetaList", 0);
-			}
-
-			// Set Player Variables
-			SlotReference->PlayerReference = PlayerPawn;
-
-			// Set Enemy Variables
-			for (TObjectIterator<AEntity_EnemyNPC> Itr; Itr; ++Itr) {
-				AEntity_EnemyNPC* FoundEnemy = *Itr;
-				SlotReference->EnemyReferencesArray.AddUnique(FoundEnemy);
-			}
-
-			// Bind UObject
-			SaveDelegate.BindUObject(SlotReference, &USaveFile_Slot::SaveGameDelegateFunction);
-			UGameplayStatics::AsyncSaveGameToSlot(SlotReference, SaveSlotName.ToString(), 0, SaveDelegate);
+	if (MetaList == nullptr) {
+		MetaList = Cast<USaveFile_MetaList>(UGameplayStatics::CreateSaveGameObject(USaveFile_MetaList::StaticClass()));
+		if (UGameplayStatics::SaveGameToSlot(MetaList, "MetaList", 0)) {
+			GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Yellow, FString::Printf(TEXT("Warning: MetaList not detected. Creating new MetaList.")));
+			UE_LOG(LogTemp, Warning, TEXT("Warning: MetaList not detected. Creating new MetaList."));
 		}
-	} else {
+		else {
+			GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Red, FString::Printf(TEXT("Error: Could not create MetaList.")));
+			UE_LOG(LogTemp, Error, TEXT("Error: Could not create MetaList."));
+		}
+	}
 
+	// Set Slot Variables
+	SlotReference = Cast<USaveFile_Slot>(UGameplayStatics::CreateSaveGameObject(USaveFile_Slot::StaticClass()));
+
+	if (SlotReference->IsValidLowLevel()) {
+		SlotReference->SaveSlotName = SaveSlotName;
+		SlotReference->DateSaved = FDateTime::Now();
+
+		// Get the MetaList in order to increase the TotalManualSave count
+		if (MetaList->IsValidLowLevel()) {
+			MetaList->TotalManualSaveCount++;
+			SlotReference->CurrentTotalManualSaveCount = MetaList->TotalManualSaveCount;
+
+			UGameplayStatics::SaveGameToSlot(MetaList, "MetaList", 0);
+		}
+
+		// Set Player Variables
+		SlotReference->PlayerReference = PlayerPawn;
+
+		// Set Enemy Variables
+		for (TObjectIterator<AEntity_EnemyNPC> Itr; Itr; ++Itr) {
+			AEntity_EnemyNPC* FoundEnemy = *Itr;
+			SlotReference->EnemyReferencesArray.AddUnique(FoundEnemy);
+		}
+
+		// Bind UObject
+		SaveDelegate.BindUObject(SlotReference, &USaveFile_Slot::SaveGameDelegateFunction);
+		UGameplayStatics::AsyncSaveGameToSlot(SlotReference, SaveSlotName.ToString(), 0, SaveDelegate);
+		
+		//MetaList = nullptr;
 	}
 }

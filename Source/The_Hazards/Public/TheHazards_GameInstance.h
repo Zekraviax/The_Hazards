@@ -5,13 +5,12 @@
 
 #include "Engine/LevelStreaming.h"
 #include "Engine/StreamableManager.h"
-#include "Kismet/GameplayStatics.h"
+#include "SaveFile_MetaList.h"
 
 #include "TheHazards_GameInstance.generated.h"
 
 // Forward Declarations
 class USaveFile_Slot;
-class USaveFile_MetaList;
 class UBaseClass_Widget_LoadScreen;
 
 UCLASS()

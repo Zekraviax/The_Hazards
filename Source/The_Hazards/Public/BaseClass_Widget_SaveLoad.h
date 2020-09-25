@@ -69,8 +69,8 @@ public:
 	ABaseClass_PlayerController* Player_Controller_Reference;
 
 // ------------------------- Save/Load
-	UPROPERTY()
-	USaveFile_MetaList* MetaList;
+	//UPROPERTY()
+	//USaveFile_MetaList* MetaList;
 
 	UPROPERTY()
 	bool SaveMode;

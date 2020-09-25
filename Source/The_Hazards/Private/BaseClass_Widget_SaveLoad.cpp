@@ -7,11 +7,14 @@
 #include "Kismet/GameplayStatics.h"
 #include "GameFramework/AsyncActionHandleSaveGame.h"
 #include "SaveGameSystem.h"
+#include "Misc/AssertionMacros.h"
+#include "TheHazards_GameInstance.h"
 
 
 void UBaseClass_Widget_SaveLoad::GetSaveFilesPartOne(bool SetSaveMode)
 {
 	//FAsyncLoadGameFromSlotDelegate LoadDelegate;
+	USaveFile_MetaList* MetaList;
 	SaveMode = SetSaveMode;
 
 	// Clear the SaveFileScrollBox widget
@@ -41,18 +44,24 @@ void UBaseClass_Widget_SaveLoad::GetSaveFilesPartOne(bool SetSaveMode)
 		}
 	}
 	
+	//MetaList = Cast<UTheHazards_GameInstance>(GetWorld()->GetGameInstance())->ReturnMetaList();
 	MetaList = Cast<USaveFile_MetaList>(UGameplayStatics::LoadGameFromSlot("MetaList", 0));
 
 	if (MetaList == nullptr) {
 		MetaList = Cast<USaveFile_MetaList>(UGameplayStatics::CreateSaveGameObject(USaveFile_MetaList::StaticClass()));
 		if (UGameplayStatics::SaveGameToSlot(MetaList, "MetaList", 0)) {
-
+			GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Yellow, FString::Printf(TEXT("Warning: MetaList not detected. Creating new MetaList.")));
+			UE_LOG(LogTemp, Warning, TEXT("Warning: MetaList not detected. Creating new MetaList."));
+		}
+		else {
+			GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Red, FString::Printf(TEXT("Error: Could not create MetaList.")));
+			UE_LOG(LogTemp, Error, TEXT("Error: Could not create MetaList."));
 		}
 	}
 
 	if (MetaList != NULL) {
 		if (MetaList->IsValidLowLevel()) {
-			// Only move to part two if all save files are loaded
+			// Only move to part two if the MetaList is loaded
 			GetSaveFilesPartTwo();
 		}
 	}
@@ -61,14 +70,30 @@ void UBaseClass_Widget_SaveLoad::GetSaveFilesPartOne(bool SetSaveMode)
 
 void UBaseClass_Widget_SaveLoad::GetSaveFilesPartTwo()
 {
+	//USaveFile_MetaList* MetaList = Cast<UTheHazards_GameInstance>(GetWorld()->GetGameInstance())->ReturnMetaList();
+	USaveFile_MetaList* MetaList;
+	MetaList = Cast<USaveFile_MetaList>(UGameplayStatics::LoadGameFromSlot("MetaList", 0));
+
+	if (MetaList == nullptr) {
+		MetaList = Cast<USaveFile_MetaList>(UGameplayStatics::CreateSaveGameObject(USaveFile_MetaList::StaticClass()));
+		if (UGameplayStatics::SaveGameToSlot(MetaList, "MetaList", 0)) {
+			GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Yellow, FString::Printf(TEXT("Warning: MetaList not detected. Creating new MetaList.")));
+			UE_LOG(LogTemp, Warning, TEXT("Warning: MetaList not detected. Creating new MetaList."));
+		}
+		else {
+			GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Red, FString::Printf(TEXT("Error: Could not create MetaList.")));
+			UE_LOG(LogTemp, Error, TEXT("Error: Could not create MetaList."));
+		}
+	}
+
 	if (SaveLoadSlot_Class->IsValidLowLevel()) {
-		// Get all existing saves, if any
+		//Get all existing saves, if any
 		if (MetaList->IsValidLowLevel()) {
 			if (MetaList->SaveFileNames.Num() > 0) {
 				USaveFile_Slot* LoadedSlot;
 
 				for (int i = 0; i < MetaList->SaveFileNames.Num(); i++) {
-					// Load Save Slots for texts
+					//Load Save Slots for texts
 					LoadedSlot = Cast<USaveFile_Slot>(UGameplayStatics::LoadGameFromSlot(MetaList->SaveFileNames[i], 0));
 
 					if (LoadedSlot->IsValidLowLevel()) {
@@ -85,7 +110,7 @@ void UBaseClass_Widget_SaveLoad::GetSaveFilesPartTwo()
 
 							SaveLoadSlot_Reference->SetSlotData();
 
-							// Set Save Slot texts
+							//Set Save Slot texts
 							SaveLoadSlot_Reference->SlotNameText->SetText(FText::FromString(MetaList->SaveFileNames[i]));
 							if (LoadedSlot->PlayerReference != NULL) {
 								SaveLoadSlot_Reference->CharacterNameText->SetText(FText::FromString(LoadedSlot->PlayerReference->CharacterSheet.Name));
@@ -109,7 +134,8 @@ void UBaseClass_Widget_SaveLoad::GetSaveFilesPartTwo()
 					}
 				}
 
-				MetaList = nullptr;
+				//MetaList = nullptr;
+				//FDebug::DumpStackTraceToLog();
 			}
 		}
 		else {

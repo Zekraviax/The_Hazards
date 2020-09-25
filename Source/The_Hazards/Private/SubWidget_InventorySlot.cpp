@@ -164,7 +164,8 @@ void USubWidget_InventorySlot::OnMouseUp()
 
 void USubWidget_InventorySlot::OnMouseHoverBegin(FVector2D Coordinates)
 {
-	float PosX, PosY, ViewportScaledValueX, ViewportScaledValueY;
+	float PosX, ViewportScaledValueX, ViewportScaledValueY;
+	float PosY = 0;
 	int32 ViewportSizeX, ViewportSizeY;
 
 	ItemDescription_Reference = CreateWidget<UBaseClass_Widget_OnHoverDescription>(GetWorld(), ItemDescription_Class);

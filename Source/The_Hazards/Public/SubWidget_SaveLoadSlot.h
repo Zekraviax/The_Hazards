@@ -5,14 +5,12 @@
 
 #include "Components/TextBlock.h"
 #include "Components/Button.h"
-#include "GameFramework/SaveGame.h"
-#include "Kismet/GameplayStatics.h"
-#include "Misc/DateTime.h"
 
 #include "SubWidget_SaveLoadSlot.generated.h"
 
 // Forward Declarations
 class USaveFile_Slot;
+class USaveFile_MetaList;
 class UBaseClass_Widget_SaveLoad;
 class USubWidget_NameSaveFile;
 class USubWidget_WarningAndErrorPrompt;
@@ -72,8 +70,8 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Widgets")
 	USubWidget_NameSaveFile* NameSaveFileWidget_Reference;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Widgets")
-	TSubclassOf<UBaseClass_Widget_SaveLoad> SaveLoadWidget_Class;
+	//UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Widgets")
+	//TSubclassOf<UBaseClass_Widget_SaveLoad> SaveLoadWidget_Class;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Widgets")
 	TSubclassOf<USubWidget_WarningAndErrorPrompt> WarningAndErrorPrompt_Class;
@@ -88,11 +86,11 @@ public:
 	UPROPERTY()
 	E_SaveLoadSlotFunctions SlotFunction;
 
-	//UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Save/Load")
-	//TSubclassOf<USaveFile_Slot> SlotClass;
-
 	UPROPERTY()
 	USaveFile_Slot* SlotReference;
+
+	//UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Save/Load")
+	//USaveFile_MetaList* MetaList;
 
 
 // Functions

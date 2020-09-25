@@ -6,6 +6,7 @@
 #include "TheHazards_GameMode.h"
 #include "Misc/DateTime.h"
 
+
 #include "SaveFile_Slot.generated.h"
 
 // Forward Declarations
@@ -41,6 +42,9 @@ public:
 
 	UPROPERTY()
 	TArray<AEntity_EnemyNPC*> EnemyReferencesArray;
+
+	//UPROPERTY()
+	//FAsyncSaveGameToSlotDelegate SaveDelegateReference;
 
 // Level Variables
 // --------------------------------------------------

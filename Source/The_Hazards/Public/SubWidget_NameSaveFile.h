@@ -41,7 +41,7 @@ public:
 
 // ------------------------- Save/Load
 	//UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Save/Load")
-	//TSubclassOf<USaveFile_MetaList> MetaList_Class;
+	//USaveFile_MetaList* MetaList;
 
 // Functions
 // --------------------------------------------------
