@@ -43,6 +43,8 @@ AEntity_Base::AEntity_Base()
 	Scrap = 10;
 	CanAttack = true;
 
+	SpecialAttacksFunctionLibrary_Reference = nullptr;
+
 	// Set Stats
 	SkillStats.Move_Speed = 1;
 	ItemStats.Move_Speed = 1;
@@ -133,12 +135,12 @@ void AEntity_Base::BeginPlay()
 			}
 
 			// Spawn a SpecialAttacksFunctionLibrary actor for this entity
-			if (SpecialAttacksFunctionLibrary_Class) {
-				SpecialAttacksFunctionLibrary_Reference = GetWorld()->SpawnActor<AFunctionLibrary_SpecialAttacks>(SpecialAttacksFunctionLibrary_Class, FVector::ZeroVector, FRotator::ZeroRotator, SpawnInfo);
-				SpecialAttacksFunctionLibrary_Reference->InitializeSpecialAttacks();
-				SpecialAttacksFunctionLibrary_Reference->LinkedEntity = this;
-				SpecialAttacksFunctionLibrary_Reference->AddToRoot();
-			}
+			//if (SpecialAttacksFunctionLibrary_Class) {
+			//	SpecialAttacksFunctionLibrary_Reference = GetWorld()->SpawnActor<AFunctionLibrary_SpecialAttacks>(SpecialAttacksFunctionLibrary_Class, FVector::ZeroVector, FRotator::ZeroRotator, SpawnInfo);
+			//	SpecialAttacksFunctionLibrary_Reference->InitializeSpecialAttacks();
+			//	SpecialAttacksFunctionLibrary_Reference->LinkedEntity = this;
+			//	//SpecialAttacksFunctionLibrary_Reference->AddToRoot();
+			//}
 		}
 	}
 }
@@ -586,7 +588,7 @@ void AEntity_Base::SpecialAttackStart()
 
 			if (EquippedWeapon.Weapon.SpecialAttack != E_Weapon_SpecialAttacks::E_None && SpecialAttacksFunctionLibrary_Reference) {
 				SpecialAttacksFunctionLibrary_Reference->CallSpecialAttackFunction(EquippedWeapon.Weapon.SpecialAttack);
-				SpecialAttacksFunctionLibrary_Reference->SpecialAttackActor_Reference->AttackingEntity = this;
+				//SpecialAttacksFunctionLibrary_Reference->SpecialAttackActor_Reference->AttackingEntity = this;
 			}
 
 			// Sets Special Attack animation to the default attack animation
@@ -613,7 +615,7 @@ void AEntity_Base::SpecialAttackEnd()
 		AttackedEntitiesArray.Empty();
 
 		// Delete Special Attack actor
-		SpecialAttacksFunctionLibrary_Reference->SpecialAttackActor_Reference->Destroy();
+		//SpecialAttacksFunctionLibrary_Reference->SpecialAttackActor_Reference->Destroy();
 	}
 
 	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, TEXT("Special Attack End"));

@@ -27,6 +27,9 @@ public:
 	AEntity_Base* LinkedEntity;
 
 // ------------------------- Special Attack Actors
+	//UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	//ASpecialAttackActor_Base* SpecialAttackActor_Reference;
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TSubclassOf<ASpecialAttackActor_Base> Assassinate_Class;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
@@ -34,12 +37,6 @@ public:
 
 	//UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	//FActorSpawnParameters SpawnInfo;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	ASpecialAttackActor_Base* SpecialAttackActor_Reference;
-
-
-
 // Functions
 // --------------------------------------------------
 

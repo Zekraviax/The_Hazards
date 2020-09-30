@@ -19,6 +19,9 @@ public:
 	TArray<FString> SaveFileNames;
 
 	UPROPERTY()
+	TMap<FString, FString> SaveFileAndLevelNames;
+
+	UPROPERTY()
 	int TotalManualSaveCount;
 
 // Save/Load Functions

@@ -89,6 +89,9 @@ public:
 	UPROPERTY()
 	USaveFile_Slot* SlotReference;
 
+	UPROPERTY()
+	FString SaveFileSlotName;
+
 	//UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Save/Load")
 	//USaveFile_MetaList* MetaList;
 

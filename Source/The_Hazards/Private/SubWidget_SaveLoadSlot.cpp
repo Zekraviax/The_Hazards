@@ -22,6 +22,7 @@ void USubWidget_SaveLoadSlot::SetSlotData()
 		break;
 	case (E_SaveLoadSlotFunctions::E_SaveExistingSlot):
 		SelectButtonText->SetText(FText::FromString("Save"));
+		//SaveFileSlotName = SlotNameText->GetText().ToString();
 		break;
 	case (E_SaveLoadSlotFunctions::E_LoadExistingSLot):
 		SelectButtonText->SetText(FText::FromString("Load"));
@@ -61,6 +62,8 @@ void USubWidget_SaveLoadSlot::SelectSlot()
 		break;
 	case (E_SaveLoadSlotFunctions::E_LoadExistingSLot):
 		if (WarningAndErrorPrompt_Class) {
+			SaveFileSlotName = SlotNameText->GetText().ToString();
+
 			WarningAndErrorPrompt_Reference = CreateWidget<USubWidget_WarningAndErrorPrompt>(GetWorld(), WarningAndErrorPrompt_Class);
 			WarningAndErrorPrompt_Reference->ParentWidget_Reference = this;
 			WarningAndErrorPrompt_Reference->SetPromptText(E_WarningAndError_Types::E_DoubleCheckLoadGame);
@@ -79,7 +82,6 @@ void USubWidget_SaveLoadSlot::CreateNewSaveFileSlot(FText SaveSlotName)
 {
 	// Get Player
 	AEntity_Player* PlayerPawn = Cast<AEntity_Player>(UGameplayStatics::GetPlayerPawn(GetWorld(), 0));
-	//USaveFile_MetaList* MetaList = Cast<UTheHazards_GameInstance>(GetWorld()->GetGameInstance())->ReturnMetaList();
 	FAsyncSaveGameToSlotDelegate SaveDelegate;
 	USaveFile_MetaList* MetaList;
 
@@ -87,6 +89,7 @@ void USubWidget_SaveLoadSlot::CreateNewSaveFileSlot(FText SaveSlotName)
 	NameSaveFileWidget_Reference->RemoveFromParent();
 	NameSaveFileWidget_Reference = NULL;
 
+	//MetaList = Cast<UTheHazards_GameInstance>(GetWorld()->GetGameInstance())->ReturnMetaList();
 	MetaList = Cast<USaveFile_MetaList>(UGameplayStatics::LoadGameFromSlot("MetaList", 0));
 
 	if (MetaList == nullptr) {
@@ -96,8 +99,8 @@ void USubWidget_SaveLoadSlot::CreateNewSaveFileSlot(FText SaveSlotName)
 			UE_LOG(LogTemp, Warning, TEXT("Warning: MetaList not detected. Creating new MetaList."));
 		}
 		else {
-			GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Red, FString::Printf(TEXT("Error: Could not create MetaList.")));
-			UE_LOG(LogTemp, Error, TEXT("Error: Could not create MetaList."));
+			GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Red, FString::Printf(TEXT("Error: MetaList not detected. Could not create new MetaList.")));
+			UE_LOG(LogTemp, Error, TEXT("Error: MetaList not detected. Could not create new MetaList."));
 		}
 	}
 
@@ -107,6 +110,8 @@ void USubWidget_SaveLoadSlot::CreateNewSaveFileSlot(FText SaveSlotName)
 	if (SlotReference->IsValidLowLevel()) {
 		SlotReference->SaveSlotName = SaveSlotName;
 		SlotReference->DateSaved = FDateTime::Now();
+		SlotReference->LevelName = GetWorld()->GetName();
+		SaveFileSlotName = SaveSlotName.ToString();
 
 		// Get the MetaList in order to increase the TotalManualSave count
 		if (MetaList->IsValidLowLevel()) {

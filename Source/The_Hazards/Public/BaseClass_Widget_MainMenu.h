@@ -86,7 +86,4 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	void QuitGame();
-
-	//UFUNCTION(BlueprintCallable)
-	//void OpenSaveLoadMenu(bool SaveMode);
 };

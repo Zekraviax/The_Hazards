@@ -1,6 +1,7 @@
 #include "SubWidget_WarningAndErrorPrompt.h"
 
 #include "TheHazards_GameInstance.h"
+#include "TheHazards_GameMode.h"
 #include "SubWidget_SaveLoadSlot.h"
 
 
@@ -31,19 +32,16 @@ void USubWidget_WarningAndErrorPrompt::SetPromptText(E_WarningAndError_Types Pro
 
 void USubWidget_WarningAndErrorPrompt::ConfirmButtonSwitchFunction()
 {
-	USaveFile_Slot* SaveFileSlot;
+	FString SaveFileSlotName;
 
 	switch (ConfirmFunctionEnum)
 	{
 	case(E_WarningAndError_ConfirmButtonFunctions::E_OverwriteSaveFile):
 		break;
 	case(E_WarningAndError_ConfirmButtonFunctions::E_LoadGame):
-		// Close Widget
-		RemoveFromParent();
-
 		// Tell the GameInstance to load the level
-		SaveFileSlot = Cast<USubWidget_SaveLoadSlot>(ParentWidget_Reference)->SlotReference;
-		//Cast<UTheHazards_GameInstance>(UGameplayStatics::GetGameInstance(GetWorld()))->LoadSaveFile(SaveFileSlot, GetWorld());
+		SaveFileSlotName = Cast<USubWidget_SaveLoadSlot>(ParentWidget_Reference)->SaveFileSlotName;
+		Cast<UTheHazards_GameInstance>(UGameplayStatics::GetGameInstance(GetWorld()))->LoadSaveFile(SaveFileSlotName);
 		break;
 	default:
 		break;
