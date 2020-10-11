@@ -143,6 +143,9 @@ public:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Technical Variables")
 	bool LockMenuButtonActions;
+
+	UPROPERTY()
+	FTimerHandle ClearLoadingScreenTimerHandle;
 	
 // Functions
 // --------------------------------------------------
@@ -190,6 +193,12 @@ public:
 
 	UFUNCTION()
 	void UpdateStatusEffectWidgets();
+
+	UFUNCTION()
+	void ClearLoadingScreenTimer();
+
+	UFUNCTION()
+	void ClearLoadingScreenExecute();
 
 // ------------------------- Non-Player Characters
 	UFUNCTION()

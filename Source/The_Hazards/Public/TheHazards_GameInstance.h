@@ -78,7 +78,10 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void LoadSaveFilePartThree();
 
+	UFUNCTION(BlueprintCallable)
+	void LoadSaveFilePartFour();
+
 // ------------------------- Widgets
-	UFUNCTION()
-	void ClearLoadingScreen();
+	//UFUNCTION()
+	//void ClearLoadingScreen();
 };

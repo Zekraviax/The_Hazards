@@ -931,4 +931,7 @@ public:
 // ------------------------- Save/Load
 	//UFUNCTION()
 	//void LoadSaveFile(USaveFile_Slot* SlotToLoad);
+
+	//UFUNCTION()
+	//void LoadingScreenDelayFunction();
 };

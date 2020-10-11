@@ -49,18 +49,6 @@ public:
 	UPROPERTY()
 	UTheHazards_GameInstance* GameInstanceReference;
 
-	//UPROPERTY()
-	//FAsyncSaveGameToSlotDelegate SaveDelegateReference;
-
-// Level Variables
-// --------------------------------------------------
-
-// ------------------------- Entities
-
-	
-// ------------------------- Level
-
-
 // Save/Load Functions
 // --------------------------------------------------
 	UFUNCTION()
@@ -68,7 +56,4 @@ public:
 
 	UFUNCTION()
 	void LoadGameDelegateFunction(const FString& SlotName, const int32 UserIndex, USaveGame* LoadedGameData);
-
-	//UFUNCTION()
-	//void ReturnSaveGameDelegateFunction(const FString& SlotName, const int32 UserIndex, bool bSuccess);
 };

@@ -22,7 +22,6 @@ AEntity_Base::AEntity_Base()
 	WeaponMesh = CreateDefaultSubobject<UStaticMeshComponent>("WeaponMesh");
 	WeaponCollider = CreateDefaultSubobject<UBoxComponent>("WeaponCollider");
 	RotatingCore = CreateDefaultSubobject<USceneComponent>("RotatingCore");
-	//EntityDataWidgetComponent = CreateDefaultSubobject<UWidgetComponent>("EntityDataWidgetComponent");
 
 	// Construct Timeline
 	const ConstructorHelpers::FObjectFinder<UCurveFloat> Curve(TEXT("CurveFloat'/Game/DataCurves/Melee_Swing_Curve.Melee_Swing_Curve'"));
@@ -35,7 +34,6 @@ AEntity_Base::AEntity_Base()
 	RotatingCore->SetupAttachment(CubeMesh);
 	WeaponMesh->SetupAttachment(RotatingCore);
 	WeaponCollider->SetupAttachment(WeaponMesh);
-	//EntityDataWidgetComponent->SetupAttachment(RootComponent);
 
 	// Initialize variables
 	MaximumInventorySize = 30;
@@ -53,7 +51,6 @@ AEntity_Base::AEntity_Base()
 	// Set Default Weapon
 	CurrentEquippedWeapon.Name = "Unarmed";
 	CurrentEquippedWeapon.Supertype = E_Item_Supertypes::E_Weapon;
-	//CurrentEquippedWeapon.Amount = 0;
 	CurrentEquippedWeapon.Weapon.EquipSlot = E_Weapon_EquipSlot::E_Primary;
 	CurrentEquippedWeapon.Weapon.StatModifiers = F_BaseStats_Struct(1.f, 1.f, 1.f, 1.f, 1.f, 1.f, 1.f, 1.f, 1.f, 1.f, 1.f, 1.f, 1.f, 1.f, 1.f);
 	CurrentEquippedWeapon.Weapon.StatModifiers.SecondaryStats = F_SecondaryStats_Struct(1.f, 1.f, 1.f, 1.f, 1.f, 1.f, 1.f, 1.f, 1.f, 1.f, 1.f, 1.f, 1.f, 1.f, 1.f, 1.f, 1.f, 1.f, 1.f, 1.f, 1.f, 1);
@@ -118,21 +115,25 @@ void AEntity_Base::BeginPlay()
 			FActorSpawnParameters SpawnInfo;
 
 			SkillsFunctionLibrary_Reference = GetWorld()->SpawnActor<AFunctionLibrary_Skills>(SkillsFunctionLibrary_Class, FVector::ZeroVector, FRotator::ZeroRotator, SpawnInfo);
-			SkillsFunctionLibrary_Reference->InitializeSkills();
-			SkillsFunctionLibrary_Reference->LinkedEntity = this;
 
-			if (SkillsFunctionLibrary_Reference->SkillDataTable_Reference) {
+			if (SkillsFunctionLibrary_Reference->IsValidLowLevel()) {
+				SkillsFunctionLibrary_Reference->InitializeSkills();
+				SkillsFunctionLibrary_Reference->LinkedEntity = this;
 
-				FString ContextString;
-				TArray<FName> RowNames = SkillsFunctionLibrary_Reference->SkillDataTable_Reference->GetRowNames();
+				if (SkillsFunctionLibrary_Reference->SkillDataTable_Reference) {
 
-				for (auto& Row : SkillsFunctionLibrary_Reference->SkillDataTable_Reference->GetRowMap()) {
-					F_Skill_Base* Skill = (F_Skill_Base*)(Row.Value);
-					KnownSkills.Add(*Skill);
+					FString ContextString;
+						TArray<FName> RowNames = SkillsFunctionLibrary_Reference->SkillDataTable_Reference->GetRowNames();
+
+						for (auto& Row : SkillsFunctionLibrary_Reference->SkillDataTable_Reference->GetRowMap()) {
+							F_Skill_Base* Skill = (F_Skill_Base*)(Row.Value);
+								KnownSkills.Add(*Skill);
+						}
+
+					CalculateTotalStats();
 				}
-
-				CalculateTotalStats();
 			}
+
 
 			// Spawn a SpecialAttacksFunctionLibrary actor for this entity
 			//if (SpecialAttacksFunctionLibrary_Class) {

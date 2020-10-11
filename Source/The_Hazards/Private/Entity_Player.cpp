@@ -7,6 +7,7 @@
 #include "DrawDebugHelpers.h"
 #include "Entity_NPC.h"
 #include "Entity_Item.h"
+#include "TheHazards_GameInstance.h"
 
 
 // Functions
@@ -96,6 +97,10 @@ void AEntity_Player::Tick(float DeltaTime)
 
 	// Call Tick functions
 	RotatePlayerTowardsMouse();
+
+	if (GetWorldTimerManager().IsTimerActive(ClearLoadingScreenTimerHandle)) {
+		GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Yellow, FString::Printf(TEXT("Message: ClearLoadingScreenTimer time: %s"), GetWorldTimerManager().GetTimerElapsed(ClearLoadingScreenTimerHandle)));
+	}
 }
 
 
@@ -141,8 +146,11 @@ void AEntity_Player::ManualBeginPlay()
 	// Spawn the HUD widget
 	if (Player_HUD_Class) {
 		Player_HUD_Reference = CreateWidget<UBaseClass_Widget_PlayerHUD>(GetWorld(), Player_HUD_Class);
-		Player_HUD_Reference->PlayerReference = this;
-		Player_HUD_Reference->AddToViewport();
+
+		if (Player_HUD_Reference->IsValidLowLevel()) {
+			Player_HUD_Reference->PlayerReference = this;
+			Player_HUD_Reference->AddToViewport();
+		}
 	}
 }
 
@@ -231,7 +239,9 @@ void AEntity_Player::OpenPauseMenu()
 		Player_Controller_Reference->CurrentOpenMenuWidget = CreateWidget<UBaseClass_Widget_PauseMenu>(GetWorld(), PauseMenu_Class);
 		Player_Controller_Reference->CurrentOpenMenuWidget_Class = Player_Controller_Reference->CurrentOpenMenuWidget->GetClass();
 		Cast<UBaseClass_Widget_PauseMenu>(Player_Controller_Reference->CurrentOpenMenuWidget)->LocalPlayerReference = this;
+
 		Player_Controller_Reference->CurrentOpenMenuWidget->AddToViewport();
+
 		UGameplayStatics::SetGamePaused(GetWorld(), true);
 	}
 }
@@ -258,13 +268,14 @@ void AEntity_Player::OpenInventory()
 			// Create widget, add to viewport, and pause game
 			CurrentOpenMenuWidget = CreateWidget<UBaseClass_Widget_Inventory>(GetWorld(), Inventory_Class);
 			CurrentOpenMenuWidget_Class = Inventory_Class;
-			CurrentOpenMenuWidget->AddToViewport();
-			UGameplayStatics::SetGamePaused(GetWorld(), true);
 
 			// Inventory specific variables and functions
 			Cast<UBaseClass_Widget_Inventory>(CurrentOpenMenuWidget)->PlayerReference = this;
 			Cast<UBaseClass_Widget_Inventory>(CurrentOpenMenuWidget)->OnInventoryOpened();
 			Cast<UBaseClass_Widget_Inventory>(CurrentOpenMenuWidget)->PopulateInventorySlots();
+
+			CurrentOpenMenuWidget->AddToViewport();
+			UGameplayStatics::SetGamePaused(GetWorld(), true);
 		}
 		else {
 			CurrentOpenMenuWidget_Class = NULL;
@@ -417,6 +428,33 @@ void AEntity_Player::UpdateStatusEffectWidgets()
 			}
 		}
 	}
+}
+
+
+void AEntity_Player::ClearLoadingScreenTimer()
+{
+	GetWorldTimerManager().SetTimer(ClearLoadingScreenTimerHandle, this, &AEntity_Player::ClearLoadingScreenExecute, 2.5f, false);
+
+	GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Yellow, FString::Printf(TEXT("Message: Call ClearLoadingScreenTimer()")));
+	UE_LOG(LogTemp, Display, TEXT("Message: Call ClearLoadingScreenTimer()"));
+
+	//if (GetWorldTimerManager().IsTimerActive(ClearLoadingScreenTimerHandle)) {
+	//	GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Yellow, FString::Printf(TEXT("Message: ClearLoadingScreenTimer is active.")));
+	//	UE_LOG(LogTemp, Display, TEXT("Message: ClearLoadingScreenTimer is active."));
+	//}
+	//else {
+	//	GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Red, FString::Printf(TEXT("Error: ClearLoadingScreenTimer is not active.")));
+	//	UE_LOG(LogTemp, Error, TEXT("Message: ClearLoadingScreenTimer is not active."));
+	//}
+}
+
+
+void AEntity_Player::ClearLoadingScreenExecute()
+{
+	GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Yellow, FString::Printf(TEXT("Message: Call ClearLoadingScreenExecute()")));
+	UE_LOG(LogTemp, Display, TEXT("Message: Call ClearLoadingScreenExecute()"));
+
+	//Cast<UTheHazards_GameInstance>(GetWorld()->GetGameInstance())->LoadSaveFilePartFour();
 }
 
 

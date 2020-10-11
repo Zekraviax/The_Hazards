@@ -29,7 +29,7 @@ public:
 // Base Variables
 // --------------------------------------------------
 	UPROPERTY()
-	FTimerHandle TimerHandle;
+	FTimerHandle ClearLoadingScreenTimerHandle;
 
 // ------------------------- References
 	UPROPERTY()
@@ -43,8 +43,8 @@ public:
 
 // ------------------------- Save/Load
 	UFUNCTION()
-	void ClearLoadingScreenTimer();
+	void ClearLoadingScreenBegin();
 
 	UFUNCTION()
-	void ClearLoadingScreenFunction();
+	void ClearLoadingScreenExecute();
 };
