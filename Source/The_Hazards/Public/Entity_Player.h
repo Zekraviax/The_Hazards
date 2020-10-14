@@ -25,6 +25,7 @@
 class ABaseClass_PlayerController;
 class ABaseClass_MainMenuController;
 class AEntity_NPC;
+class UBaseClass_Widget_DevMenu;
 
 
 // Exclusive enum
@@ -114,6 +115,9 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Widgets")
 	TSubclassOf<UBaseClass_Widget_SaveLoad> SaveLoad_Class;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Widgets")
+	TSubclassOf<UBaseClass_Widget_DevMenu> DevMenu_Class;
+
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Widgets")
 	TSubclassOf<UUserWidget> CurrentOpenMenuWidget_Class;
 
@@ -183,6 +187,9 @@ public:
 
 	UFUNCTION()
 	void OpenSkillTree();
+
+	UFUNCTION(BlueprintCallable)
+	void OpenItemCraftMenu();
 
 	UFUNCTION(BlueprintCallable)
 	void OpenMainMenu();

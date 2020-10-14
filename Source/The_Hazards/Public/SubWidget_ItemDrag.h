@@ -1,5 +1,3 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
 #pragma once
 
 #include "CoreMinimal.h"
@@ -13,6 +11,7 @@
 
 // Forward Declarations
 class USubWidget_InventorySlot;
+
 
 UCLASS()
 class THE_HAZARDS_API USubWidget_ItemDrag : public UUserWidget

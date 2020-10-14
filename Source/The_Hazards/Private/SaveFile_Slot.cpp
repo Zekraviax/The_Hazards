@@ -37,7 +37,8 @@ void USaveFile_Slot::LoadGameDelegateFunction(const FString& SlotName, const int
 		UE_LOG(LogTemp, Display, TEXT("Message: File %s loaded successfully."), *SlotName);
 
 		if (GameInstanceReference) {
-			GameInstanceReference->LoadSaveFilePartThree();
+			GameInstanceReference->SlotReference = Cast<USaveFile_Slot>(LoadedGameData);
+			GameInstanceReference->LoadSaveFilePartTwo();
 		}
 	} else {
 		GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Red, FString::Printf(TEXT("Error: File %s failed to load."), *SlotName));

@@ -20,6 +20,9 @@ UCLASS()
 class THE_HAZARDS_API UTheHazards_GameInstance : public UGameInstance
 {
 	GENERATED_BODY()
+
+private:
+	FAsyncLoadGameFromSlotDelegate LoadDelegate;
 	
 public:
 // Base Variables
@@ -36,13 +39,13 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "References")
 	TSubclassOf<AEntity_Player> Player_Entity_Class;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "References")
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "References")
 	AEntity_Player* Player_Entity_Reference;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "References")
 	TSubclassOf<ATheHazards_GameInstance_TActor> TickActor_Entity_Class;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "References")
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "References")
 	ATheHazards_GameInstance_TActor* TickActor_Entity_Reference;
 
 // ------------------------- Save/Load
@@ -57,10 +60,6 @@ public:
 
 	UPROPERTY()
 	FLatentActionInfo LatentActionInfo;
-
-	//UPROPERTY()
-	//FAsyncLoadGameFromSlotDelegate LoadDelegate;
-
 
 // Functions
 // --------------------------------------------------
@@ -80,8 +79,4 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	void LoadSaveFilePartFour();
-
-// ------------------------- Widgets
-	//UFUNCTION()
-	//void ClearLoadingScreen();
 };

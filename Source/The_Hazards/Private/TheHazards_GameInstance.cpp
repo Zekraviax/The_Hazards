@@ -14,8 +14,6 @@
 
 USaveFile_MetaList* UTheHazards_GameInstance::ReturnMetaList()
 {
-	//USaveFile_MetaList* MetaListTest = Cast<USaveFile_MetaList>(UGameplayStatics::LoadGameFromSlot("MetaList", 0));
-
 	// First Check.
 	// If the MetaList isn't set, attempt to load the save file.
 	if (MetaListReference == nullptr)
@@ -47,89 +45,41 @@ USaveFile_MetaList* UTheHazards_GameInstance::ReturnMetaList()
 
 void UTheHazards_GameInstance::LoadSaveFile(FString SaveFileSlotName)
 {
-	FAsyncLoadGameFromSlotDelegate LoadDelegate;
 	TArray<ULevel*> FoundLevels;
-
-	//LatentActionInfo.CallbackTarget = this;
-	//LatentActionInfo.ExecutionFunction = "LoadSaveFilePartTwo";
-	//LatentActionInfo.UUID = 1;
-	//LatentActionInfo.Linkage = 1;
 
 	SaveSlotName = SaveFileSlotName;
 
 	if (!MetaListReference)
 		MetaListReference = Cast<USaveFile_MetaList>(UGameplayStatics::LoadGameFromSlot("MetaList", 0));
 
-	GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Yellow, FString::Printf(TEXT("Warning: Attempting to load save file: %s"), *SaveSlotName));
-	UE_LOG(LogTemp, Warning, TEXT("Warning: Attempting to load save file: %s"), *SaveSlotName);
-
+	// Clear all widgets
 	for (TObjectIterator<UUserWidget> Itr; Itr; ++Itr) {
 		UUserWidget* FoundWidget = *Itr;
-
 		FoundWidget->RemoveFromParent();
 	}
 
+	// Loading Screen
 	if (LoadScreen_Class) {
 		LoadScreen_Widget = CreateWidget<UBaseClass_Widget_LoadScreen>(GetWorld(), LoadScreen_Class);
 		LoadScreen_Widget->AddToViewport();
 	}
 
-	//TickActor_Entity_Reference = GetWorld()->SpawnActor<ATheHazards_GameInstance_TActor>(TickActor_Entity_Class, FVector::ZeroVector, FRotator::ZeroRotator);
+	UGameplayStatics::SetGamePaused(GetWorld(), false);
 
-	//if (SlotReference) {
-	//	if (WorldReference->GetName() != SlotReference->LevelName) {
-	//		UGameplayStatics::UnloadStreamLevel(WorldReference, FName(WorldReference->GetName()), LatentActionInfo, false);
-	//		UGameplayStatics::LoadStreamLevel(WorldReference, FName(SlotReference->LevelName), true, false, LatentActionInfo);
-	//	}
-	//} else {
-	//	GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Red, FString::Printf(TEXT("Error: Failed to load slot level.")));
-	//	UE_LOG(LogTemp, Error, TEXT("Error: Failed to load slot level."));
-	//}
-
-	//if (WorldReference->GetName() != MetaListReference->SaveFileAndLevelNames.FindRef(SaveFileSlotName)) {
-	//FString FoundLevelName = MetaListReference->SaveFileAndLevelNames.FindRef(SaveSlotName);
-
-	//Get and Unload all streamed levels
-	//for (TObjectIterator<ULevel> Itr; Itr; ++Itr) {
-	//	ULevel* FoundLevel = *Itr;
-	//	if (!FoundLevel->GetFullName().Contains("MasterLevel")) {
-	//		GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Yellow, FString::Printf(TEXT("Message: Unload level %s"), *FoundLevel->GetFullName()));
-	//		UE_LOG(LogTemp, Display, TEXT("Message: Unload level %s"), *FoundLevel->GetFullName());
-
-	//		UGameplayStatics::UnloadStreamLevel(this, FName(FoundLevel->GetFullName()), LatentActionInfo, false);
-	//	} else {
-	//		GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Yellow, FString::Printf(TEXT("Message: Found level %s"), *FoundLevel->GetFullName()));
-	//		UE_LOG(LogTemp, Display, TEXT("Message: Found level %s"), *FoundLevel->GetFullName());
-	//	}
-	//}
+	// Clear all levels except the MasterLevel
 	const TArray<ULevelStreaming*>& StreamedLevels = GetWorld()->GetStreamingLevels();
 
 	for (auto& Level : StreamedLevels) {
 		if (Level->IsLevelLoaded()) {
 			Level->SetIsRequestingUnloadAndRemoval(true);
 			GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Yellow, FString::Printf(TEXT("Message: Unload level %s"), *Level->GetWorldAssetPackageName()));
+			UE_LOG(LogTemp, Warning, TEXT("Message: Unload level %s"), *Level->GetWorldAssetPackageName());
 		}
 	}
 
-	UGameplayStatics::LoadStreamLevel(this, TEXT("TestThree_Streaming"), true, true, LatentActionInfo);
-
-	//FString MapName = (GetWorld()->GetMapName());
-	//if (GetWorld())
-	//	GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Yellow, GetWorld()->GetMapName());
-	//else 
-	//	GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Red, FString::Printf(TEXT("Error: Failed to GetWorld().")));
-
-	//if (GetWorld())
-	//World'/Game/Levels/TestTwo.TestTwo'
-	//UGameplayStatics::UnloadStreamLevel(this, "TestTwo", LatentActionInfo, true);
-	//LoadSaveFilePartTwo();
-
-	//else {
-	//	GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Red, FString::Printf(TEXT("Error: Failed to GetWorld().")));
-	//	UE_LOG(LogTemp, Error, TEXT("Error: Failed to GetWorld()."));
-	//}
-
-	UGameplayStatics::SetGamePaused(GetWorld(), false);
+	// Load the player's Save File
+	GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Yellow, FString::Printf(TEXT("Warning: Attempting to load save file: %s"), *SaveSlotName));
+	UE_LOG(LogTemp, Warning, TEXT("Warning: Attempting to load save file: %s"), *SaveSlotName);
 
 	SlotReference = Cast<USaveFile_Slot>(UGameplayStatics::CreateSaveGameObject(USaveFile_Slot::StaticClass()));
 	LoadDelegate.BindUObject(SlotReference, &USaveFile_Slot::LoadGameDelegateFunction);
@@ -140,118 +90,55 @@ void UTheHazards_GameInstance::LoadSaveFile(FString SaveFileSlotName)
 
 void UTheHazards_GameInstance::LoadSaveFilePartTwo()
 {
-	FAsyncLoadGameFromSlotDelegate LoadDelegate;
-	//ULevelStreaming* StreamLevel;
-
+	LatentActionInfo.CallbackTarget = this;
 	LatentActionInfo.ExecutionFunction = "LoadSaveFilePartThree";
 	LatentActionInfo.UUID = 12345;
+	LatentActionInfo.Linkage = 1;
 
 	GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Yellow, FString::Printf(TEXT("Message: Call LoadSaveFilePartTwo()")));
 	UE_LOG(LogTemp, Display, TEXT("Message: Call LoadSaveFilePartTwo()"));
 
-	//StreamLevel = UGameplayStatics::GetStreamingLevel(this, "TestThree_Streaming");
-
-	//while (StreamLevel != nullptr && StreamLevel->GetLoadedLevel() == nullptr)
-	//{
-	//	GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Yellow, FString::Printf(TEXT("Loading Level...")));
-	//	UE_LOG(LogTemp, Display, TEXT("Loading Level..."));
-	//}
-
-	// Destroy all objects and widgets(?)
-
-	// Load the save file
-	// Save file needs a second delegate function that returns the save file. (?)
-	// Save files must be loaded after the level is loaded ?
-
-	//UKismetSystemLibrary::Delay(this, 1.f, LatentActionInfo);
-
-	//LoadSaveFilePartThree();
-
-	//// Begin Minimum time delay for clearing the loading screen
-	//if (GetWorld()) {
-	//	//GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Yellow, FString::Printf(TEXT("Message: GetWorld() succeeded?")));
-	//	//UE_LOG(LogTemp, Warning, TEXT("Message: GetWorld() succeeded?"));
-
-	//	//GetWorld()->GetTimerManager().SetTimer(TimerHandle, this, &UTheHazards_GameInstance::ClearLoadingScreen, 0.25f);
-	//	//UKismetSystemLibrary::Delay(this, 2.5f, LatentActionInfo);
-	//	//ClearLoadingScreen();
+	// Load the Save File's level
+	UGameplayStatics::LoadStreamLevel(this, TEXT("TestThree_Streaming"), true, false, LatentActionInfo);
+}
 
 
-	//	if (TickActor_Entity_Reference) {
-	//		GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Green, FString::Printf(TEXT("Message: TickActor_Entity is valid.")));
-	//		UE_LOG(LogTemp, Display, TEXT("Message: TickActor_Entity is valid."));
-	//	}
-	//	else {
-	//		GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Red, FString::Printf(TEXT("Error: TickActor_Entity not valid.")));
-	//		UE_LOG(LogTemp, Error, TEXT("Error: TickActor_Entity not valid."));
-	//	}
-	//}
-	//else {
-	//	GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Red, FString::Printf(TEXT("Error: GetWorld() failed.")));
-	//	UE_LOG(LogTemp, Error, TEXT("Error: GetWorld() failed."));
-	//}
-
-	// Spawn Player
-	TArray<AActor*> PlayerStartActors;
-	TArray<AActor*> PlayerActors;
+void UTheHazards_GameInstance::LoadSaveFilePartThree()
+{
+	TArray<AActor*> PlayerActors, TickActors;
 	FActorSpawnParameters ActorSpawnParameters;
 
-	UGameplayStatics::GetAllActorsOfClass(GetWorld(), APlayerStart::StaticClass(), PlayerStartActors);
+	GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Yellow, FString::Printf(TEXT("Message: Call LoadSaveFilePartThree()")));
+	UE_LOG(LogTemp, Display, TEXT("Message: Call LoadSaveFilePartThree()"));
+
+	// Find all currently existing Player actors
 	UGameplayStatics::GetAllActorsOfClass(GetWorld(), AEntity_Player::StaticClass(), PlayerActors);
 
-	for (auto& Player : PlayerActors) {
-		Player->Destroy();
-	}
-
-	for (int i = 0; i < PlayerStartActors.Num(); i++) {
-		if (PlayerStartActors.IsValidIndex(i)) {
-			ABaseClass_PlayerController* PlayerControllerRef = Cast<ABaseClass_PlayerController>(UGameplayStatics::GetPlayerController(GetWorld(), 0));
-
-			Player_Entity_Reference = GetWorld()->SpawnActor<AEntity_Player>(Player_Entity_Class, PlayerStartActors[i]->GetActorLocation(), PlayerStartActors[i]->GetActorRotation(), ActorSpawnParameters);
-			PlayerControllerRef->Possess(Player_Entity_Reference);
-			Player_Entity_Reference->Player_Controller_Reference = PlayerControllerRef;
-			//Player_Entity_Reference->ManualBeginPlay();
-
-			//GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Green, FString::Printf(TEXT("Possess Player?")));
-			//UE_LOG(LogTemp, Display, TEXT("Possess Player?"));
-
-			//Unpause game here
-			//
-			//Player_Entity_Reference->ClearLoadingScreenTimer();
-
+	for (int i = 0; i < PlayerActors.Num(); i++) {
+		if (PlayerActors.IsValidIndex(i)) {
+			Player_Entity_Reference = Cast<AEntity_Player>(PlayerActors[i]);
+			Cast<ABaseClass_PlayerController>(UGameplayStatics::GetPlayerController(GetWorld(), 0))->Possess(Player_Entity_Reference);
 			break;
 		}
 	}
 
 	//Set main menu mode
 	Cast<ABaseClass_PlayerController>(GetWorld()->GetFirstPlayerController())->MainMenuMode = false;
-}
 
+	// Set Player Data
+	// Location in world
+	Player_Entity_Reference->SetActorLocationAndRotation(SlotReference->PlayerReference->GetActorLocation(), SlotReference->PlayerReference->GetActorRotation());
 
-void UTheHazards_GameInstance::LoadSaveFilePartThree()
-{
-	GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Yellow, FString::Printf(TEXT("Message: Call LoadSaveFilePartThree()")));
-	UE_LOG(LogTemp, Display, TEXT("Message: Call LoadSaveFilePartThree()"));
+	// Set Entity Data
 
-	TArray<AActor*> TickActors;
-
+	// Begin the minimum delay for clearing the loading screen
 	UGameplayStatics::GetAllActorsOfClass(GetWorld(), ATheHazards_GameInstance_TActor::StaticClass(), TickActors);
-
 	for (int i = 0; i < TickActors.Num(); i++) {
 		if (TickActors.IsValidIndex(i)) {
 			Cast<ATheHazards_GameInstance_TActor>(TickActors[i])->ClearLoadingScreenBegin();
 			break;
 		}
 	}
-
-	//if (TickActor_Entity_Reference) {
-	//	TickActor_Entity_Reference->GameInstanceReference = this;
-	//	TickActor_Entity_Reference->LoadSaveFileDelayFunction();
-	//}
-	//else {
-	//	GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Red, FString::Printf(TEXT("Error: TickActorReference not valid.")));
-	//	UE_LOG(LogTemp, Error, TEXT("Error: TickActorReference not valid."));
-	//}
 }
 
 
@@ -259,13 +146,4 @@ void UTheHazards_GameInstance::LoadSaveFilePartFour()
 {
 	GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Yellow, FString::Printf(TEXT("Message: Call LoadSaveFilePartFour()")));
 	UE_LOG(LogTemp, Display, TEXT("Message: Call LoadSaveFilePartFour()"));
-
-	// Clear Loading Screen(s)
-	for (TObjectIterator<UBaseClass_Widget_LoadScreen> Itr; Itr; ++Itr) {
-		UBaseClass_Widget_LoadScreen* FoundWidget = *Itr;
-		FoundWidget->RemoveFromParent();
-	}
-
-	//if (LoadScreen_Widget)
-	//	LoadScreen_Widget->RemoveFromParent();
 }

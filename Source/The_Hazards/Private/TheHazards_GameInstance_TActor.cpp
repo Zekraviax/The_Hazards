@@ -25,52 +25,20 @@ void ATheHazards_GameInstance_TActor::BeginPlay()
 void ATheHazards_GameInstance_TActor::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
-	//if (GetWorldTimerManager().IsTimerActive(ClearLoadingScreenTimerHandle)) {
-	//	float TimeRemaining = GetWorldTimerManager().GetTimerRemaining(ClearLoadingScreenTimerHandle);
-
-	//	GEngine->AddOnScreenDebugMessage(-1, 0.25f, FColor::Yellow, FString::Printf(TEXT("Message: Time remaining: %s"), *FString::SanitizeFloat(TimeRemaining, 2)));
-	//	UE_LOG(LogTemp, Display, TEXT("Message: Time remaining: %s"), *FString::SanitizeFloat(TimeRemaining));
-	//}
-	
-	//GEngine->AddOnScreenDebugMessage(-1, 0.2f, FColor::Yellow, FString::Printf(TEXT("Message: Tick?")));
 }
-
-
-//void ATheHazards_GameInstance_TActor::LoadSaveFileDelayFunction()
-//{
-//	FLatentActionInfo LatentActionInfo;
-//
-//	if (GameInstanceReference) {
-//		LatentActionInfo.CallbackTarget = GameInstanceReference;
-//		LatentActionInfo.ExecutionFunction = "LoadSaveGamePartFour";
-//		LatentActionInfo.UUID = 123;
-//		LatentActionInfo.Linkage = 1;
-//
-//		UKismetSystemLibrary::Delay(GameInstanceReference, 1.f, LatentActionInfo);
-//
-//		GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Yellow, FString::Printf(TEXT("Message: GameInstanceReference valid?")));
-//		UE_LOG(LogTemp, Display, TEXT("Error: GameInstanceReference valid?"));
-//	}
-//	else {
-//		GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Red, FString::Printf(TEXT("Error: GameInstanceReference not valid.")));
-//		UE_LOG(LogTemp, Error, TEXT("Error: GameInstanceReference not valid."));
-//	}
-//}
-
 
 void ATheHazards_GameInstance_TActor::ClearLoadingScreenBegin()
 {
-	GetWorldTimerManager().SetTimer(ClearLoadingScreenTimerHandle, this, &ATheHazards_GameInstance_TActor::ClearLoadingScreenExecute, 1.f, false);
+	GetWorldTimerManager().SetTimer(ClearLoadingScreenTimerHandle, this, &ATheHazards_GameInstance_TActor::ClearLoadingScreenExecute, 2.f, false);
 
-	if (GetWorldTimerManager().IsTimerActive(ClearLoadingScreenTimerHandle)) {
-		GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Yellow, FString::Printf(TEXT("Message: ClearLoadingScreenTimer is active.")));
-		UE_LOG(LogTemp, Display, TEXT("Message: ClearLoadingScreenTimer is active."));
-	}
-	else {
-		GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Red, FString::Printf(TEXT("Error: ClearLoadingScreenTimer is not active.")));
-		UE_LOG(LogTemp, Error, TEXT("Message: ClearLoadingScreenTimer is not active."));
-	}
+	//if (GetWorldTimerManager().IsTimerActive(ClearLoadingScreenTimerHandle)) {
+	//	GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Yellow, FString::Printf(TEXT("Message: ClearLoadingScreenTimer is active.")));
+	//	UE_LOG(LogTemp, Display, TEXT("Message: ClearLoadingScreenTimer is active."));
+	//}
+	//else {
+	//	GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Red, FString::Printf(TEXT("Error: ClearLoadingScreenTimer is not active.")));
+	//	UE_LOG(LogTemp, Error, TEXT("Message: ClearLoadingScreenTimer is not active."));
+	//}
 }
 
 
@@ -79,5 +47,9 @@ void ATheHazards_GameInstance_TActor::ClearLoadingScreenExecute()
 	GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Yellow, FString::Printf(TEXT("Message: Call ClearLoadingScreenExecute()")));
 	UE_LOG(LogTemp, Display, TEXT("Message: Call ClearLoadingScreenExecute()"));
 
-	Cast<UTheHazards_GameInstance>(GetWorld()->GetGameInstance())->LoadSaveFilePartFour();
+	// Clear the Loading Screen
+	for (TObjectIterator<UBaseClass_Widget_LoadScreen> Itr; Itr; ++Itr) {
+		UBaseClass_Widget_LoadScreen* FoundWidget = *Itr;
+		FoundWidget->RemoveFromParent();
+	}
 }

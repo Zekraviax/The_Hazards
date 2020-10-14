@@ -1,6 +1,7 @@
 #include "Entity_Player.h"
 
 #include "BaseClass_PlayerController.h"
+#include "BaseClass_Widget_DevMenu.h"
 #include "BaseClass_Widget_OnHoverDescription.h"
 #include "Runtime/Engine/Classes/Kismet/KismetMathLibrary.h"
 #include "Runtime/Engine/Classes/Kismet/GameplayStatics.h"
@@ -35,56 +36,6 @@ AEntity_Player::AEntity_Player()
 void AEntity_Player::BeginPlay()
 {
 	Super::BeginPlay();
-
-	// Spawn the HUD widget
-	//if (Player_HUD_Class) {
-	//	Player_HUD_Reference = CreateWidget<UBaseClass_Widget_PlayerHUD>(GetWorld(), Player_HUD_Class);
-	//	Player_HUD_Reference->PlayerReference = this;
-	//	Player_HUD_Reference->AddToViewport();
-	//}
-
-	//if (MainMenu_Class) {
-	//	CurrentOpenMenuWidget = CreateWidget<UBaseClass_Widget_MainMenu>(GetWorld(), MainMenu_Class);
-	//	CurrentOpenMenuWidget->AddToViewport();
-	//	CurrentOpenMenuWidget = NULL;
-	//}
-
-	// Setup Hitbox collisions
-	//WeaponCollider->SetCollisionProfileName(TEXT("Trigger"));
-	//WeaponCollider->SetGenerateOverlapEvents(false);
-	//WeaponCollider->OnComponentBeginOverlap.AddDynamic(this, &AEntity_Player::OnOverlapBegin);
-
-	// Setup Skill Tree
-	//if (SkillsFunctionLibrary_Reference) {
-	//	if (SkillsFunctionLibrary_Reference->SkillDataTable_Reference) {
-
-	//		FString ContextString;
-	//		TArray<FName> RowNames = SkillsFunctionLibrary_Reference->SkillDataTable_Reference->GetRowNames();
-
-	//		for (auto& Row : SkillsFunctionLibrary_Reference->SkillDataTable_Reference->GetRowMap()) {
-	//			F_Skill_Base* Skill = (F_Skill_Base*)(Row.Value);
-
-	//			//if (Skill->SkillIndex == 101) {
-	//			//	Skill->CurrentLevel += 1;
-	//			//}
-
-	//			KnownSkills.Add(*Skill);
-	//		}
-
-	//		CalculateTotalStats();
-	//	}
-	//}
-
-	//// Spawn a SpecialAttacksFunctionLibrary actor for this entity
-	//if (SpecialAttacksFunctionLibrary_Class) {
-	//	FActorSpawnParameters SpawnInfo;
-
-	//	//GEngine->AddOnScreenDebugMessage(-1, 15.f, FColor::Orange, FString::Printf(TEXT("Spawn Special Attacks Function Library Actor")));
-
-	//	SpecialAttacksFunctionLibrary_Reference = GetWorld()->SpawnActor<AFunctionLibrary_SpecialAttacks>(SpecialAttacksFunctionLibrary_Class, FVector::ZeroVector, FRotator::ZeroRotator, SpawnInfo);
-	//	SpecialAttacksFunctionLibrary_Reference->InitializeSpecialAttacks();
-	//	SpecialAttacksFunctionLibrary_Reference->LinkedEntity = this;
-	//}
 }
 
 
@@ -92,8 +43,6 @@ void AEntity_Player::BeginPlay()
 void AEntity_Player::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
-	//GEngine->AddOnScreenDebugMessage(-1, DeltaTime, FColor::Black, TEXT("Player Tick"));
 
 	// Call Tick functions
 	RotatePlayerTowardsMouse();
@@ -116,6 +65,7 @@ void AEntity_Player::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 	PlayerInputComponent->BindAction("OpenCharacterSheet", IE_Released, this, &AEntity_Player::OpenCharacterSheet).bExecuteWhenPaused = true;
 	PlayerInputComponent->BindAction("OpenCharacterCreator", IE_Released, this, &AEntity_Player::OpenCharacterCreator).bExecuteWhenPaused = true;
 	PlayerInputComponent->BindAction("OpenSkillTree", IE_Released, this, &AEntity_Player::OpenSkillTree).bExecuteWhenPaused = true;
+	PlayerInputComponent->BindAction("OpenItemCraft", IE_Released, this, &AEntity_Player::OpenItemCraftMenu).bExecuteWhenPaused = true;
 
 	// Attacks
 	PlayerInputComponent->BindAction("PrimaryAttack", IE_Released, this, &AEntity_Player::AttackStart);
@@ -366,6 +316,35 @@ void AEntity_Player::OpenSkillTree()
 			// Inventory specific variables and functions
 			Cast<UBaseClass_Widget_SkillTree>(CurrentOpenMenuWidget)->PlayerReference = this;
 			Cast<UBaseClass_Widget_SkillTree>(CurrentOpenMenuWidget)->UpdateAllSkillSlots();
+		}
+		else {
+			CurrentOpenMenuWidget_Class = NULL;
+		}
+	}
+}
+
+
+void AEntity_Player::OpenItemCraftMenu()
+{
+	if (!LockMenuButtonActions) {
+		if (CurrentOpenMenuWidget) {
+			// Close widget and resume game
+			UGameplayStatics::SetGamePaused(GetWorld(), false);
+			CurrentOpenMenuWidget->RemoveFromParent();
+			CurrentOpenMenuWidget = NULL;
+		}
+
+		if (ItemCraft_Class && CurrentOpenMenuWidget_Class != ItemCraft_Class) {
+			// Create widget, add to viewport, and pause game
+			CurrentOpenMenuWidget = CreateWidget<UBaseClass_Widget_ItemCraft>(GetWorld(), ItemCraft_Class);
+			CurrentOpenMenuWidget_Class = ItemCraft_Class;
+			UGameplayStatics::SetGamePaused(GetWorld(), true);
+
+			// Item Craft specific variables and functions
+			Cast<UBaseClass_Widget_ItemCraft>(CurrentOpenMenuWidget)->PlayerReference = this;
+			Cast<UBaseClass_Widget_ItemCraft>(CurrentOpenMenuWidget)->GetPlayerInventory();
+
+			CurrentOpenMenuWidget->AddToViewport();
 		}
 		else {
 			CurrentOpenMenuWidget_Class = NULL;
