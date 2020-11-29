@@ -46,6 +46,12 @@ USaveFile_MetaList* UTheHazards_GameInstance::ReturnMetaList()
 void UTheHazards_GameInstance::LoadSaveFile(FString SaveFileSlotName)
 {
 	TArray<ULevel*> FoundLevels;
+	FLatentActionInfo LatentActionInfo;
+
+	LatentActionInfo.CallbackTarget = this;
+	LatentActionInfo.ExecutionFunction = "LoadSaveFilePartTwo";
+	LatentActionInfo.UUID = 1;
+	LatentActionInfo.Linkage = 1;
 
 	SaveSlotName = SaveFileSlotName;
 
@@ -71,15 +77,28 @@ void UTheHazards_GameInstance::LoadSaveFile(FString SaveFileSlotName)
 
 	for (auto& Level : StreamedLevels) {
 		if (Level->IsLevelLoaded()) {
-			Level->SetIsRequestingUnloadAndRemoval(true);
+			//Level->SetIsRequestingUnloadAndRemoval(true);
+			UGameplayStatics::UnloadStreamLevel(this, Level->GetWorldAssetPackageFName(), LatentActionInfo, false);
+
 			GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Yellow, FString::Printf(TEXT("Message: Unload level %s"), *Level->GetWorldAssetPackageName()));
 			UE_LOG(LogTemp, Warning, TEXT("Message: Unload level %s"), *Level->GetWorldAssetPackageName());
 		}
 	}
 
 	// Load the player's Save File
-	GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Yellow, FString::Printf(TEXT("Warning: Attempting to load save file: %s"), *SaveSlotName));
-	UE_LOG(LogTemp, Warning, TEXT("Warning: Attempting to load save file: %s"), *SaveSlotName);
+	//GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Yellow, FString::Printf(TEXT("Warning: Attempting to load save file: %s"), *SaveSlotName));
+	//UE_LOG(LogTemp, Warning, TEXT("Warning: Attempting to load save file: %s"), *SaveSlotName);
+
+	// Cleanup Variables
+	FoundLevels.Empty();
+	//StreamedLevels.Empty();
+}
+
+
+void UTheHazards_GameInstance::LoadSaveFilePartTwo()
+{
+	//GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Yellow, FString::Printf(TEXT("Message: Call LoadSaveFilePartTwo()")));
+	//UE_LOG(LogTemp, Display, TEXT("Message: Call LoadSaveFilePartTwo()"));
 
 	SlotReference = Cast<USaveFile_Slot>(UGameplayStatics::CreateSaveGameObject(USaveFile_Slot::StaticClass()));
 	LoadDelegate.BindUObject(SlotReference, &USaveFile_Slot::LoadGameDelegateFunction);
@@ -88,28 +107,33 @@ void UTheHazards_GameInstance::LoadSaveFile(FString SaveFileSlotName)
 }
 
 
-void UTheHazards_GameInstance::LoadSaveFilePartTwo()
+void UTheHazards_GameInstance::LoadSaveFilePartThree()
 {
+	//GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Yellow, FString::Printf(TEXT("Message: Call LoadSaveFilePartThree()")));
+	//UE_LOG(LogTemp, Display, TEXT("Message: Call LoadSaveFilePartThree()"));
+
+	FLatentActionInfo LatentActionInfo;
+
 	LatentActionInfo.CallbackTarget = this;
-	LatentActionInfo.ExecutionFunction = "LoadSaveFilePartThree";
+	LatentActionInfo.ExecutionFunction = "LoadSaveFilePartFour";
 	LatentActionInfo.UUID = 12345;
 	LatentActionInfo.Linkage = 1;
 
-	GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Yellow, FString::Printf(TEXT("Message: Call LoadSaveFilePartTwo()")));
-	UE_LOG(LogTemp, Display, TEXT("Message: Call LoadSaveFilePartTwo()"));
-
 	// Load the Save File's level
-	UGameplayStatics::LoadStreamLevel(this, TEXT("TestThree_Streaming"), true, false, LatentActionInfo);
+	GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Yellow, FString::Printf(TEXT("Message: Load level %s"), *SlotReference->LevelName));
+	UE_LOG(LogTemp, Warning, TEXT("Message: Load level %s"), *SlotReference->LevelName);
+	UGameplayStatics::LoadStreamLevel(this, FName(SlotReference->LevelName), true, false, LatentActionInfo);
+
 }
 
 
-void UTheHazards_GameInstance::LoadSaveFilePartThree()
+void UTheHazards_GameInstance::LoadSaveFilePartFour()
 {
+	//GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Yellow, FString::Printf(TEXT("Message: Call LoadSaveFilePartFour()")));
+	//UE_LOG(LogTemp, Display, TEXT("Message: Call LoadSaveFilePartFour()"));
+
 	TArray<AActor*> PlayerActors, TickActors;
 	FActorSpawnParameters ActorSpawnParameters;
-
-	GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Yellow, FString::Printf(TEXT("Message: Call LoadSaveFilePartThree()")));
-	UE_LOG(LogTemp, Display, TEXT("Message: Call LoadSaveFilePartThree()"));
 
 	// Find all currently existing Player actors
 	UGameplayStatics::GetAllActorsOfClass(GetWorld(), AEntity_Player::StaticClass(), PlayerActors);
@@ -139,11 +163,8 @@ void UTheHazards_GameInstance::LoadSaveFilePartThree()
 			break;
 		}
 	}
-}
 
-
-void UTheHazards_GameInstance::LoadSaveFilePartFour()
-{
-	GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Yellow, FString::Printf(TEXT("Message: Call LoadSaveFilePartFour()")));
-	UE_LOG(LogTemp, Display, TEXT("Message: Call LoadSaveFilePartFour()"));
+	// Cleanup Variables
+	PlayerActors.Empty();
+	TickActors.Empty();
 }

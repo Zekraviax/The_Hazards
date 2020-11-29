@@ -29,7 +29,6 @@ void USubWidget_NameSaveFile::SelectName()
 		FAsyncSaveGameToSlotDelegate SaveDelegate;
 		USaveFile_MetaList* MetaList;
 
-		//MetaList = Cast<UTheHazards_GameInstance>(GetWorld()->GetGameInstance())->ReturnMetaList();
 		MetaList = Cast<USaveFile_MetaList>(UGameplayStatics::LoadGameFromSlot("MetaList", 0));
 
 		if (MetaList == nullptr) {

@@ -80,16 +80,17 @@ void USubWidget_SaveLoadSlot::SelectSlot()
 
 void USubWidget_SaveLoadSlot::CreateNewSaveFileSlot(FText SaveSlotName)
 {
-	// Get Player
-	AEntity_Player* PlayerPawn = Cast<AEntity_Player>(UGameplayStatics::GetPlayerPawn(GetWorld(), 0));
 	FAsyncSaveGameToSlotDelegate SaveDelegate;
 	USaveFile_MetaList* MetaList;
+	const TArray<ULevelStreaming*>& StreamedLevels = GetWorld()->GetStreamingLevels();
+
+	// Get Player
+	AEntity_Player* PlayerPawn = Cast<AEntity_Player>(UGameplayStatics::GetPlayerPawn(GetWorld(), 0));
 
 	// Clear NameSaveFile widget
 	NameSaveFileWidget_Reference->RemoveFromParent();
 	NameSaveFileWidget_Reference = NULL;
 
-	//MetaList = Cast<UTheHazards_GameInstance>(GetWorld()->GetGameInstance())->ReturnMetaList();
 	MetaList = Cast<USaveFile_MetaList>(UGameplayStatics::LoadGameFromSlot("MetaList", 0));
 
 	if (MetaList == nullptr) {
@@ -110,8 +111,21 @@ void USubWidget_SaveLoadSlot::CreateNewSaveFileSlot(FText SaveSlotName)
 	if (SlotReference->IsValidLowLevel()) {
 		SlotReference->SaveSlotName = SaveSlotName;
 		SlotReference->DateSaved = FDateTime::Now();
-		SlotReference->LevelName = GetWorld()->GetName();
+		//SlotReference->LevelName = GetWorld()->GetName();
 		SaveFileSlotName = SaveSlotName.ToString();
+
+		// Get the Streamed Level Name, not the Master Level name
+		for (auto& Level : StreamedLevels) {
+			if (Level->IsLevelLoaded()) {
+				FString LeftSplit, SplitLevelName;
+				Level->GetWorldAssetPackageName().Split("/Game/Levels/", &LeftSplit, &SplitLevelName);
+
+				GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Yellow, FString::Printf(TEXT("Message: Save level name: %s"), *SplitLevelName));
+				UE_LOG(LogTemp, Warning, TEXT("Message: Save level name: %s"), *SplitLevelName);
+				SlotReference->LevelName = SplitLevelName;
+				break;
+			}
+		}
 
 		// Get the MetaList in order to increase the TotalManualSave count
 		if (MetaList->IsValidLowLevel()) {
@@ -134,6 +148,7 @@ void USubWidget_SaveLoadSlot::CreateNewSaveFileSlot(FText SaveSlotName)
 		SaveDelegate.BindUObject(SlotReference, &USaveFile_Slot::SaveGameDelegateFunction);
 		UGameplayStatics::AsyncSaveGameToSlot(SlotReference, SaveSlotName.ToString(), 0, SaveDelegate);
 		
-		//MetaList = nullptr;
+		//Cleanup Variables
+		//StreamedLevels.Empty();
 	}
 }

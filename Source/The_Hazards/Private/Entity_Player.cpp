@@ -47,9 +47,9 @@ void AEntity_Player::Tick(float DeltaTime)
 	// Call Tick functions
 	RotatePlayerTowardsMouse();
 
-	if (GetWorldTimerManager().IsTimerActive(ClearLoadingScreenTimerHandle)) {
-		GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Yellow, FString::Printf(TEXT("Message: ClearLoadingScreenTimer time: %s"), GetWorldTimerManager().GetTimerElapsed(ClearLoadingScreenTimerHandle)));
-	}
+	//if (GetWorldTimerManager().IsTimerActive(ClearLoadingScreenTimerHandle)) {
+	//	GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Yellow, FString::Printf(TEXT("Message: ClearLoadingScreenTimer time: %s"), GetWorldTimerManager().GetTimerElapsed(ClearLoadingScreenTimerHandle)));
+	//}
 }
 
 
@@ -66,6 +66,7 @@ void AEntity_Player::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 	PlayerInputComponent->BindAction("OpenCharacterCreator", IE_Released, this, &AEntity_Player::OpenCharacterCreator).bExecuteWhenPaused = true;
 	PlayerInputComponent->BindAction("OpenSkillTree", IE_Released, this, &AEntity_Player::OpenSkillTree).bExecuteWhenPaused = true;
 	PlayerInputComponent->BindAction("OpenItemCraft", IE_Released, this, &AEntity_Player::OpenItemCraftMenu).bExecuteWhenPaused = true;
+	PlayerInputComponent->BindAction("OpenDevMenu", IE_Released, this, &AEntity_Player::OpenDevMenu).bExecuteWhenPaused = true;
 
 	// Attacks
 	PlayerInputComponent->BindAction("PrimaryAttack", IE_Released, this, &AEntity_Player::AttackStart);
@@ -353,6 +354,36 @@ void AEntity_Player::OpenItemCraftMenu()
 }
 
 
+void AEntity_Player::OpenDevMenu()
+{
+	//if (!LockMenuButtonActions) {
+	if (CurrentOpenMenuWidget) {
+		// Close widget and resume game
+		UGameplayStatics::SetGamePaused(GetWorld(), false);
+		CurrentOpenMenuWidget->RemoveFromParent();
+		CurrentOpenMenuWidget = NULL;
+	}
+
+	if (DevMenu_Class && CurrentOpenMenuWidget_Class != DevMenu_Class) {
+		// Create widget, add to viewport, and pause game
+		CurrentOpenMenuWidget = CreateWidget<UBaseClass_Widget_DevMenu>(GetWorld(), DevMenu_Class);
+		CurrentOpenMenuWidget_Class = DevMenu_Class;
+		UGameplayStatics::SetGamePaused(GetWorld(), true);
+
+		// Item Craft specific variables and functions
+		Cast<UBaseClass_Widget_DevMenu>(CurrentOpenMenuWidget)->PlayerReference = this;
+		Cast<UBaseClass_Widget_DevMenu>(CurrentOpenMenuWidget)->OpenWidget();
+		//Cast<UBaseClass_Widget_ItemCraft>(CurrentOpenMenuWidget)->GetPlayerInventory();
+
+		CurrentOpenMenuWidget->AddToViewport();
+	}
+	else {
+		CurrentOpenMenuWidget_Class = NULL;
+	}
+	//}
+}
+
+
 void AEntity_Player::OpenMainMenu()
 {
 	if (MainMenu_Class) {
@@ -410,31 +441,31 @@ void AEntity_Player::UpdateStatusEffectWidgets()
 }
 
 
-void AEntity_Player::ClearLoadingScreenTimer()
-{
-	GetWorldTimerManager().SetTimer(ClearLoadingScreenTimerHandle, this, &AEntity_Player::ClearLoadingScreenExecute, 2.5f, false);
+//void AEntity_Player::ClearLoadingScreenTimer()
+//{
+//	GetWorldTimerManager().SetTimer(ClearLoadingScreenTimerHandle, this, &AEntity_Player::ClearLoadingScreenExecute, 2.5f, false);
+//
+//	GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Yellow, FString::Printf(TEXT("Message: Call ClearLoadingScreenTimer()")));
+//	UE_LOG(LogTemp, Display, TEXT("Message: Call ClearLoadingScreenTimer()"));
+//
+//	//if (GetWorldTimerManager().IsTimerActive(ClearLoadingScreenTimerHandle)) {
+//	//	GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Yellow, FString::Printf(TEXT("Message: ClearLoadingScreenTimer is active.")));
+//	//	UE_LOG(LogTemp, Display, TEXT("Message: ClearLoadingScreenTimer is active."));
+//	//}
+//	//else {
+//	//	GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Red, FString::Printf(TEXT("Error: ClearLoadingScreenTimer is not active.")));
+//	//	UE_LOG(LogTemp, Error, TEXT("Message: ClearLoadingScreenTimer is not active."));
+//	//}
+//}
 
-	GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Yellow, FString::Printf(TEXT("Message: Call ClearLoadingScreenTimer()")));
-	UE_LOG(LogTemp, Display, TEXT("Message: Call ClearLoadingScreenTimer()"));
 
-	//if (GetWorldTimerManager().IsTimerActive(ClearLoadingScreenTimerHandle)) {
-	//	GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Yellow, FString::Printf(TEXT("Message: ClearLoadingScreenTimer is active.")));
-	//	UE_LOG(LogTemp, Display, TEXT("Message: ClearLoadingScreenTimer is active."));
-	//}
-	//else {
-	//	GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Red, FString::Printf(TEXT("Error: ClearLoadingScreenTimer is not active.")));
-	//	UE_LOG(LogTemp, Error, TEXT("Message: ClearLoadingScreenTimer is not active."));
-	//}
-}
-
-
-void AEntity_Player::ClearLoadingScreenExecute()
-{
-	GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Yellow, FString::Printf(TEXT("Message: Call ClearLoadingScreenExecute()")));
-	UE_LOG(LogTemp, Display, TEXT("Message: Call ClearLoadingScreenExecute()"));
-
-	//Cast<UTheHazards_GameInstance>(GetWorld()->GetGameInstance())->LoadSaveFilePartFour();
-}
+//void AEntity_Player::ClearLoadingScreenExecute()
+//{
+//	GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Yellow, FString::Printf(TEXT("Message: Call ClearLoadingScreenExecute()")));
+//	UE_LOG(LogTemp, Display, TEXT("Message: Call ClearLoadingScreenExecute()"));
+//
+//	//Cast<UTheHazards_GameInstance>(GetWorld()->GetGameInstance())->LoadSaveFilePartFour();
+//}
 
 
 // ------------------------- Non-Player Characters

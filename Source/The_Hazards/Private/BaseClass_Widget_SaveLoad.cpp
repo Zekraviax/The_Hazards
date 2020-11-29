@@ -104,8 +104,8 @@ void UBaseClass_Widget_SaveLoad::GetSaveFilesPartTwo()
 					SlotNumber++;
 
 					if (LoadedSlot->IsValidLowLevel()) {
-						GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Green, FString::Printf(TEXT("Found slot %s"), *Name.Key));
-						UE_LOG(LogTemp, Display, TEXT("Message: Found Slot %s"), *Name.Key);
+						//GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Green, FString::Printf(TEXT("Found slot %s"), *Name.Key));
+						//UE_LOG(LogTemp, Display, TEXT("Message: Found Slot %s"), *Name.Key);
 
 						SaveLoadSlot_Reference = CreateWidget<USubWidget_SaveLoadSlot>(GetWorld(), SaveLoadSlot_Class);
 
@@ -146,8 +146,8 @@ void UBaseClass_Widget_SaveLoad::GetSaveFilesPartTwo()
 			}
 		}
 		else {
-			GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Red, FString::Printf(TEXT("Meta List Error!")));
-			UE_LOG(LogTemp, Error, TEXT("Error: Meta List Error!"));
+			//GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Red, FString::Printf(TEXT("Error: Meta List Error!")));
+			//UE_LOG(LogTemp, Error, TEXT("Error: Meta List Error!"));
 		}
 	}
 }

@@ -58,8 +58,6 @@ public:
 	UPROPERTY()
 	FString SaveSlotName;
 
-	UPROPERTY()
-	FLatentActionInfo LatentActionInfo;
 
 // Functions
 // --------------------------------------------------

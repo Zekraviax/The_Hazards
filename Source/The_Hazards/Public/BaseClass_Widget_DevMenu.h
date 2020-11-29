@@ -26,12 +26,22 @@ public:
 	//UPROPERTY(meta = (BindWidget))
 	//UButton* IncreaseLevelButton;
 
-// ------------------------- Components
+	UPROPERTY(meta = (BindWidget))
+	UTextBlock* PlayerLevelText;
+
+// ------------------------- References
 	UPROPERTY()
 	AEntity_Player* PlayerReference;
 
 // Function
 // --------------------------------------------------
+
+// ------------------------- Widget
+	UFUNCTION()
+	void OpenWidget();
+
+	UFUNCTION()
+	void UpdateVariables();
 	
 // ------------------------- Button Functions
 	UFUNCTION(BlueprintCallable)
