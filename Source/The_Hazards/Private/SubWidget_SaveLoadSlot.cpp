@@ -120,6 +120,9 @@ void USubWidget_SaveLoadSlot::CreateNewSaveFileSlot(FText SaveSlotName)
 				FString LeftSplit, SplitLevelName;
 				Level->GetWorldAssetPackageName().Split("/Game/Levels/", &LeftSplit, &SplitLevelName);
 
+				// Override Saved Level
+				SplitLevelName = "TestFour";
+
 				GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Yellow, FString::Printf(TEXT("Message: Save level name: %s"), *SplitLevelName));
 				UE_LOG(LogTemp, Warning, TEXT("Message: Save level name: %s"), *SplitLevelName);
 				SlotReference->LevelName = SplitLevelName;

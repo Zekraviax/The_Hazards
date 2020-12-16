@@ -75,14 +75,41 @@ void UTheHazards_GameInstance::LoadSaveFile(FString SaveFileSlotName)
 	// Clear all levels except the MasterLevel
 	const TArray<ULevelStreaming*>& StreamedLevels = GetWorld()->GetStreamingLevels();
 
-	for (auto& Level : StreamedLevels) {
-		if (Level->IsLevelLoaded()) {
-			//Level->SetIsRequestingUnloadAndRemoval(true);
-			UGameplayStatics::UnloadStreamLevel(this, Level->GetWorldAssetPackageFName(), LatentActionInfo, false);
+	//GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Yellow, FString::Printf(TEXT("Message: Levels to unload: %s"), StreamedLevels.Num()));
+	//UE_LOG(LogTemp, Warning, TEXT("Message: Levels to unload: %s"), StreamedLevels.Num());
+	bool BeginPartTwo = false;
 
+	if (StreamedLevels.Num() > 0) {
+		GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Yellow, FString::Printf(TEXT("Message: Unload level(s)")));
+		UE_LOG(LogTemp, Warning, TEXT("Message: Unload level(s)"));
+
+		GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Yellow, FString::Printf(TEXT("Message: Levels to unload: %s"), *FString::FromInt(StreamedLevels.Num())));
+		UE_LOG(LogTemp, Warning, TEXT("Message: Levels to unload: %s"), *FString::FromInt(StreamedLevels.Num()));
+
+		for (auto& Level : StreamedLevels) {
 			GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Yellow, FString::Printf(TEXT("Message: Unload level %s"), *Level->GetWorldAssetPackageName()));
 			UE_LOG(LogTemp, Warning, TEXT("Message: Unload level %s"), *Level->GetWorldAssetPackageName());
+
+			if (Level->IsLevelLoaded()) {
+				//Level->SetIsRequestingUnloadAndRemoval(true);
+				BeginPartTwo = true;
+				UGameplayStatics::UnloadStreamLevel(this, Level->GetWorldAssetPackageFName(), LatentActionInfo, false);
+			}
 		}
+	} else {
+		// If no level is loaded (e.g. the player is on the main menu) just load a new level.
+		GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Yellow, FString::Printf(TEXT("Message: Skip unloading level")));
+		UE_LOG(LogTemp, Warning, TEXT("Message: Skip unloading level"));
+
+		LoadSaveFilePartTwo();
+	}
+
+
+	if (!BeginPartTwo) {
+		GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Yellow, FString::Printf(TEXT("Message: No levels were unloaded. Load new level.")));
+		UE_LOG(LogTemp, Warning, TEXT("Message: No levels were unloaded. Load new level."));
+
+		LoadSaveFilePartTwo();
 	}
 
 	// Load the player's Save File
@@ -97,8 +124,8 @@ void UTheHazards_GameInstance::LoadSaveFile(FString SaveFileSlotName)
 
 void UTheHazards_GameInstance::LoadSaveFilePartTwo()
 {
-	//GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Yellow, FString::Printf(TEXT("Message: Call LoadSaveFilePartTwo()")));
-	//UE_LOG(LogTemp, Display, TEXT("Message: Call LoadSaveFilePartTwo()"));
+	GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Yellow, FString::Printf(TEXT("Message: Call LoadSaveFilePartTwo()")));
+	UE_LOG(LogTemp, Display, TEXT("Message: Call LoadSaveFilePartTwo()"));
 
 	SlotReference = Cast<USaveFile_Slot>(UGameplayStatics::CreateSaveGameObject(USaveFile_Slot::StaticClass()));
 	LoadDelegate.BindUObject(SlotReference, &USaveFile_Slot::LoadGameDelegateFunction);
@@ -109,8 +136,8 @@ void UTheHazards_GameInstance::LoadSaveFilePartTwo()
 
 void UTheHazards_GameInstance::LoadSaveFilePartThree()
 {
-	//GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Yellow, FString::Printf(TEXT("Message: Call LoadSaveFilePartThree()")));
-	//UE_LOG(LogTemp, Display, TEXT("Message: Call LoadSaveFilePartThree()"));
+	GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Yellow, FString::Printf(TEXT("Message: Call LoadSaveFilePartThree()")));
+	UE_LOG(LogTemp, Display, TEXT("Message: Call LoadSaveFilePartThree()"));
 
 	FLatentActionInfo LatentActionInfo;
 
@@ -121,28 +148,45 @@ void UTheHazards_GameInstance::LoadSaveFilePartThree()
 
 	// Load the Save File's level
 	GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Yellow, FString::Printf(TEXT("Message: Load level %s"), *SlotReference->LevelName));
-	UE_LOG(LogTemp, Warning, TEXT("Message: Load level %s"), *SlotReference->LevelName);
+	UE_LOG(LogTemp, Warning, TEXT("Message: Load Level: %s"), *SlotReference->LevelName);
 	UGameplayStatics::LoadStreamLevel(this, FName(SlotReference->LevelName), true, false, LatentActionInfo);
-
 }
 
 
 void UTheHazards_GameInstance::LoadSaveFilePartFour()
 {
-	//GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Yellow, FString::Printf(TEXT("Message: Call LoadSaveFilePartFour()")));
-	//UE_LOG(LogTemp, Display, TEXT("Message: Call LoadSaveFilePartFour()"));
+	GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Yellow, FString::Printf(TEXT("Message: Call LoadSaveFilePartFour()")));
+	UE_LOG(LogTemp, Display, TEXT("Message: Call LoadSaveFilePartFour()"));
 
-	TArray<AActor*> PlayerActors, TickActors;
+	TArray<AActor*> PlayerActors, TickActors, PlayerStartActors;
 	FActorSpawnParameters ActorSpawnParameters;
 
 	// Find all currently existing Player actors
 	UGameplayStatics::GetAllActorsOfClass(GetWorld(), AEntity_Player::StaticClass(), PlayerActors);
 
-	for (int i = 0; i < PlayerActors.Num(); i++) {
-		if (PlayerActors.IsValidIndex(i)) {
-			Player_Entity_Reference = Cast<AEntity_Player>(PlayerActors[i]);
-			Cast<ABaseClass_PlayerController>(UGameplayStatics::GetPlayerController(GetWorld(), 0))->Possess(Player_Entity_Reference);
-			break;
+	if (PlayerActors.Num() > 0) {
+		for (int i = 0; i < PlayerActors.Num(); i++) {
+			if (PlayerActors.IsValidIndex(i)) {
+				Player_Entity_Reference = Cast<AEntity_Player>(PlayerActors[i]);
+				Cast<ABaseClass_PlayerController>(UGameplayStatics::GetPlayerController(GetWorld(), 0))->Possess(Player_Entity_Reference);
+				break;
+			}
+		}
+	} else {
+		UGameplayStatics::GetAllActorsOfClass(GetWorld(), APlayerStart::StaticClass(), PlayerStartActors);
+		ABaseClass_PlayerController* PlayerControllerRef = Cast<ABaseClass_PlayerController>(UGameplayStatics::GetPlayerController(GetWorld(), 0));
+
+		for (int i = 0; i < PlayerStartActors.Num(); i++) {
+			if (PlayerStartActors.IsValidIndex(i)) {
+				//Player_Entity_Reference = GetWorld()->SpawnActor<AEntity_Player>(Player_Entity_Class, PlayerStartActors[i]->GetActorLocation(), PlayerStartActors[i]->GetActorRotation(), ActorSpawnParameters);
+				Player_Entity_Reference = GetWorld()->SpawnActor<AEntity_Player>(Player_Entity_Class, FVector(100.f, 100.f, 100.f), PlayerStartActors[i]->GetActorRotation(), ActorSpawnParameters);
+
+
+				PlayerControllerRef->Possess(Player_Entity_Reference);
+				//Player_Entity_Reference->Player_Controller_Reference = PlayerControllerRef;
+
+				break;
+			}
 		}
 	}
 
@@ -151,7 +195,7 @@ void UTheHazards_GameInstance::LoadSaveFilePartFour()
 
 	// Set Player Data
 	// Location in world
-	Player_Entity_Reference->SetActorLocationAndRotation(SlotReference->PlayerReference->GetActorLocation(), SlotReference->PlayerReference->GetActorRotation());
+	//Player_Entity_Reference->SetActorLocationAndRotation(SlotReference->PlayerReference->GetActorLocation(), SlotReference->PlayerReference->GetActorRotation());
 
 	// Set Entity Data
 
