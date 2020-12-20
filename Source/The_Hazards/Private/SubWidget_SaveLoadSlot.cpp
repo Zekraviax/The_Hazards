@@ -120,9 +120,12 @@ void USubWidget_SaveLoadSlot::CreateNewSaveFileSlot(FText SaveSlotName)
 				FString LeftSplit, SplitLevelName;
 				Level->GetWorldAssetPackageName().Split("/Game/Levels/", &LeftSplit, &SplitLevelName);
 
+<<<<<<< HEAD
 				// Override Saved Level
 				//SplitLevelName = "TestThree_Streaming";
 
+=======
+>>>>>>> parent of 144e61c... Cleaned up old save files. Progress on loading save files from the Main Menu.
 				GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Yellow, FString::Printf(TEXT("Message: Save level name: %s"), *SplitLevelName));
 				UE_LOG(LogTemp, Warning, TEXT("Message: Save level name: %s"), *SplitLevelName);
 				SlotReference->LevelName = SplitLevelName;
