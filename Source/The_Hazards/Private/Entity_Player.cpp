@@ -368,7 +368,7 @@ void AEntity_Player::OpenDevMenu()
 		// Create widget, add to viewport, and pause game
 		CurrentOpenMenuWidget = CreateWidget<UBaseClass_Widget_DevMenu>(GetWorld(), DevMenu_Class);
 		CurrentOpenMenuWidget_Class = DevMenu_Class;
-		UGameplayStatics::SetGamePaused(GetWorld(), true);
+		//UGameplayStatics::SetGamePaused(GetWorld(), true);
 
 		// Item Craft specific variables and functions
 		Cast<UBaseClass_Widget_DevMenu>(CurrentOpenMenuWidget)->PlayerReference = this;

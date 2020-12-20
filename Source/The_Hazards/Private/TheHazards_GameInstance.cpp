@@ -49,9 +49,9 @@ void UTheHazards_GameInstance::LoadSaveFile(FString SaveFileSlotName)
 	FLatentActionInfo LatentActionInfo;
 
 	LatentActionInfo.CallbackTarget = this;
-	LatentActionInfo.ExecutionFunction = "LoadSaveFilePartTwo";
-	LatentActionInfo.UUID = 1;
-	LatentActionInfo.Linkage = 1;
+	//LatentActionInfo.ExecutionFunction = "LoadSaveFilePartTwo";
+	//LatentActionInfo.UUID = 1;
+	//LatentActionInfo.Linkage = 1;
 
 	SaveSlotName = SaveFileSlotName;
 
@@ -105,12 +105,12 @@ void UTheHazards_GameInstance::LoadSaveFile(FString SaveFileSlotName)
 	}
 
 
-	if (!BeginPartTwo) {
+	//if (!BeginPartTwo) {
 		GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Yellow, FString::Printf(TEXT("Message: No levels were unloaded. Load new level.")));
 		UE_LOG(LogTemp, Warning, TEXT("Message: No levels were unloaded. Load new level."));
 
 		LoadSaveFilePartTwo();
-	}
+	//}
 
 	// Load the player's Save File
 	//GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Yellow, FString::Printf(TEXT("Warning: Attempting to load save file: %s"), *SaveSlotName));
@@ -179,11 +179,10 @@ void UTheHazards_GameInstance::LoadSaveFilePartFour()
 		for (int i = 0; i < PlayerStartActors.Num(); i++) {
 			if (PlayerStartActors.IsValidIndex(i)) {
 				//Player_Entity_Reference = GetWorld()->SpawnActor<AEntity_Player>(Player_Entity_Class, PlayerStartActors[i]->GetActorLocation(), PlayerStartActors[i]->GetActorRotation(), ActorSpawnParameters);
-				Player_Entity_Reference = GetWorld()->SpawnActor<AEntity_Player>(Player_Entity_Class, FVector(100.f, 100.f, 100.f), PlayerStartActors[i]->GetActorRotation(), ActorSpawnParameters);
-
+				Player_Entity_Reference = GetWorld()->SpawnActor<AEntity_Player>(Player_Entity_Class, FVector(200.f, 200.f, 200.f), PlayerStartActors[i]->GetActorRotation(), ActorSpawnParameters);
 
 				PlayerControllerRef->Possess(Player_Entity_Reference);
-				//Player_Entity_Reference->Player_Controller_Reference = PlayerControllerRef;
+				Player_Entity_Reference->Player_Controller_Reference = PlayerControllerRef;
 
 				break;
 			}
@@ -195,7 +194,12 @@ void UTheHazards_GameInstance::LoadSaveFilePartFour()
 
 	// Set Player Data
 	// Location in world
-	//Player_Entity_Reference->SetActorLocationAndRotation(SlotReference->PlayerReference->GetActorLocation(), SlotReference->PlayerReference->GetActorRotation());
+	//if (Player_Entity_Reference) {
+	//	Player_Entity_Reference->SetActorLocationAndRotation(SlotReference->PlayerReference->GetActorLocation(), SlotReference->PlayerReference->GetActorRotation());
+	//} else {
+	//	GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Red, FString::Printf(TEXT("Error: Player_Entity_Reference not valid.")));
+	//	UE_LOG(LogTemp, Error, TEXT("Error: Player_Entity_Reference not valid."));
+	//}
 
 	// Set Entity Data
 

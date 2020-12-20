@@ -7,13 +7,16 @@
 #include "SubWidget_GraphicsMenu.h"
 #include "SubWidget_ControlsMenu.h"
 #include "SubWidget_KeybindsMenu.h"
+#include "BaseClass_Widget_Options.h"
+#include "BaseClass_Widget_MainMenu.h"
+#include "BaseClass_Widget_SaveLoad.h"
 
 #include "TheHazards_PlayerState.generated.h"
 
 // Forward Declarations
-class UBaseClass_Widget_Options;
-class UBaseClass_Widget_MainMenu;
-class UBaseClass_Widget_SaveLoad;
+//class UBaseClass_Widget_Options;
+//class UBaseClass_Widget_MainMenu;
+//class UBaseClass_Widget_SaveLoad;
 //class USubwidget_AudioMenu;
 //class USubWidget_ControlsMenu;
 //class USubWidget_GraphicsMenu;

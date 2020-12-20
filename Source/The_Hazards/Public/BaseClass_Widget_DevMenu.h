@@ -6,6 +6,7 @@
 #include "Components/Image.h"
 #include "Components/Button.h"
 #include "Components/TextBlock.h"
+#include "Components/ComboBoxString.h"
 
 #include "BaseClass_Widget_DevMenu.generated.h"
 
@@ -29,6 +30,9 @@ public:
 	UPROPERTY(meta = (BindWidget))
 	UTextBlock* PlayerLevelText;
 
+	UPROPERTY(meta = (BindWidget))
+	UComboBoxString* SwitchLevel_DropDown;
+
 // ------------------------- References
 	UPROPERTY()
 	AEntity_Player* PlayerReference;
@@ -43,7 +47,13 @@ public:
 	UFUNCTION()
 	void UpdateVariables();
 	
-// ------------------------- Button Functions
+// ------------------------- Functions
 	UFUNCTION(BlueprintCallable)
 	void ChangePlayerLevel(int LevelChangeValue);
+
+	UFUNCTION(BlueprintCallable)
+	void OnSwitchLevelDropdownChanged();
+
+	UFUNCTION()
+	void LoadNewLevel();
 };
