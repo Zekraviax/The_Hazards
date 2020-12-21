@@ -27,6 +27,7 @@ void ATheHazards_GameInstance_TActor::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 }
 
+
 void ATheHazards_GameInstance_TActor::ClearLoadingScreenBegin()
 {
 	GetWorldTimerManager().SetTimer(ClearLoadingScreenTimerHandle, this, &ATheHazards_GameInstance_TActor::ClearLoadingScreenExecute, 2.f, false);

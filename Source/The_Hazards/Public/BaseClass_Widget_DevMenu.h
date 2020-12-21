@@ -55,5 +55,5 @@ public:
 	void OnSwitchLevelDropdownChanged();
 
 	UFUNCTION()
-	void LoadNewLevel();
+	void LoadLevel();
 };

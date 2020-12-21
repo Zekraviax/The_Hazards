@@ -4,6 +4,7 @@
 #include "Entity_Player.h"
 #include "BaseClass_PlayerController.h"
 #include "BaseClass_MainMenuController.h"
+#include "BaseClass_Widget_DevMenu.h"
 #include "TheHazards_PlayerState.h"
 #include "GameFramework/PlayerStart.h"
 #include "GameFramework/Controller.h"
@@ -70,6 +71,11 @@ void UBaseClass_Widget_MainMenu::ClearLoadingScreen()
 
 				//GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Green, FString::Printf(TEXT("Possess Player?")));
 				//UE_LOG(LogTemp, Display, TEXT("Possess Player?"));
+
+				// Create Dev Menu
+				//UBaseClass_Widget_DevMenu* DevMenuWidget = CreateWidget<UBaseClass_Widget_DevMenu>(GetWorld(), DevMenu_Class);
+				//DevMenuWidget->OpenWidget();
+				//DevMenuWidget->AddToViewport();
 
 				break;
 			}

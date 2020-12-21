@@ -77,4 +77,8 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	void LoadSaveFilePartFour();
+
+// -------------------------  Other Load Functions
+	UFUNCTION()
+	void DevMenu_LoadLevel(FString LevelName);
 };

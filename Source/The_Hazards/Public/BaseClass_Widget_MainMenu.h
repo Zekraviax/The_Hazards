@@ -17,6 +17,7 @@ class AEntity_Player_MainMenu;
 class ATheHazards_PlayerState;
 class ABaseClass_PlayerController;
 class ABaseClass_MainMenuController;
+class UBaseClass_Widget_DevMenu;
 
 
 UCLASS()
@@ -37,6 +38,9 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Widgets")
 	TSubclassOf<UBaseClass_Widget_LoadScreen> LoadScreen_Class;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Widgets")
+		TSubclassOf<UBaseClass_Widget_DevMenu> DevMenu_Class;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Widgets")
 	UBaseClass_Widget_LoadScreen* LoadScreen_Widget;

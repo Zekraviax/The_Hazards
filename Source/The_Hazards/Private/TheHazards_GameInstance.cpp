@@ -83,25 +83,24 @@ void UTheHazards_GameInstance::LoadSaveFile(FString SaveFileSlotName)
 			GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Yellow, FString::Printf(TEXT("Message: Unload level %s"), *Level->GetWorldAssetPackageName()));
 			UE_LOG(LogTemp, Warning, TEXT("Message: Unload level %s"), *Level->GetWorldAssetPackageName());
 		}
-<<<<<<< HEAD
-	} else {
-		// If no level is loaded (e.g. the player is on the main menu) just load a new level.
-		GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Yellow, FString::Printf(TEXT("Message: Skip unloading level")));
-		UE_LOG(LogTemp, Warning, TEXT("Message: Skip unloading level"));
+		//else {
+		//	// If no level is loaded (e.g. the player is on the main menu) just load a new level.
+		//	GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Yellow, FString::Printf(TEXT("Message: Skip unloading level")));
+		//	UE_LOG(LogTemp, Warning, TEXT("Message: Skip unloading level"));
 
-		LoadSaveFilePartTwo();
+		//	LoadSaveFilePartTwo();
+		//}
 	}
 
 
 	//if (!BeginPartTwo) {
-		GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Yellow, FString::Printf(TEXT("Message: No levels were unloaded. Load new level.")));
-		UE_LOG(LogTemp, Warning, TEXT("Message: No levels were unloaded. Load new level."));
+		//GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Yellow, FString::Printf(TEXT("Message: No levels were unloaded. Load new level.")));
+		//UE_LOG(LogTemp, Warning, TEXT("Message: No levels were unloaded. Load new level."));
 
-		LoadSaveFilePartTwo();
+		//LoadSaveFilePartTwo();
 	//}
-=======
-	}
->>>>>>> parent of 144e61c... Cleaned up old save files. Progress on loading save files from the Main Menu.
+
+	 //Cleaned up old save files. Progress on loading save files from the Main Menu.
 
 	// Load the player's Save File
 	//GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Yellow, FString::Printf(TEXT("Warning: Attempting to load save file: %s"), *SaveSlotName));
@@ -150,13 +149,12 @@ void UTheHazards_GameInstance::LoadSaveFilePartFour()
 	//GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Yellow, FString::Printf(TEXT("Message: Call LoadSaveFilePartFour()")));
 	//UE_LOG(LogTemp, Display, TEXT("Message: Call LoadSaveFilePartFour()"));
 
-	TArray<AActor*> PlayerActors, TickActors;
+	TArray<AActor*> PlayerActors, TickActors, PlayerStartActors;
 	FActorSpawnParameters ActorSpawnParameters;
 
 	// Find all currently existing Player actors
 	UGameplayStatics::GetAllActorsOfClass(GetWorld(), AEntity_Player::StaticClass(), PlayerActors);
 
-<<<<<<< HEAD
 	if (PlayerActors.Num() > 0) {
 		for (int i = 0; i < PlayerActors.Num(); i++) {
 			if (PlayerActors.IsValidIndex(i)) {
@@ -179,13 +177,14 @@ void UTheHazards_GameInstance::LoadSaveFilePartFour()
 
 				break;
 			}
-=======
+		}
+	}
+
 	for (int i = 0; i < PlayerActors.Num(); i++) {
 		if (PlayerActors.IsValidIndex(i)) {
 			Player_Entity_Reference = Cast<AEntity_Player>(PlayerActors[i]);
 			Cast<ABaseClass_PlayerController>(UGameplayStatics::GetPlayerController(GetWorld(), 0))->Possess(Player_Entity_Reference);
 			break;
->>>>>>> parent of 144e61c... Cleaned up old save files. Progress on loading save files from the Main Menu.
 		}
 	}
 
@@ -194,16 +193,16 @@ void UTheHazards_GameInstance::LoadSaveFilePartFour()
 
 	// Set Player Data
 	// Location in world
-<<<<<<< HEAD
+
 	//if (Player_Entity_Reference) {
 	//	Player_Entity_Reference->SetActorLocationAndRotation(SlotReference->PlayerReference->GetActorLocation(), SlotReference->PlayerReference->GetActorRotation());
 	//} else {
 	//	GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Red, FString::Printf(TEXT("Error: Player_Entity_Reference not valid.")));
 	//	UE_LOG(LogTemp, Error, TEXT("Error: Player_Entity_Reference not valid."));
 	//}
-=======
+
 	Player_Entity_Reference->SetActorLocationAndRotation(SlotReference->PlayerReference->GetActorLocation(), SlotReference->PlayerReference->GetActorRotation());
->>>>>>> parent of 144e61c... Cleaned up old save files. Progress on loading save files from the Main Menu.
+
 
 	// Set Entity Data
 
@@ -219,4 +218,12 @@ void UTheHazards_GameInstance::LoadSaveFilePartFour()
 	// Cleanup Variables
 	PlayerActors.Empty();
 	TickActors.Empty();
+}
+
+
+void UTheHazards_GameInstance::DevMenu_LoadLevel(FString LevelName)
+{
+	FLatentActionInfo LatentActionInfo;
+
+	UGameplayStatics::LoadStreamLevel(this, FName(LevelName), true, false, LatentActionInfo);
 }

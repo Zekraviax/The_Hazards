@@ -2,6 +2,7 @@
 
 #include "Entity_Player.h"
 #include "Engine/LevelStreaming.h"
+#include "TheHazards_GameInstance.h"
 
 
 // ------------------------- Widget
@@ -26,9 +27,9 @@ void UBaseClass_Widget_DevMenu::OpenWidget()
 
 		SwitchLevel_DropDown->AddOption(SplitLevelName);
 
-		if (Level->IsLevelLoaded()) {
-			SwitchLevel_DropDown->SetSelectedOption(SplitLevelName);
-		}
+		//if (Level->IsLevelLoaded()) {
+		//	SwitchLevel_DropDown->SetSelectedOption(SplitLevelName);
+		//}
 	}
 }
 
@@ -39,7 +40,9 @@ void UBaseClass_Widget_DevMenu::UpdateVariables()
 		PlayerReference = Cast<AEntity_Player>(GetWorld()->GetFirstPlayerController()->GetPawn());
 	}
 
-	PlayerLevelText->SetText(FText::FromString(FString::FromInt(PlayerReference->Level)));
+	if (PlayerReference) {
+		PlayerLevelText->SetText(FText::FromString(FString::FromInt(PlayerReference->Level)));
+	}
 }
 
 
@@ -63,53 +66,31 @@ void UBaseClass_Widget_DevMenu::OnSwitchLevelDropdownChanged()
 	FString LeftSplit, SplitLevelName;
 	const TArray<ULevelStreaming*>& StreamedLevels = GetWorld()->GetStreamingLevels();
 
+	LatentActionInfo.CallbackTarget = this;
+	LatentActionInfo.ExecutionFunction = "LoadLevel";
+	LatentActionInfo.UUID = 1345;
+	LatentActionInfo.Linkage = 1;
+
 	//if () {
 	for (auto& Level : StreamedLevels) {
 		Level->GetWorldAssetPackageName().Split("/Game/Levels/", &LeftSplit, &SplitLevelName);
 
-		GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Yellow, FString::Printf(TEXT("Message: Unload level %s"), *Level->GetWorldAssetPackageName()));
-		UE_LOG(LogTemp, Warning, TEXT("Message: Unload level %s"), *Level->GetWorldAssetPackageName());
+		if (Level->IsLevelVisible()) {
+			GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Yellow, FString::Printf(TEXT("Message: Unload level %s"), *Level->GetWorldAssetPackageName()));
+			UE_LOG(LogTemp, Warning, TEXT("Message: Unload level %s"), *Level->GetWorldAssetPackageName());
 
-		if (Level->IsLevelLoaded() && SplitLevelName != SwitchLevel_DropDown->GetSelectedOption()) {
-			//Level->SetIsRequestingUnloadAndRemoval(true);
 			UGameplayStatics::UnloadStreamLevel(this, Level->GetWorldAssetPackageFName(), LatentActionInfo, false);
-
-			//for (TObjectIterator<AEntity_Player> Itr; Itr; ++Itr) {
-			//	AEntity_Player* FoundActor = *Itr;
-
-			//	if (FoundActor->IsValidLowLevel())
-			//		FoundActor->Destroy();
-			//}
 		}
 	}
 
-	// Load the chosen level
-	UGameplayStatics::LoadStreamLevel(this, FName(SwitchLevel_DropDown->GetSelectedOption()), true, false, LatentActionInfo);
-	//}
-
-
-		//for (auto& Level : StreamedLevels) {
-		//	Level->GetWorldAssetPackageName().Split("/Game/Levels/", &LeftSplit, &SplitLevelName);
-
-		//	GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Yellow, FString::Printf(TEXT("Message: Unload level %s"), *Level->GetWorldAssetPackageName()));
-		//	UE_LOG(LogTemp, Warning, TEXT("Message: Unload level %s"), *Level->GetWorldAssetPackageName());
-
-		//	if (Level->IsLevelLoaded() && SplitLevelName != SwitchLevel_DropDown->GetSelectedOption()) {
-		//		//Level->SetIsRequestingUnloadAndRemoval(true);
-		//		UGameplayStatics::UnloadStreamLevel(this, Level->GetWorldAssetPackageFName(), LatentActionInfo, false);
-		//	}
-		//	else {
-		//		SwitchLevelOptionIsCurrentLevel = true;
-		//	}
-		//}
-
-		// Load the chosen level
-		//if (!SwitchLevelOptionIsCurrentLevel)  
-		//	UGameplayStatics::LoadStreamLevel(this, FName(SwitchLevel_DropDown->GetSelectedOption()), true, false, LatentActionInfo);
+	// Load the new level via the GameInstance
+	//Cast<UTheHazards_GameInstance>(GetWorld()->GetGameInstance())->DevMenu_LoadLevel(SwitchLevel_DropDown->GetSelectedOption());
 }
 
 
-void UBaseClass_Widget_DevMenu::LoadNewLevel()
+void UBaseClass_Widget_DevMenu::LoadLevel()
 {
+	FLatentActionInfo LatentActionInfo;
 
+	UGameplayStatics::LoadStreamLevel(GetWorld(), FName(SwitchLevel_DropDown->GetSelectedOption()), true, false, LatentActionInfo);
 }
