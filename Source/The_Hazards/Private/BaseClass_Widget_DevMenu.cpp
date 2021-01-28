@@ -5,7 +5,7 @@
 #include "TheHazards_GameInstance.h"
 
 
-// ------------------------- Widget
+// ------------------------- Widgets
 void UBaseClass_Widget_DevMenu::OpenWidget()
 {
 	if (!PlayerReference) {

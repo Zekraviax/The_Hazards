@@ -64,10 +64,16 @@ void UBaseClass_Widget_MainMenu::ClearLoadingScreen()
 			if (PlayerStartActors.IsValidIndex(i)) {
 				ABaseClass_PlayerController* PlayerControllerRef = Cast<ABaseClass_PlayerController>(UGameplayStatics::GetPlayerController(GetWorld(), 0));
 
-				Player_Entity_Reference = GetWorld()->SpawnActor<AEntity_Player>(Player_Entity_Class, PlayerStartActors[i]->GetActorLocation(), PlayerStartActors[i]->GetActorRotation(), ActorSpawnParameters);
-				PlayerControllerRef->Possess(Player_Entity_Reference);
-				Player_Entity_Reference->Player_Controller_Reference = PlayerControllerRef;
-				//Player_Entity_Reference->ManualBeginPlay();
+				if (PlayerControllerRef) {
+					Player_Entity_Reference = GetWorld()->SpawnActor<AEntity_Player>(Player_Entity_Class, PlayerStartActors[i]->GetActorLocation(), PlayerStartActors[i]->GetActorRotation(), ActorSpawnParameters);
+					PlayerControllerRef->Possess(Player_Entity_Reference);
+					Player_Entity_Reference->Player_Controller_Reference = PlayerControllerRef;
+					Player_Entity_Reference->ManualBeginPlay();
+				}
+				else {
+					GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Red, FString::Printf(TEXT("PlayerControllerRef Not Valid")));
+				}
+
 
 				//GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Green, FString::Printf(TEXT("Possess Player?")));
 				//UE_LOG(LogTemp, Display, TEXT("Possess Player?"));

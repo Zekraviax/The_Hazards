@@ -112,7 +112,7 @@ enum class E_Skill_ActivationCondition : uint8
 	E_OnDamageTaken,
 };
 
-//------------------------- Special Attacks
+//------------------------- Normal Attacks
 UENUM(BlueprintType)
 enum class E_Weapon_AttackStyles : uint8
 {

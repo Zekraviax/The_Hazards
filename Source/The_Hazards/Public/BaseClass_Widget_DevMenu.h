@@ -40,14 +40,14 @@ public:
 // Function
 // --------------------------------------------------
 
-// ------------------------- Widget
+// ------------------------- Widgets
 	UFUNCTION()
 	void OpenWidget();
 
 	UFUNCTION()
 	void UpdateVariables();
 	
-// ------------------------- Functions
+// ------------------------- Dev
 	UFUNCTION(BlueprintCallable)
 	void ChangePlayerLevel(int LevelChangeValue);
 
