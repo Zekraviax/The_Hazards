@@ -3,6 +3,7 @@
 #include "SaveFile_MetaList.h"
 #include "SaveFile_Slot.h"
 #include "Entity_Player.h"
+#include "BaseClass_PlayerController.h"
 #include "Delegates/Delegate.h"
 #include "Kismet/GameplayStatics.h"
 #include "GameFramework/AsyncActionHandleSaveGame.h"
@@ -43,10 +44,7 @@ void UBaseClass_Widget_SaveLoad::GetSaveFilesPartOne(bool SetSaveMode)
 			SaveFileScrollBox->AddChild(SaveLoadSlot_Reference);
 		}
 	}
-	
-	/*if (GetWorld()->IsValidLowLevel())
-		MetaList = Cast<UTheHazards_GameInstance>(GetWorld()->GetGameInstance())->ReturnMetaList();
-	else*/
+
 	MetaList = Cast<USaveFile_MetaList>(UGameplayStatics::LoadGameFromSlot("MetaList", 0));
 
 	if (MetaList == nullptr) {
@@ -74,7 +72,6 @@ void UBaseClass_Widget_SaveLoad::GetSaveFilesPartTwo()
 {
 	USaveFile_MetaList* MetaList;
 
-	//MetaList = Cast<UTheHazards_GameInstance>(GetWorld()->GetGameInstance())->ReturnMetaList();
 	MetaList = Cast<USaveFile_MetaList>(UGameplayStatics::LoadGameFromSlot("MetaList", 0));
 
 	if (MetaList == nullptr) {
@@ -104,9 +101,6 @@ void UBaseClass_Widget_SaveLoad::GetSaveFilesPartTwo()
 					SlotNumber++;
 
 					if (LoadedSlot->IsValidLowLevel()) {
-						//GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Green, FString::Printf(TEXT("Found slot %s"), *Name.Key));
-						//UE_LOG(LogTemp, Display, TEXT("Message: Found Slot %s"), *Name.Key);
-
 						SaveLoadSlot_Reference = CreateWidget<USubWidget_SaveLoadSlot>(GetWorld(), SaveLoadSlot_Class);
 
 						if (SaveLoadSlot_Reference->IsValidLowLevel()) {
@@ -140,14 +134,7 @@ void UBaseClass_Widget_SaveLoad::GetSaveFilesPartTwo()
 						UE_LOG(LogTemp, Error, TEXT("Error: Failed to load Save File %s."), *Name.Key);
 					}
 				}
-
-				//MetaList = nullptr;
-				//FDebug::DumpStackTraceToLog();
 			}
-		}
-		else {
-			//GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Red, FString::Printf(TEXT("Error: Meta List Error!")));
-			//UE_LOG(LogTemp, Error, TEXT("Error: Meta List Error!"));
 		}
 	}
 }
@@ -155,11 +142,7 @@ void UBaseClass_Widget_SaveLoad::GetSaveFilesPartTwo()
 
 void UBaseClass_Widget_SaveLoad::CloseWidget()
 {
-	// Unload the MetaList?
-
-	if (!Player_Controller_Reference && GetWorld()) {
-		Player_Controller_Reference = Cast<ABaseClass_PlayerController>(GetWorld()->GetFirstPlayerController());
-	}
+	Player_Controller_Reference = Cast<ABaseClass_PlayerController>(GetWorld()->GetFirstPlayerController());
 
 	if (Player_Controller_Reference) {
 		Player_Controller_Reference->CurrentOpenMenuWidget->RemoveFromParent();
@@ -175,13 +158,6 @@ void UBaseClass_Widget_SaveLoad::CloseWidget()
 
 			Player_Controller_Reference->CurrentOpenMenuWidget = PauseMenu_Reference;
 			Player_Controller_Reference->CurrentOpenMenuWidget_Class = PauseMenu_Class;
-		} else {
-			//MainMenu_Reference = CreateWidget<UBaseClass_Widget_MainMenu>(GetWorld(), MainMenu_Class);
-			////Cast<UBaseClass_Widget_MainMenu>(MainMenu_Reference)->LocalPlayerReference = PlayerReference;
-			////MainMenu_Reference->AddToViewport();
-
-			//Player_Controller_Reference->CurrentOpenMenuWidget = MainMenu_Reference;
-			//Player_Controller_Reference->CurrentOpenMenuWidget_Class = MainMenu_Class;
 		}
 	}
 }

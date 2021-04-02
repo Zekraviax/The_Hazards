@@ -45,7 +45,6 @@ void UBaseClass_Widget_MainMenu::NewGame()
 
 	// Begin Minimum time delay for displaying the loading screen
 	GetWorld()->GetTimerManager().SetTimer(TimerHandle, this, &UBaseClass_Widget_MainMenu::ClearLoadingScreen, 0.2f);
-	//LoadScreen_Widget->BeginDelayedClearFunction();
 }
 
 
@@ -67,21 +66,14 @@ void UBaseClass_Widget_MainMenu::ClearLoadingScreen()
 				if (PlayerControllerRef) {
 					Player_Entity_Reference = GetWorld()->SpawnActor<AEntity_Player>(Player_Entity_Class, PlayerStartActors[i]->GetActorLocation(), PlayerStartActors[i]->GetActorRotation(), ActorSpawnParameters);
 					PlayerControllerRef->Possess(Player_Entity_Reference);
+					
+					// Set default stats
+					Player_Entity_Reference->LevelStats = F_BaseStats_Struct(100.f, 1.f, 10.f, 100.f, 1.f, 10.f, 10.f, 10.f, 10.f, 10.f, 10.f, 300.f, 10.f, 10.f, 10.f);
+					Player_Entity_Reference->CalculateTotalStats();
+
 					Player_Entity_Reference->Player_Controller_Reference = PlayerControllerRef;
 					Player_Entity_Reference->ManualBeginPlay();
 				}
-				else {
-					GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Red, FString::Printf(TEXT("PlayerControllerRef Not Valid")));
-				}
-
-
-				//GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Green, FString::Printf(TEXT("Possess Player?")));
-				//UE_LOG(LogTemp, Display, TEXT("Possess Player?"));
-
-				// Create Dev Menu
-				//UBaseClass_Widget_DevMenu* DevMenuWidget = CreateWidget<UBaseClass_Widget_DevMenu>(GetWorld(), DevMenu_Class);
-				//DevMenuWidget->OpenWidget();
-				//DevMenuWidget->AddToViewport();
 
 				break;
 			}

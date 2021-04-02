@@ -133,15 +133,6 @@ void AEntity_Base::BeginPlay()
 					CalculateTotalStats();
 				}
 			}
-
-
-			// Spawn a SpecialAttacksFunctionLibrary actor for this entity
-			//if (SpecialAttacksFunctionLibrary_Class) {
-			//	SpecialAttacksFunctionLibrary_Reference = GetWorld()->SpawnActor<AFunctionLibrary_SpecialAttacks>(SpecialAttacksFunctionLibrary_Class, FVector::ZeroVector, FRotator::ZeroRotator, SpawnInfo);
-			//	SpecialAttacksFunctionLibrary_Reference->InitializeSpecialAttacks();
-			//	SpecialAttacksFunctionLibrary_Reference->LinkedEntity = this;
-			//	//SpecialAttacksFunctionLibrary_Reference->AddToRoot();
-			//}
 		}
 	}
 }

@@ -46,10 +46,6 @@ void AEntity_Player::Tick(float DeltaTime)
 
 	// Call Tick functions
 	RotatePlayerTowardsMouse();
-
-	//if (GetWorldTimerManager().IsTimerActive(ClearLoadingScreenTimerHandle)) {
-	//	GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Yellow, FString::Printf(TEXT("Message: ClearLoadingScreenTimer time: %s"), GetWorldTimerManager().GetTimerElapsed(ClearLoadingScreenTimerHandle)));
-	//}
 }
 
 
@@ -147,7 +143,6 @@ void AEntity_Player::OpenPauseMenu()
 
 	// Close pause menu widget and resume game
 	if (Player_Controller_Reference->CurrentOpenMenuWidget_Class == PauseMenu_Class) {
-		//GEngine->AddOnScreenDebugMessage(-1, 15.f, FColor::Yellow, FString::Printf(TEXT("Close PauseMenu and resume Game")));
 		UGameplayStatics::SetGamePaused(GetWorld(), false);
 
 		Player_Controller_Reference->CurrentOpenMenuWidget->RemoveFromParent();
@@ -160,24 +155,19 @@ void AEntity_Player::OpenPauseMenu()
 		Player_Controller_Reference->CurrentOpenMenuWidget_Class == KeybindsMenu_Class ||
 		Player_Controller_Reference->CurrentOpenMenuWidget_Class == ControlsMenu_Class) {
 
-		//GEngine->AddOnScreenDebugMessage(-1, 15.f, FColor::Yellow, FString::Printf(TEXT("Close Options SubMenu and open OptionsMenu")));
 		Player_Controller_Reference->CurrentOpenMenuWidget->RemoveFromParent();
 		Player_Controller_Reference->CurrentOpenMenuWidget = NULL;
 		Player_Controller_Reference->CurrentOpenMenuWidget_Class = NULL;
 
 		Player_Controller_Reference->CurrentOpenMenuWidget = CreateWidget<UBaseClass_Widget_Options>(GetWorld(), OptionsMenu_Class);
-		//Cast<UBaseClass_Widget_Options>(CurrentOpenMenuWidget)->PlayerReference = this;
 		Player_Controller_Reference->CurrentOpenMenuWidget->AddToViewport();
 		Player_Controller_Reference->CurrentOpenMenuWidget_Class = OptionsMenu_Class;
 	}
 	else if (CurrentOpenMenuWidget_Class == OptionsMenu_Class) {
-		//GEngine->AddOnScreenDebugMessage(-1, 15.f, FColor::Yellow, FString::Printf(TEXT("Close OptionsMenu and open PauseMenu")));
-
 		Cast<UBaseClass_Widget_Options>(Player_Controller_Reference->CurrentOpenMenuWidget)->CloseMenu();
 	}
 	// Create pause menu widget, add to viewport, and pause game
 	else {
-		//GEngine->AddOnScreenDebugMessage(-1, 15.f, FColor::Yellow, FString::Printf(TEXT("Pause Game and open PauseMenu")));
 		// Remove other widgets from screen
 		if (Player_Controller_Reference->CurrentOpenMenuWidget) {
 			Player_Controller_Reference->CurrentOpenMenuWidget->RemoveFromParent();
@@ -356,7 +346,6 @@ void AEntity_Player::OpenItemCraftMenu()
 
 void AEntity_Player::OpenDevMenu()
 {
-	//if (!LockMenuButtonActions) {
 	if (CurrentOpenMenuWidget) {
 		// Close widget and resume game
 		UGameplayStatics::SetGamePaused(GetWorld(), false);
@@ -368,19 +357,16 @@ void AEntity_Player::OpenDevMenu()
 		// Create widget, add to viewport, and pause game
 		CurrentOpenMenuWidget = CreateWidget<UBaseClass_Widget_DevMenu>(GetWorld(), DevMenu_Class);
 		CurrentOpenMenuWidget_Class = DevMenu_Class;
-		//UGameplayStatics::SetGamePaused(GetWorld(), true);
 
 		// Item Craft specific variables and functions
 		Cast<UBaseClass_Widget_DevMenu>(CurrentOpenMenuWidget)->PlayerReference = this;
 		Cast<UBaseClass_Widget_DevMenu>(CurrentOpenMenuWidget)->OpenWidget();
-		//Cast<UBaseClass_Widget_ItemCraft>(CurrentOpenMenuWidget)->GetPlayerInventory();
 
 		CurrentOpenMenuWidget->AddToViewport();
 	}
 	else {
 		CurrentOpenMenuWidget_Class = NULL;
 	}
-	//}
 }
 
 
