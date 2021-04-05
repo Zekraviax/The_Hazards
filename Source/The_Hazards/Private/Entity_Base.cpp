@@ -86,7 +86,6 @@ void AEntity_Base::BeginPlay()
 		PlayFunction.BindUFunction(this, "PlayAttackAnimation");
 		FinishFunction.BindUFunction(this, "FinishAttackAnimation");
 		AttackAnimationTimeline->AddInterpFloat(AttackAnimationFloatCurve, PlayFunction);
-		//AttackAnimationTimeline->SetTimelineFinishedFunc(FinishAttackAnimation);
 
 		AttackAnimationTimeline->RegisterComponent();
 	}
@@ -108,33 +107,34 @@ void AEntity_Base::BeginPlay()
 	//	EntityDataWidgetComponent->DestroyComponent();
 	//}
 
+
 	// Set the player's skills here instead of the Entity_Player.cpp
-	if (Cast<AEntity_Player>(this)) {
-		// Spawn a SkillsFunctionLibrary actor for this entity
-		if (SkillsFunctionLibrary_Class && !SkillsFunctionLibrary_Reference) {
-			FActorSpawnParameters SpawnInfo;
+	//if (Cast<AEntity_Player>(this)) {
+	//	// Spawn a SkillsFunctionLibrary actor for this entity
+	//	if (SkillsFunctionLibrary_Class && !SkillsFunctionLibrary_Reference) {
+	//		FActorSpawnParameters SpawnInfo;
 
-			SkillsFunctionLibrary_Reference = GetWorld()->SpawnActor<AFunctionLibrary_Skills>(SkillsFunctionLibrary_Class, FVector::ZeroVector, FRotator::ZeroRotator, SpawnInfo);
+	//		SkillsFunctionLibrary_Reference = GetWorld()->SpawnActor<AFunctionLibrary_Skills>(SkillsFunctionLibrary_Class, FVector::ZeroVector, FRotator::ZeroRotator, SpawnInfo);
 
-			if (SkillsFunctionLibrary_Reference->IsValidLowLevel()) {
-				SkillsFunctionLibrary_Reference->InitializeSkills();
-				SkillsFunctionLibrary_Reference->LinkedEntity = this;
+	//		if (SkillsFunctionLibrary_Reference->IsValidLowLevel()) {
+	//			SkillsFunctionLibrary_Reference->InitializeSkills();
+	//			SkillsFunctionLibrary_Reference->LinkedEntity = this;
 
-				if (SkillsFunctionLibrary_Reference->SkillDataTable_Reference) {
+	//			if (SkillsFunctionLibrary_Reference->SkillDataTable_Reference) {
 
-					FString ContextString;
-						TArray<FName> RowNames = SkillsFunctionLibrary_Reference->SkillDataTable_Reference->GetRowNames();
+	//				FString ContextString;
+	//					TArray<FName> RowNames = SkillsFunctionLibrary_Reference->SkillDataTable_Reference->GetRowNames();
 
-						for (auto& Row : SkillsFunctionLibrary_Reference->SkillDataTable_Reference->GetRowMap()) {
-							F_Skill_Base* Skill = (F_Skill_Base*)(Row.Value);
-								KnownSkills.Add(*Skill);
-						}
+	//					for (auto& Row : SkillsFunctionLibrary_Reference->SkillDataTable_Reference->GetRowMap()) {
+	//						F_Skill_Base* Skill = (F_Skill_Base*)(Row.Value);
+	//							KnownSkills.Add(*Skill);
+	//					}
 
-					CalculateTotalStats();
-				}
-			}
-		}
-	}
+	//				CalculateTotalStats();
+	//			}
+	//		}
+	//	}
+	//}
 }
 
 // Called every frame

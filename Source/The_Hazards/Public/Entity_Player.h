@@ -130,9 +130,6 @@ public:
 
 // Technical Variables
 // --------------------------------------------------
-	//UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Technical Variables")
-	//ABaseClass_PlayerController* LocalPlayerControllerReference;
-
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Technical Variables")
 	FRotator PlayerRotationTowardsMouseValue;
 
@@ -147,9 +144,6 @@ public:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Technical Variables")
 	bool LockMenuButtonActions;
-
-	//UPROPERTY()
-	//FTimerHandle ClearLoadingScreenTimerHandle;
 	
 // Functions
 // --------------------------------------------------
@@ -170,9 +164,6 @@ public:
 	void MoveLeftRight(float AxisValue);
 
 // ------------------------- Menus and Pause Screens
-	//UFUNCTION()
-	//void OpenMenuWidget(E_MenuWidgetTypes MenuType);
-
 	UFUNCTION()
 	void OpenPauseMenu();
 
@@ -203,12 +194,6 @@ public:
 
 	UFUNCTION()
 	void UpdateStatusEffectWidgets();
-
-	//UFUNCTION()
-	//void ClearLoadingScreenTimer();
-
-	//UFUNCTION()
-	//void ClearLoadingScreenExecute();
 
 // ------------------------- Non-Player Characters
 	UFUNCTION()
