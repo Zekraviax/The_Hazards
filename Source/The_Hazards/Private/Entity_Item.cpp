@@ -13,9 +13,6 @@ AEntity_Item::AEntity_Item()
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
-	//CubeMesh->SetSimulatePhysics(true);
-	//CubeMesh->SetEnableGravity(true);
-
 	// Construct actor components
 	//BoxComponent = CreateDefaultSubobject<UBoxComponent>("BoxComponent");
 	CubeMesh = CreateDefaultSubobject<UStaticMeshComponent>("CubeMesh");
@@ -34,6 +31,13 @@ void AEntity_Item::BeginPlay()
 {
 	//CubeMesh->SetSimulatePhysics(true);
 	//CubeMesh->SetEnableGravity(true);
+}
+
+
+// Called every frame
+void AEntity_Item::Tick(float DeltaTime)
+{
+	Super::Tick(DeltaTime);
 }
 
 
