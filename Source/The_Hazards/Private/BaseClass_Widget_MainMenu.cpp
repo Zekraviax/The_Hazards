@@ -36,7 +36,7 @@ void UBaseClass_Widget_MainMenu::NewGame()
 	}
 
 	// Load first level
-	UGameplayStatics::LoadStreamLevel(GetWorld(), "TestTwo", true, true, LatentActionInfo);
+	UGameplayStatics::LoadStreamLevel(GetWorld(), "Greybox1", true, true, LatentActionInfo);
 
 	// Set main menu mode
 	Cast<ABaseClass_PlayerController>(GetWorld()->GetFirstPlayerController())->MainMenuMode = false;
