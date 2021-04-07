@@ -23,10 +23,7 @@
 
 // Forward Declarations
 class ABaseClass_PlayerController;
-class ABaseClass_MainMenuController;
 class AEntity_NPC;
-class UBaseClass_Widget_DevMenu;
-
 
 // Exclusive enum
 UENUM(BlueprintType)
@@ -115,21 +112,17 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Widgets")
 	TSubclassOf<UBaseClass_Widget_SaveLoad> SaveLoad_Class;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Widgets")
-	TSubclassOf<UBaseClass_Widget_DevMenu> DevMenu_Class;
-
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Widgets")
 	TSubclassOf<UUserWidget> CurrentOpenMenuWidget_Class;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Widgets")
 	UUserWidget* CurrentOpenMenuWidget;
 
-// ------------------------- References
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "References")
-	ABaseClass_PlayerController* Player_Controller_Reference;
-
 // Technical Variables
 // --------------------------------------------------
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Technical Variables")
+	ABaseClass_PlayerController* LocalPlayerControllerReference;
+
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Technical Variables")
 	FRotator PlayerRotationTowardsMouseValue;
 
@@ -142,15 +135,10 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Technical Variables")
 	AEntity_NPC* ConversingActor;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Technical Variables")
-	bool LockMenuButtonActions;
-	
 // Functions
 // --------------------------------------------------
 
 // ------------------------- BeginPlay
-	UFUNCTION(BlueprintCallable)
-	void ManualBeginPlay();
 
 // ------------------------- Tick
 	UFUNCTION()
@@ -164,6 +152,9 @@ public:
 	void MoveLeftRight(float AxisValue);
 
 // ------------------------- Menus and Pause Screens
+	//UFUNCTION()
+	//void OpenMenuWidget(E_MenuWidgetTypes MenuType);
+
 	UFUNCTION()
 	void OpenPauseMenu();
 
@@ -178,15 +169,6 @@ public:
 
 	UFUNCTION()
 	void OpenSkillTree();
-
-	UFUNCTION(BlueprintCallable)
-	void OpenItemCraftMenu();
-
-	UFUNCTION()
-	void OpenDevMenu();
-
-	UFUNCTION(BlueprintCallable)
-	void OpenMainMenu();
 
 // ------------------------- Widgets
 	UFUNCTION()

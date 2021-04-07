@@ -28,8 +28,6 @@ void USubWidget_KeyRebindButton::EnableRebindKeyMode()
 {
 	if (KeybindsMenuReference) {
 		if (KeybindsMenuReference->PlayerReference) {
-			KeybindsMenuReference->PlayerReference->LockMenuButtonActions = true;
-
 			KeybindsMenuReference->bIsFocusable = true;
 			Cast<ABaseClass_PlayerController>(KeybindsMenuReference->PlayerReference->GetController())->SetInputMode(FInputModeUIOnly());
 

@@ -1,17 +1,6 @@
 #include "BaseClass_Widget_MainMenu.h"
 
 #include "Entity_Player_MainMenu.h"
-#include "Entity_Player.h"
-#include "BaseClass_PlayerController.h"
-#include "BaseClass_MainMenuController.h"
-#include "BaseClass_Widget_DevMenu.h"
-#include "TheHazards_PlayerState.h"
-#include "GameFramework/PlayerStart.h"
-#include "GameFramework/Controller.h"
-#include "GameFramework/Actor.h"
-#include "Engine/EngineTypes.h"
-#include "Engine/World.h"
-#include "TimerManager.h"
 
 
 void UBaseClass_Widget_MainMenu::ResumeGame()
@@ -22,11 +11,8 @@ void UBaseClass_Widget_MainMenu::ResumeGame()
 
 void UBaseClass_Widget_MainMenu::NewGame()
 {
-	FTimerHandle TimerHandle;
-	FLatentActionInfo LatentActionInfo;
-	FActorSpawnParameters ActorSpawnParameters;
-	TArray<AActor*> PlayerStartActors, PlayerMainMenuActors;
 
+<<<<<<< Updated upstream
 	ActorSpawnParameters.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
 
 	// Add loading screen to player viewport
@@ -45,81 +31,32 @@ void UBaseClass_Widget_MainMenu::NewGame()
 
 	// Begin Minimum time delay for displaying the loading screen
 	GetWorld()->GetTimerManager().SetTimer(TimerHandle, this, &UBaseClass_Widget_MainMenu::ClearLoadingScreen, 0.2f);
+=======
+>>>>>>> Stashed changes
 }
-
-
-void UBaseClass_Widget_MainMenu::ClearLoadingScreen()
-{
-	// Spawn Player
-	TArray<AActor*> PlayerStartActors;
-	FActorSpawnParameters ActorSpawnParameters;
-
-	if (Player_Entity_Class && GetWorld()) {
-		while (PlayerStartActors.Num() <= 0) {
-			UGameplayStatics::GetAllActorsOfClass(GetWorld(), APlayerStart::StaticClass(), PlayerStartActors);
-		}
-
-		for (int i = 0; i < PlayerStartActors.Num(); i++) {
-			if (PlayerStartActors.IsValidIndex(i)) {
-				ABaseClass_PlayerController* PlayerControllerRef = Cast<ABaseClass_PlayerController>(UGameplayStatics::GetPlayerController(GetWorld(), 0));
-
-				if (PlayerControllerRef) {
-					Player_Entity_Reference = GetWorld()->SpawnActor<AEntity_Player>(Player_Entity_Class, PlayerStartActors[i]->GetActorLocation(), PlayerStartActors[i]->GetActorRotation(), ActorSpawnParameters);
-					PlayerControllerRef->Possess(Player_Entity_Reference);
-					
-					// Set default stats
-					Player_Entity_Reference->LevelStats = F_BaseStats_Struct(100.f, 1.f, 10.f, 100.f, 1.f, 10.f, 10.f, 10.f, 10.f, 10.f, 10.f, 300.f, 10.f, 10.f, 10.f);
-					Player_Entity_Reference->CalculateTotalStats();
-
-					Player_Entity_Reference->Player_Controller_Reference = PlayerControllerRef;
-					Player_Entity_Reference->ManualBeginPlay();
-				}
-
-				break;
-			}
-		}
-	}
-
-	// Clear Loading Screens
-	for (TObjectIterator<UBaseClass_Widget_LoadScreen> Itr; Itr; ++Itr) {
-		UBaseClass_Widget_LoadScreen* FoundWidget = *Itr;
-		
-		if (FoundWidget->IsValidLowLevel())
-			FoundWidget->RemoveFromParent();
-	}
-}
-
 
 
 void UBaseClass_Widget_MainMenu::OpenLoadGameMenu()
 {
-	if (!Player_Controller_Reference && GetWorld()) {
-		Player_Controller_Reference = Cast<ABaseClass_PlayerController>(GetWorld()->GetFirstPlayerController());
-	}
-
-	if (SaveLoad_Class && Player_Controller_Reference) {
+	if (SaveLoad_Class && PlayerReference) {
 		CurrentOpenMenuWidget = CreateWidget<UBaseClass_Widget_SaveLoad>(GetWorld(), SaveLoad_Class);
-		Cast<UBaseClass_Widget_SaveLoad>(CurrentOpenMenuWidget)->GetSaveFilesPartOne(false);
 		CurrentOpenMenuWidget->AddToViewport();
 
-		Player_Controller_Reference->CurrentOpenMenuWidget = CurrentOpenMenuWidget;
-		Player_Controller_Reference->CurrentOpenMenuWidget_Class = SaveLoad_Class;
+		PlayerReference->CurrentOpenMenuWidget = CurrentOpenMenuWidget;
+		PlayerReference->CurrentOpenMenuWidget_Class = SaveLoad_Class;
 	}
 }
 
 
 void UBaseClass_Widget_MainMenu::OpenOptionsMenu()
 {
-	if (!Player_Controller_Reference->IsValidLowLevel() && GetWorld()->IsValidLowLevel()) {
-		Player_Controller_Reference = Cast<ABaseClass_PlayerController>(GetWorld()->GetFirstPlayerController());
-	}
-
-	if (Options_Class && Player_Controller_Reference) {
+	if (Options_Class && PlayerReference) {
 		CurrentOpenMenuWidget = CreateWidget<UBaseClass_Widget_Options>(GetWorld(), Options_Class);
+		Cast<UBaseClass_Widget_Options>(CurrentOpenMenuWidget)->PlayerReference = PlayerReference;
 		CurrentOpenMenuWidget->AddToViewport();
 
-		Player_Controller_Reference->CurrentOpenMenuWidget = CurrentOpenMenuWidget;
-		Player_Controller_Reference->CurrentOpenMenuWidget_Class = Options_Class;
+		PlayerReference->CurrentOpenMenuWidget = CurrentOpenMenuWidget;
+		PlayerReference->CurrentOpenMenuWidget_Class = Options_Class;
 	}
 }
 

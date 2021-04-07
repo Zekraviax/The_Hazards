@@ -16,7 +16,10 @@ void USubWidget_KeybindsMenu::OpenWidget()
 	for (TObjectIterator<USubWidget_KeyRebindButton> Itr; Itr; ++Itr) {
 		USubWidget_KeyRebindButton *FoundWidget = *Itr;
 
+		//if (!FoundWidget->KeybindsMenuReference) {
+			//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Orange, FString::Printf(TEXT("Found KeyRebindButton")));
 		FoundWidget->KeybindsMenuReference = this;
+		//}
 
 		if (FoundWidget->KeyName->IsValidLowLevel()) {
 			if (FoundWidget->IsAxisMapping) {
@@ -56,8 +59,6 @@ void USubWidget_KeybindsMenu::OpenWidget()
 void USubWidget_KeybindsMenu::CloseWidget()
 {
 	if (PlayerReference && Options_Class) {
-		PlayerReference->LockMenuButtonActions = false;
-
 		PlayerReference->CurrentOpenMenuWidget->RemoveFromParent();
 		PlayerReference->CurrentOpenMenuWidget = NULL;
 		PlayerReference->CurrentOpenMenuWidget_Class = NULL;
@@ -81,7 +82,7 @@ void USubWidget_KeybindsMenu::RebindAxisKey(FInputAxisKeyMapping AxisKey)
 	TArray<FInputAxisKeyMapping> AxisKeybindsArray = UGameplayStatics::GetPlayerController(GetWorld(), 0)->PlayerInput->GetKeysForAxis(KeyName);
 
 	if (InputSettings) {
-		TArray<FInputAxisKeyMapping> AxisMappings = InputSettings->GetAxisMappings();
+		TArray<FInputAxisKeyMapping>& AxisMappings = InputSettings->AxisMappings;
 		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Orange, FString::Printf(TEXT("Rebind Axis Key")));
 
 		for (FInputAxisKeyMapping& Key : AxisMappings) {
@@ -149,7 +150,7 @@ void USubWidget_KeybindsMenu::RebindActionKey(FInputActionKeyMapping ActionKey)
 	TArray<FInputActionKeyMapping> ActionKeybindsArray = UGameplayStatics::GetPlayerController(GetWorld(), 0)->PlayerInput->GetKeysForAction(KeyName);
 
 	if (InputSettings) {
-		TArray<FInputActionKeyMapping> ActionMappings = InputSettings->GetActionMappings();
+		TArray<FInputActionKeyMapping>& ActionMappings = InputSettings->ActionMappings;
 		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Orange, FString::Printf(TEXT("Rebind Action Key")));
 
 		for (FInputActionKeyMapping& Key : ActionMappings) {
@@ -237,14 +238,7 @@ void USubWidget_KeybindsMenu::RebindAnyKey(FKey Key)
 void USubWidget_KeybindsMenu::CancelRebindKey()
 {
 	//this->bIsFocusable = false;
-
-	//if (PlayerReference->LockMenuButtonActions) {
-	//	PlayerReference->LockMenuButtonActions = false;
-	//}
-
 	Cast<ABaseClass_PlayerController>(PlayerReference->GetController())->SetInputMode(FInputModeGameOnly());
-
-	//PlayerReference->LockMenuButtonActions = false;
 }
 
 
@@ -256,6 +250,4 @@ void USubWidget_KeybindsMenu::ApplyReboundKeys()
 	if (ApplyButton->bIsEnabled) {
 		ApplyButton->SetIsEnabled(false);
 	}
-
-	PlayerReference->LockMenuButtonActions = false;
 }

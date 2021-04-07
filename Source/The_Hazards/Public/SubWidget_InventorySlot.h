@@ -94,7 +94,7 @@ public:
 	void OnMouseUp();
 
 	UFUNCTION(BlueprintCallable)
-	void OnMouseHoverBegin(FVector2D ScreenCoordinates);
+	void OnMouseHoverBegin(FVector2D Coordinates);
 
 	UFUNCTION(BlueprintCallable)
 	void OnMouseHoverEnd();

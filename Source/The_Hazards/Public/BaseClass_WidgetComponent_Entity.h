@@ -1,3 +1,5 @@
+// Fill out your copyright notice in the Description page of Project Settings.
+
 #pragma once
 
 #include "CoreMinimal.h"
@@ -8,13 +10,10 @@
 #include "Components/CanvasPanel.h"
 #include "Runtime/UMG/Public/Blueprint/WidgetTree.h"
 #include "Runtime/Core/Public/Math/UnrealMathUtility.h"
-
 #include "BaseClass_WidgetComponent_Entity.generated.h"
-
 
 //Forward Declarations
 class AEntity_Base;
-
 
 UCLASS()
 class THE_HAZARDS_API UBaseClass_WidgetComponent_Entity : public UUserWidget

@@ -1,7 +1,6 @@
 #include "BaseClass_Widget_Options.h"
 
 #include "Entity_Player_MainMenu.h"
-#include "BaseClass_PlayerController.h"
 #include "SaveFile_Settings.h"
 
 
@@ -80,46 +79,25 @@ void UBaseClass_Widget_Options::OpenKeybindsMenu()
 
 void UBaseClass_Widget_Options::CloseMenu()
 {
-	if (!Player_Controller_Reference && GetWorld()) {
-		Player_Controller_Reference = Cast<ABaseClass_PlayerController>(GetWorld()->GetFirstPlayerController());
-	}
+	if (PlayerReference) {
+		PlayerReference->CurrentOpenMenuWidget->RemoveFromParent();
+		PlayerReference->CurrentOpenMenuWidget = NULL;
+		PlayerReference->CurrentOpenMenuWidget_Class = NULL;
 
-	if (Player_Controller_Reference) {
-		Player_Controller_Reference->CurrentOpenMenuWidget->RemoveFromParent();
-		Player_Controller_Reference->CurrentOpenMenuWidget = NULL;
-		Player_Controller_Reference->CurrentOpenMenuWidget_Class = NULL;
-	}
+		// Chcek if the player is on the main menu level
+		//GEngine->AddOnScreenDebugMessage(-1, 15.f, FColor::Yellow, FString::Printf(TEXT("Level: %s"), *PlayerReference->GetLevel()->GetName()));
 
-	if (PauseMenu_Class) {
-		if (!Player_Controller_Reference->MainMenuMode) {
+		//if (PlayerReference->GetLevel()->GetName() != "MainMenu" && PauseMenu_Class) {
+		if (PauseMenu_Class) {
+			//UGameplayStatics::SetGamePaused(GetWorld(), false);
 			CurrentOpenMenuWidget = CreateWidget<UBaseClass_Widget_PauseMenu>(GetWorld(), PauseMenu_Class);
 			Cast<UBaseClass_Widget_PauseMenu>(CurrentOpenMenuWidget)->LocalPlayerReference = PlayerReference;
 			CurrentOpenMenuWidget->AddToViewport();
 
-			Player_Controller_Reference->CurrentOpenMenuWidget = CurrentOpenMenuWidget;
-			Player_Controller_Reference->CurrentOpenMenuWidget_Class = PauseMenu_Class;
+			PlayerReference->CurrentOpenMenuWidget = CurrentOpenMenuWidget;
+			PlayerReference->CurrentOpenMenuWidget_Class = PauseMenu_Class;
 		}
+
+		// Save Settings
 	}
-
-	//if (PlayerReference) {
-	//	PlayerReference->CurrentOpenMenuWidget->RemoveFromParent();
-	//	PlayerReference->CurrentOpenMenuWidget = NULL;
-	//	PlayerReference->CurrentOpenMenuWidget_Class = NULL;
-
-	//	// Chcek if the player is on the main menu level
-	//	//GEngine->AddOnScreenDebugMessage(-1, 15.f, FColor::Yellow, FString::Printf(TEXT("Level: %s"), *PlayerReference->GetLevel()->GetName()));
-
-	//	//if (PlayerReference->GetLevel()->GetName() != "MainMenu" && PauseMenu_Class) {
-	//	if (PauseMenu_Class) {
-	//		//UGameplayStatics::SetGamePaused(GetWorld(), false);
-	//		CurrentOpenMenuWidget = CreateWidget<UBaseClass_Widget_PauseMenu>(GetWorld(), PauseMenu_Class);
-	//		Cast<UBaseClass_Widget_PauseMenu>(CurrentOpenMenuWidget)->LocalPlayerReference = PlayerReference;
-	//		CurrentOpenMenuWidget->AddToViewport();
-
-	//		PlayerReference->CurrentOpenMenuWidget = CurrentOpenMenuWidget;
-	//		PlayerReference->CurrentOpenMenuWidget_Class = PauseMenu_Class;
-	//	}
-
-	//	// Save Settings
-	//}
 }

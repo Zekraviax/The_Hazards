@@ -31,7 +31,7 @@ void USubWidget_InventorySlot::UpdateSlot()
 
 void USubWidget_InventorySlot::OnMouseDown()
 {
-	if (ItemDrag_Class) {
+	if (ItemDrag_Class && ItemStruct.Amount > 0) {
 		ItemDrag_Reference = CreateWidget<USubWidget_ItemDrag>(GetWorld(), ItemDrag_Class);
 		ItemDrag_Reference->SlotReference = this;
 		ItemDrag_Reference->ItemStruct = ItemStruct;
@@ -162,42 +162,42 @@ void USubWidget_InventorySlot::OnMouseUp()
 
 }
 
-void USubWidget_InventorySlot::OnMouseHoverBegin(FVector2D ScreenCoordinates)
+void USubWidget_InventorySlot::OnMouseHoverBegin(FVector2D Coordinates)
 {
-	float PosX, PosY, ViewportScaledValueX, ViewportScaledValueY = 0;
-	//float PosY = 0;
+	float PosX, PosY, ViewportScaledValueX, ViewportScaledValueY;
 	int32 ViewportSizeX, ViewportSizeY;
 
 	ItemDescription_Reference = CreateWidget<UBaseClass_Widget_OnHoverDescription>(GetWorld(), ItemDescription_Class);
 
 	UGameplayStatics::GetPlayerController(GetWorld(), 0)->GetViewportSize(ViewportSizeX, ViewportSizeY);
+
 	ViewportScaledValueX = (1920 / ViewportSizeX);
 	ViewportScaledValueY = (1080 / ViewportSizeY);
 
 	if (SlotType == E_InventorySlot_SlotType::E_EquipmentSlot) {
-		PosX = (ScreenCoordinates.X * ViewportScaledValueX) + 25;
-		PosY = (ScreenCoordinates.Y * ViewportScaledValueY) - 100;
+		PosX = (Coordinates.X * ViewportScaledValueX) + 5;
+		PosY = (Coordinates.Y * ViewportScaledValueY) + 5;
 	}
 	else if (SlotType == E_InventorySlot_SlotType::E_StandardSlot) {
-		PosX = (ScreenCoordinates.X * ViewportScaledValueX) - 525;
-		PosY = (ScreenCoordinates.Y * ViewportScaledValueY) - 100;
+		PosX = (Coordinates.X * ViewportScaledValueX) - 555;
+		PosY = (Coordinates.Y * ViewportScaledValueY) + 5;
 	}
 
-	//if (PosY > 405)
-	//	PosY = 405;
+	if (PosY > 405)
+		PosY = 405;
 
-	//if (ItemStruct.Amount > 0 && ItemDescription_Class) {
+	if (ItemStruct.Amount > 0 && ItemDescription_Class) {
 		ItemDescription_Reference->SetPositionInViewport(FVector2D(PosX + 0.f, PosY + 0.f), false);
 		ItemDescription_Reference->ItemReference = ItemStruct;
 		ItemDescription_Reference->SetText(E_Description_Supertypes::E_Item);
 		ItemDescription_Reference->AddToViewport();
-	//}
-	//else {
-	//	if (ItemDescription_Reference) {
-	//		ItemDescription_Reference->RemoveFromParent();
-	//		ItemDescription_Reference = NULL;
-	//	}
-	//}
+	}
+	else {
+		if (ItemDescription_Reference) {
+			ItemDescription_Reference->RemoveFromParent();
+			ItemDescription_Reference = NULL;
+		}
+	}
 }
 
 void USubWidget_InventorySlot::OnMouseHoverEnd()

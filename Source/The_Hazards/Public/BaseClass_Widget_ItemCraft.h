@@ -11,7 +11,6 @@
 
 // Forward Declarations
 class AEntity_Player;
-class USubWidget_ItemCraftInventoryItem;
 
 
 UCLASS()
@@ -30,13 +29,6 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components", meta = (BindWidget))
 	UScrollBox* InventoryScrollBox;
 
-// ------------------------- Widgets
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Widgets")
-	TSubclassOf<USubWidget_ItemCraftInventoryItem> ItemCraftInventoryWidget_Class;
-
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Widgets")
-	USubWidget_ItemCraftInventoryItem* ItemCraftInventoryWidget_Reference;
-
 // ------------------------- Player
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Player")
 	AEntity_Player* PlayerReference;
@@ -44,11 +36,5 @@ public:
 // Functions
 // --------------------------------------------------
 
-// ------------------------- Widget
-	UFUNCTION()
-	void GetPlayerInventory();
-
-// ------------------------- Mouse
-	UFUNCTION(BlueprintCallable)
-	void OnMouseUp();
+// ------------------------- 
 };

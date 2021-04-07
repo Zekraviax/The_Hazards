@@ -1,6 +1,5 @@
 #include "BaseClass_WidgetComponent_Entity.h"
 
-
 #include "Entity_Base.h"
 
 
@@ -8,7 +7,6 @@ void UBaseClass_WidgetComponent_Entity::NativeConstruct()
 {
 	Super::NativeConstruct();
 }
-
 
 void UBaseClass_WidgetComponent_Entity::NativeTick(const FGeometry& MyGeometry, float DeltaTime)
 {

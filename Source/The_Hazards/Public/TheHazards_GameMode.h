@@ -7,11 +7,6 @@
 
 #include "TheHazards_GameMode.generated.h"
 
-// Forward Declarations
-class USaveFile_Slot;
-class UBaseClass_Widget_LoadScreen;
-
-
 // --------------------------------------------------
 
 // Enums
@@ -112,7 +107,7 @@ enum class E_Skill_ActivationCondition : uint8
 	E_OnDamageTaken,
 };
 
-//------------------------- Normal Attacks
+//------------------------- Special Attacks
 UENUM(BlueprintType)
 enum class E_Weapon_AttackStyles : uint8
 {
@@ -917,21 +912,4 @@ public:
 // ------------------------- Variables
 	UPROPERTY()
 	F_Settings_VolumeSettings VolumeSettings;
-
-// ------------------------- Widgets
-	//UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Widgets")
-	//TSubclassOf<UBaseClass_Widget_LoadScreen> LoadScreenWidget_Class;
-
-	//UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Widgets")
-	//UBaseClass_Widget_LoadScreen* LoadScreenWidget_Reference;
-
-// Functions
-// --------------------------------------------------
-
-// ------------------------- Save/Load
-	//UFUNCTION()
-	//void LoadSaveFile(USaveFile_Slot* SlotToLoad);
-
-	//UFUNCTION()
-	//void LoadingScreenDelayFunction();
 };

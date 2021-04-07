@@ -15,7 +15,6 @@
 // Forward Declarations
 class AEntity_Player_MainMenu;
 class AEntity_Player;
-class ABaseClass_PlayerController;
 class USaveFile_Settings;
 
 
@@ -56,10 +55,8 @@ public:
 
 // ------------------------- References
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "References")
+	//AActor* PlayerReference;
 	AEntity_Player* PlayerReference;
-
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "References")
-	ABaseClass_PlayerController* Player_Controller_Reference;
 
 // Functions
 // --------------------------------------------------
