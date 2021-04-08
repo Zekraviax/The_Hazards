@@ -1,5 +1,9 @@
 #include "FunctionLibrary_SpecialAttacks.h"
 
+#include "TheHazards_GameMode.h"
+#include "SpecialAttackActor_Base.h"
+#include "Entity_Base.h"
+
 
 // Define Special Attack Indices
 #define ASSASSINATE 1
@@ -52,9 +56,9 @@ void AFunctionLibrary_SpecialAttacks::Swing_Around()
 // Call Special Attacks
 void AFunctionLibrary_SpecialAttacks::CallSpecialAttackFunction(E_Weapon_SpecialAttacks SpecialAttack)
 {
-	//uint8 SpecialAttackEnumToByte = (uint8)SpecialAttack;
+	uint8 SpecialAttackEnumToByte = (uint8)SpecialAttack;
 
-	//(this->* (SpecialAttackFunctions[SpecialAttackEnumToByte]))();
+	(this->* (SpecialAttackFunctions[SpecialAttackEnumToByte]))();
 
 	FActorSpawnParameters SpawnInfo;
 	FAttachmentTransformRules AttachmentRules(EAttachmentRule::KeepRelative, EAttachmentRule::KeepRelative, EAttachmentRule::KeepWorld, true);

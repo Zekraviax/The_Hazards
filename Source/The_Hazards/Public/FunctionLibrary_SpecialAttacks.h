@@ -4,6 +4,7 @@
 #include "GameFramework/Actor.h"
 
 #include "SpecialAttackActor_Base.h"
+#include "TheHazards_GameMode.h"
 
 #include "FunctionLibrary_SpecialAttacks.generated.h"
 

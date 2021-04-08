@@ -1,5 +1,7 @@
 #include "Entity_Item.h"
 
+#include "Entity_Player.h"
+
 
 // Functions
 // --------------------------------------------------
