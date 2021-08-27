@@ -25,12 +25,16 @@ EBTNodeResult::Type UBTTask_Feral_ChooseAttack::ExecuteTask(UBehaviorTreeCompone
 		AttackNamesArray.Add(itr->Key);
 		AttackRangesArray.Add(itr->Value);
 	}
-	ChosenAttackName = AttackNamesArray[FMath::RandRange(0, AttackNamesArray.Num() - 1)];
-	ChosenAttackRange = AttackRangesArray[FMath::RandRange(0, AttackRangesArray.Num() - 1)];
 
-	// Set blackboard values
-	OwnerComp.GetBlackboardComponent()->SetValueAsString("CurrentAttackName", ChosenAttackName);
-	OwnerComp.GetBlackboardComponent()->SetValueAsInt("CurrentAttackRange", ChosenAttackRange);
+	if (AttackNamesArray.Num() > 0) {
+		ChosenAttackName = AttackNamesArray[FMath::RandRange(0, AttackNamesArray.Num() - 1)];
+		ChosenAttackRange = AttackRangesArray[FMath::RandRange(0, AttackRangesArray.Num() - 1)];
+
+		// Set blackboard values
+		OwnerComp.GetBlackboardComponent()->SetValueAsString("CurrentAttackName", ChosenAttackName);
+		OwnerComp.GetBlackboardComponent()->SetValueAsInt("CurrentAttackRange", ChosenAttackRange);
+	}
+
 
 	// End
 	//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, TEXT("Successfully ran BTTask_Feral_ChooseAttack"));
