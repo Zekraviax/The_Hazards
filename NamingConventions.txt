@@ -1,0 +1,24 @@
+For All: CamelCase
+
+
+For Files:
+*GameFileType**FileName*
+
+Game File Types Are:
+DataTable (or Dt):
+	* UE's datatables
+	* Spreadsheets
+Entity
+	* Character
+	* Pawn
+	* Actor
+Library
+	* 
+SubWidget
+	* UE4's widgets
+Widget
+	* UE4's widgets
+
+Game File Types do not include art assets
+such as music files or textures.
+
