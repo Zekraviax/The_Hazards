@@ -8,7 +8,8 @@ public class The_HazardsEditorTarget : TargetRules
 	public The_HazardsEditorTarget(TargetInfo Target) : base(Target)
 	{
 		Type = TargetType.Editor;
+        DefaultBuildSettings = BuildSettingsVersion.V2;
 
-		ExtraModuleNames.AddRange( new string[] { "The_Hazards" } );
+        ExtraModuleNames.AddRange( new string[] { "The_Hazards" } );
 	}
 }

@@ -82,10 +82,10 @@ void USubWidget_KeybindsMenu::RebindAxisKey(FInputAxisKeyMapping AxisKey)
 	TArray<FInputAxisKeyMapping> AxisKeybindsArray = UGameplayStatics::GetPlayerController(GetWorld(), 0)->PlayerInput->GetKeysForAxis(KeyName);
 
 	if (InputSettings) {
-		TArray<FInputAxisKeyMapping>& AxisMappings = InputSettings->AxisMappings;
+		TArray<FInputAxisKeyMapping> AxisMappings = InputSettings->GetAxisMappings();
 		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Orange, FString::Printf(TEXT("Rebind Axis Key")));
 
-		for (FInputAxisKeyMapping& Key : AxisMappings) {
+		for (FInputAxisKeyMapping Key : AxisMappings) {
 			if (KeyIsPrimary && AxisKeybindsArray.IsValidIndex(0)) {
 				if (Key.AxisName.ToString() == AxisKeybindsArray[0].AxisName.ToString()) {
 					//GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Green, FString::Printf(TEXT("Found %s"), *Key.AxisName.ToString()));
@@ -150,10 +150,10 @@ void USubWidget_KeybindsMenu::RebindActionKey(FInputActionKeyMapping ActionKey)
 	TArray<FInputActionKeyMapping> ActionKeybindsArray = UGameplayStatics::GetPlayerController(GetWorld(), 0)->PlayerInput->GetKeysForAction(KeyName);
 
 	if (InputSettings) {
-		TArray<FInputActionKeyMapping>& ActionMappings = InputSettings->ActionMappings;
+		TArray<FInputActionKeyMapping> ActionMappings = InputSettings->GetActionMappings();
 		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Orange, FString::Printf(TEXT("Rebind Action Key")));
 
-		for (FInputActionKeyMapping& Key : ActionMappings) {
+		for (FInputActionKeyMapping Key : ActionMappings) {
 			if (KeyIsPrimary && ActionKeybindsArray.IsValidIndex(0)) {
 				if (Key.ActionName.ToString() == ActionKeybindsArray[0].ActionName.ToString()) {
 					//GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Green, FString::Printf(TEXT("Found %s"), *Key.ActionName.ToString()));
