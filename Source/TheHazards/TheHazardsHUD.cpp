@@ -25,6 +25,8 @@ void ATheHazardsHUD::DrawHUD()
 	const FVector2D Center(Canvas->ClipX * 0.5f, Canvas->ClipY * 0.5f);
 
 	// offset by half the texture's dimensions so that the center of the texture aligns with the center of the Canvas
+	CrosshairPosition = FVector2D(Center.X, Center.Y + 20.f);
+
 	const FVector2D CrosshairDrawPosition( (Center.X),
 										   (Center.Y + 20.0f));
 

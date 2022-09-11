@@ -5,6 +5,7 @@
 #include "Camera/CameraComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "Components/InputComponent.h"
+#include "DrawDebugHelpers.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/InputSettings.h"
 #include "Kismet/GameplayStatics.h"
@@ -144,7 +145,7 @@ void AEntityBaseCharacter::Tick(float DeltaTime)
 		));
 	}
 
-	// Drain AP if sprinting
+	// To-Do: Drain AP if sprinting
 }
 
 
@@ -155,9 +156,39 @@ void AEntityBaseCharacter::OnFire()
 	// FHitResult will store all data returned by our line trace
 	FHitResult Hit;
 
-	// Draw a line starting from this entity's position and finishing 1000cm ahead of it
-	FVector TraceStart = GetActorLocation();
-	FVector TraceEnd = GetActorLocation() + GetActorForwardVector() * 1000.0f;
+	// Use QueryParams to prevent this entity from being hit by it's own line trace
+	FCollisionQueryParams QueryParams;
+	QueryParams.AddIgnoredActor(this);
+
+	// Draw a line starting from this entity's gun muzzle position and finishing 1000cm ahead of it
+	FVector TraceStart = ((FP_MuzzleLocation != nullptr) ? FP_MuzzleLocation->GetComponentLocation() : GetActorLocation()) + GetControlRotation().RotateVector(GunOffset);
+	FVector TraceEnd = TraceStart + FirstPersonCameraComponent->GetForwardVector() * 1000.0f;
+
+	/*
+	// Player controller needed to deproject crosshair position to world
+	APlayerController* PlayerController = UGameplayStatics::GetPlayerController(this, 0);
+	FVector CrosshairWorldLocation, CrosshairWorldDirection;
+
+	// Draw a line starting from this entity's gun muzzle position and finishing 1000cm ahead of it
+	//FVector TraceStart = ((FP_MuzzleLocation != nullptr) ? FP_MuzzleLocation->GetComponentLocation() : GetActorLocation()) + GetControlRotation().RotateVector(GunOffset);
+	FVector TraceStart = FirstPersonCameraComponent->GetComponentLocation();
+	FVector TraceEnd = FirstPersonCameraComponent->GetComponentLocation() + UKismetMathLibrary::GetForwardVector(FirstPersonCameraComponent->GetComponentRotation()) * 1000.0f;
+
+
+	//PlayerController->DeprojectScreenPositionToWorld(Cast<ATheHazardsHUD>(PlayerController->GetHUD())->CrosshairPosition.X, 
+	//	Cast<ATheHazardsHUD>(PlayerController->GetHUD())->CrosshairPosition.Y,
+	//	CrosshairWorldLocation,
+	//	CrosshairWorldDirection);
+
+	//FVector TraceEnd = CrosshairWorldLocation * 1500.f;
+	*/
+
+	// LineTraceSingleByChannel returns the first actor hit within the chosen collision channel
+	GetWorld()->LineTraceSingleByChannel(Hit, TraceStart, TraceEnd, ECollisionChannel::ECC_Pawn);
+
+	// Use DrawDebugLine to show the line trace
+	//DrawDebugLine();
+	DrawDebugLine(GetWorld(), TraceStart, TraceEnd, FColor::Red, false, 2.5f);
 
 
 	// try and fire a projectile
