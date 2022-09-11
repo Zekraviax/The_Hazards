@@ -65,9 +65,17 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Gameplay)
 	float CharacterHeight = 64.f;
 
-	// Used in the tick function to adjust the camera height
+	// Used in changing and reseting the entity's move speed
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Gameplay)
+	float BaseMoveSpeed = 600.f;
+
+	// Used in the tick function to adjust the camera height
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Gameplay)
 	bool IsCrouching = false;
+
+	// Used in the tick function to drain Aura Points
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Gameplay)
+	bool IsSprinting = false;
 
 
 protected:
@@ -97,6 +105,12 @@ protected:
 
 	// On end crouching, return the camera position to normal height
 	void OnCrouchEnd();
+
+	// On begin sprinting, increase the entity's base move speed by 50%
+	void OnSprintBegin();
+
+	// On end sprinting, return the entity's base move speed to normal
+	void OnSprintEnd();
 
 	
 protected:

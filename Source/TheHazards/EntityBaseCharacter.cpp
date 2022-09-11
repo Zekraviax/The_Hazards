@@ -5,6 +5,7 @@
 #include "Camera/CameraComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "Components/InputComponent.h"
+#include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/InputSettings.h"
 #include "Kismet/GameplayStatics.h"
 #include "Kismet/KismetMathLibrary.h"
@@ -101,6 +102,10 @@ void AEntityBaseCharacter::SetupPlayerInputComponent(class UInputComponent* Play
 	// Begin and end crouching
 	PlayerInputComponent->BindAction("Crouch", IE_Pressed, this, &AEntityBaseCharacter::OnCrouchBegin);
 	PlayerInputComponent->BindAction("Crouch", IE_Released, this, &AEntityBaseCharacter::OnCrouchEnd);
+
+	// Begin and end sprinting
+	PlayerInputComponent->BindAction("Sprint", IE_Pressed, this, &AEntityBaseCharacter::OnSprintBegin);
+	PlayerInputComponent->BindAction("Sprint", IE_Released, this, &AEntityBaseCharacter::OnSprintEnd);
 }
 
 
@@ -138,28 +143,42 @@ void AEntityBaseCharacter::Tick(float DeltaTime)
 			LerpValue
 		));
 	}
+
+	// Drain AP if sprinting
 }
 
 
 void AEntityBaseCharacter::OnFire()
 {
+	// Use LineTraces for weapon fire
+
+	// FHitResult will store all data returned by our line trace
+	FHitResult Hit;
+
+	// Draw a line starting from this entity's position and finishing 1000cm ahead of it
+	FVector TraceStart = GetActorLocation();
+	FVector TraceEnd = GetActorLocation() + GetActorForwardVector() * 1000.0f;
+
+
 	// try and fire a projectile
-	if (ProjectileClass != NULL) {
-		UWorld* const World = GetWorld();
+	//if (ProjectileClass != NULL) {
+	//	UWorld* const World = GetWorld();
 
-		if (World != NULL) {
-			const FRotator SpawnRotation = GetControlRotation();
-			// MuzzleOffset is in camera space, so transform it to world space before offsetting from the character location to find the final muzzle position
-			const FVector SpawnLocation = ((FP_MuzzleLocation != nullptr) ? FP_MuzzleLocation->GetComponentLocation() : GetActorLocation()) + SpawnRotation.RotateVector(GunOffset);
+	//	if (World != NULL) {
+	//		const FRotator SpawnRotation = GetControlRotation();
+	//		// MuzzleOffset is in camera space, so transform it to world space before offsetting from the character location to find the final muzzle position
+	//		const FVector SpawnLocation = ((FP_MuzzleLocation != nullptr) ? FP_MuzzleLocation->GetComponentLocation() : GetActorLocation()) + SpawnRotation.RotateVector(GunOffset);
 
-			//Set Spawn Collision Handling Override
-			FActorSpawnParameters ActorSpawnParams;
-			ActorSpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButDontSpawnIfColliding;
+	//		//Set Spawn Collision Handling Override
+	//		FActorSpawnParameters ActorSpawnParams;
+	//		ActorSpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButDontSpawnIfColliding;
 
-			// spawn the projectile at the muzzle
-			World->SpawnActor<ATheHazardsProjectile>(ProjectileClass, SpawnLocation, SpawnRotation, ActorSpawnParams);
-		}
-	}
+	//		// spawn the projectile at the muzzle
+	//		World->SpawnActor<ATheHazardsProjectile>(ProjectileClass, SpawnLocation, SpawnRotation, ActorSpawnParams);
+	//	}
+	//}
+
+	
 
 	// try and play the sound if specified
 	if (FireSound != NULL) {
@@ -214,17 +233,43 @@ void AEntityBaseCharacter::LookUpAtRate(float Rate)
 
 void AEntityBaseCharacter::OnCrouchBegin()
 {
-	//if (!bPressedJump) {
-		UE_LOG(LogTemp, Warning, TEXT("OnCrouchBegin()  /  Player begun crouching"));
+	UE_LOG(LogTemp, Warning, TEXT("OnCrouchBegin()  /  Entity begun crouching"));
 
+	if (!IsSprinting) {
 		IsCrouching = true;
-	//}
+
+		GetCharacterMovement()->MaxWalkSpeed = BaseMoveSpeed * 0.5;
+	}
 }
 
 
 void AEntityBaseCharacter::OnCrouchEnd()
 {
-	UE_LOG(LogTemp, Warning, TEXT("OnCrouchEnd()  /  Player finished crouching"));
+	UE_LOG(LogTemp, Warning, TEXT("OnCrouchEnd()  /  Entity finished crouching"));
 
 	IsCrouching = false;
+
+	GetCharacterMovement()->MaxWalkSpeed = BaseMoveSpeed;
+}
+
+
+void AEntityBaseCharacter::OnSprintBegin()
+{
+	UE_LOG(LogTemp, Warning, TEXT("OnSprintBegin()  /  Entity begun sprinting"));
+
+	if (!IsCrouching) {
+		IsSprinting = true;
+
+		GetCharacterMovement()->MaxWalkSpeed = BaseMoveSpeed * 1.5;
+	}
+}
+
+
+void AEntityBaseCharacter::OnSprintEnd()
+{
+	UE_LOG(LogTemp, Warning, TEXT("OnSprintEnd()  /  Entity finished sprinting"));
+
+	IsSprinting = false;
+
+	GetCharacterMovement()->MaxWalkSpeed = BaseMoveSpeed;
 }
