@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="8183d0d7-b4a5-4c9d-a44b-514079417752" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/Source/TheHazards/HudBattle.cpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Source/TheHazards/HudBattle.h" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Source/TheHazards/TheHazardsGameInstance.cpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Source/TheHazards/TheHazardsGameInstance.h" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Source/TheHazards/TheHazardsGameStateBase.cpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Source/TheHazards/TheHazardsGameStateBase.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Config/DefaultEngine.ini" beforeDir="false" afterPath="$PROJECT_DIR$/Config/DefaultEngine.ini" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/ArtAssets/FirstPerson/Animations/FirstPersonFire_Montage.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/ArtAssets/FirstPerson/Animations/FirstPersonFire_Montage.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/ArtAssets/FirstPerson/Animations/FirstPerson_Fire.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/ArtAssets/FirstPerson/Animations/FirstPerson_Fire.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Blueprints/FirstPersonCPP/Blueprints/FirstPersonCharacter.uasset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Blueprints/FirstPersonCPP/Maps/FirstPersonExampleMap.umap" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/FirstPerson/Animations/FirstPersonFire_Montage.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/FirstPerson/Animations/FirstPersonFire_Montage.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/FirstPerson/Animations/FirstPerson_AnimBP.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/FirstPerson/Animations/FirstPerson_AnimBP.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/FirstPerson/Animations/FirstPerson_Idle.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/FirstPerson/Animations/FirstPerson_Idle.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/FirstPerson/Animations/FirstPerson_JumpEnd.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/FirstPerson/Animations/FirstPerson_JumpEnd.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/FirstPerson/Animations/FirstPerson_JumpLoop.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/FirstPerson/Animations/FirstPerson_JumpLoop.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/FirstPerson/Animations/FirstPerson_JumpStart.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/FirstPerson/Animations/FirstPerson_JumpStart.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/FirstPerson/Animations/FirstPerson_Run.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/FirstPerson/Animations/FirstPerson_Run.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/FirstPerson/Character/Mesh/SK_Mannequin_Arms.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/FirstPerson/Character/Mesh/SK_Mannequin_Arms.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/FirstPerson/Character/Mesh/SK_Mannequin_Arms_Skeleton.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/FirstPerson/Character/Mesh/SK_Mannequin_Arms_Skeleton.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/FirstPerson/FPWeapon/Materials/M_FPGun.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/FirstPerson/FPWeapon/Materials/M_FPGun.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/FirstPerson/FPWeapon/Mesh/SK_FPGun.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/FirstPerson/FPWeapon/Mesh/SK_FPGun.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/FirstPerson/FPWeapon/Mesh/SK_FPGun_Skeleton.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/FirstPerson/FPWeapon/Mesh/SK_FPGun_Skeleton.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/FirstPerson/FPWeapon/Textures/T_FPGun_M.uasset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/FirstPerson/FPWeapon/Textures/T_FPGun_N.uasset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/FirstPerson/Textures/FirstPersonCrosshair.uasset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Maps/FirstPersonExampleMap.umap" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Maps/FirstPersonExampleMap.umap" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/StarterContent/Architecture/Floor_400x400.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/StarterContent/Architecture/Floor_400x400.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/TheHazards/EntityBaseCharacter.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/TheHazards/EntityBaseCharacter.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/TheHazards/EntityBaseCharacter.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/TheHazards/EntityBaseCharacter.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/TheHazards/TheHazardsHUD.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/TheHazards/TheHazardsHUD.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/TheHazards/TheHazardsHUD.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/TheHazards/TheHazardsHUD.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/TheHazards.uproject" beforeDir="false" afterPath="$PROJECT_DIR$/TheHazards.uproject" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="ProjectId" id="2Ec4nb4WQ9zUj5TTbKxg5jGcCyl" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;
+  }
+}</component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <created>1662881709227</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1662881709227</updated>
+      <workItem from="1662881734991" duration="36000" />
+      <workItem from="1662896813238" duration="3000" />
+    </task>
+    <servers />
+  </component>
+  <component name="UnityCheckinConfiguration" checkUnsavedScenes="true" />
+  <component name="UnityUnitTestConfiguration" currentTestLauncher="NUnit" />
+  <component name="VcsManagerConfiguration">
+    <option name="CLEAR_INITIAL_COMMIT_MESSAGE" value="true" />
+  </component>
+</project>

@@ -14,9 +14,6 @@ class ATheHazardsHUD : public AHUD
 public:
 	ATheHazardsHUD();
 
-	// Crosshair location is used for linetracing weapon fire
-	FVector2D CrosshairPosition;
-
 	/** Primary draw call for the HUD */
 	virtual void DrawHUD() override;
 

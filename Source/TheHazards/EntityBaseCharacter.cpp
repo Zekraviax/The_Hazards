@@ -1,6 +1,7 @@
 #include "EntityBaseCharacter.h"
 
-#include "TheHazardsProjectile.h"
+
+#include "ActorComponentBaseStats.h"
 #include "Animation/AnimInstance.h"
 #include "Camera/CameraComponent.h"
 #include "Components/CapsuleComponent.h"
@@ -10,6 +11,9 @@
 #include "GameFramework/InputSettings.h"
 #include "Kismet/GameplayStatics.h"
 #include "Kismet/KismetMathLibrary.h"
+#include "Kismet/KismetSystemLibrary.h"
+#include "WidgetHudBattle.h"
+
 
 DEFINE_LOG_CATEGORY_STATIC(LogFPChar, Warning, All);
 
@@ -54,6 +58,8 @@ AEntityBaseCharacter::AEntityBaseCharacter()
 	// Default offset from the character location for projectiles to spawn
 	GunOffset = FVector(100.0f, 0.0f, 10.0f);
 
+	BaseStatsComponent = CreateDefaultSubobject<UActorComponentBaseStats>(TEXT("EntityBaseStats"));
+
 	// Note: The ProjectileClass and the skeletal mesh/anim blueprints for Mesh1P, FP_Gun, and VR_Gun 
 	// are set in the derived blueprint asset named MyCharacter to avoid direct content references in C++.
 }
@@ -67,10 +73,19 @@ void AEntityBaseCharacter::BeginPlay()
 	//Attach gun mesh component to Skeleton, doing it here because the skeleton is not yet created in the constructor
 	FP_Gun->AttachToComponent(Mesh1P, FAttachmentTransformRules(EAttachmentRule::SnapToTarget, true), TEXT("GripPoint"));
 
-	// Show or hide the two versions of the gun based on whether or not we're using motion controllers.
-	// FPS template would show or hide this mesh based on whether or not we're using motion controllers
-	// To-Do: Test if this can be moved to the constructor or deleted
-	Mesh1P->SetHiddenInGame(false, true);
+	
+	if (WidgetHudBattleClass) {
+		WidgetHudBattleReference = CreateWidget<UWidgetHudBattle>(GetWorld(), WidgetHudBattleClass);
+
+		// To-Do: Add a ControllingEntity to the Battle HUD
+		//WidgetHudBattleReference->SetOwningLocalPlayer = GetController();
+
+		// Set HUD variables for the first time
+		WidgetHudBattleReference->UpdateAuraPointsText(BaseStatsComponent->CurrentAuraPoints, BaseStatsComponent->MaximumAuraPoints);
+
+		WidgetHudBattleReference->AddToViewport();
+	}
+
 }
 
 
@@ -82,7 +97,7 @@ void AEntityBaseCharacter::SetupPlayerInputComponent(class UInputComponent* Play
 	check(PlayerInputComponent);
 
 	// Bind jump events
-	PlayerInputComponent->BindAction("Jump", IE_Pressed, this, &ACharacter::Jump);
+	PlayerInputComponent->BindAction("Jump", IE_Pressed, this, &AEntityBaseCharacter::OnJumpBegin);
 	PlayerInputComponent->BindAction("Jump", IE_Released, this, &ACharacter::StopJumping);
 
 	// Bind fire event
@@ -120,13 +135,13 @@ void AEntityBaseCharacter::Tick(float DeltaTime)
 
 		FirstPersonCameraComponent->SetRelativeLocation(FMath::Lerp(
 			FVector(
-			FirstPersonCameraComponent->GetRelativeLocation().X, 
-			FirstPersonCameraComponent->GetRelativeLocation().Y, 
-			CharacterHeight),
+				FirstPersonCameraComponent->GetRelativeLocation().X, 
+				FirstPersonCameraComponent->GetRelativeLocation().Y, 
+				CharacterHeight),
 			FVector(
-			FirstPersonCameraComponent->GetRelativeLocation().X,
-			FirstPersonCameraComponent->GetRelativeLocation().Y,
-			(CharacterHeight / 2)),
+				FirstPersonCameraComponent->GetRelativeLocation().X,
+				FirstPersonCameraComponent->GetRelativeLocation().Y,
+				(CharacterHeight / 2)),
 			LerpValue
 		));
 	} else if (!IsCrouching && LerpValue > 0) {
@@ -146,6 +161,11 @@ void AEntityBaseCharacter::Tick(float DeltaTime)
 	}
 
 	// To-Do: Drain AP if sprinting
+	if (IsSprinting && GetMovementComponent()->IsMovingOnGround()) {
+		BaseStatsComponent->ChangeCurrentAuraPoints(LerpRate * -1);
+	}
+
+	//
 }
 
 
@@ -153,35 +173,24 @@ void AEntityBaseCharacter::OnFire()
 {
 	// Use LineTraces for weapon fire
 
-	// FHitResult will store all data returned by our line trace
-	FHitResult Hit;
+	// Two FHitResults will store all data returned by our line traces
+	FHitResult FirstHit, Hit;
 
 	// Use QueryParams to prevent this entity from being hit by it's own line trace
 	FCollisionQueryParams QueryParams;
 	QueryParams.AddIgnoredActor(this);
 
-	// Draw a line starting from this entity's gun muzzle position and finishing 1000cm ahead of it
-	FVector TraceStart = ((FP_MuzzleLocation != nullptr) ? FP_MuzzleLocation->GetComponentLocation() : GetActorLocation()) + GetControlRotation().RotateVector(GunOffset);
-	FVector TraceEnd = TraceStart + FirstPersonCameraComponent->GetForwardVector() * 1000.0f;
+	// First line trace: Find the actor/object the entity is directly looking at
+	TArray<AActor*> ActorsToIgnore;
 
-	/*
-	// Player controller needed to deproject crosshair position to world
-	APlayerController* PlayerController = UGameplayStatics::GetPlayerController(this, 0);
-	FVector CrosshairWorldLocation, CrosshairWorldDirection;
-
-	// Draw a line starting from this entity's gun muzzle position and finishing 1000cm ahead of it
-	//FVector TraceStart = ((FP_MuzzleLocation != nullptr) ? FP_MuzzleLocation->GetComponentLocation() : GetActorLocation()) + GetControlRotation().RotateVector(GunOffset);
 	FVector TraceStart = FirstPersonCameraComponent->GetComponentLocation();
-	FVector TraceEnd = FirstPersonCameraComponent->GetComponentLocation() + UKismetMathLibrary::GetForwardVector(FirstPersonCameraComponent->GetComponentRotation()) * 1000.0f;
+	FVector TraceEnd = FirstPersonCameraComponent->GetComponentLocation() + FirstPersonCameraComponent->GetForwardVector() * 10000.0f;
+	UKismetSystemLibrary::LineTraceSingle(this, TraceStart, TraceEnd, UEngineTypes::ConvertToTraceType(ECC_Camera), false, ActorsToIgnore, EDrawDebugTrace::None, FirstHit, true);
 
-
-	//PlayerController->DeprojectScreenPositionToWorld(Cast<ATheHazardsHUD>(PlayerController->GetHUD())->CrosshairPosition.X, 
-	//	Cast<ATheHazardsHUD>(PlayerController->GetHUD())->CrosshairPosition.Y,
-	//	CrosshairWorldLocation,
-	//	CrosshairWorldDirection);
-
-	//FVector TraceEnd = CrosshairWorldLocation * 1500.f;
-	*/
+	// Second line trace: Simulate firing a weapon
+	// Draw a line starting from this entity's gun muzzle position and finishing at the thing directly ahead
+	TraceStart = ((FP_MuzzleLocation != nullptr) ? FP_MuzzleLocation->GetComponentLocation() : GetActorLocation()) + GetControlRotation().RotateVector(GunOffset);
+	TraceEnd = FirstHit.Location;
 
 	// LineTraceSingleByChannel returns the first actor hit within the chosen collision channel
 	GetWorld()->LineTraceSingleByChannel(Hit, TraceStart, TraceEnd, ECollisionChannel::ECC_Pawn);
@@ -189,28 +198,7 @@ void AEntityBaseCharacter::OnFire()
 	// Use DrawDebugLine to show the line trace
 	//DrawDebugLine();
 	DrawDebugLine(GetWorld(), TraceStart, TraceEnd, FColor::Red, false, 2.5f);
-
-
-	// try and fire a projectile
-	//if (ProjectileClass != NULL) {
-	//	UWorld* const World = GetWorld();
-
-	//	if (World != NULL) {
-	//		const FRotator SpawnRotation = GetControlRotation();
-	//		// MuzzleOffset is in camera space, so transform it to world space before offsetting from the character location to find the final muzzle position
-	//		const FVector SpawnLocation = ((FP_MuzzleLocation != nullptr) ? FP_MuzzleLocation->GetComponentLocation() : GetActorLocation()) + SpawnRotation.RotateVector(GunOffset);
-
-	//		//Set Spawn Collision Handling Override
-	//		FActorSpawnParameters ActorSpawnParams;
-	//		ActorSpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButDontSpawnIfColliding;
-
-	//		// spawn the projectile at the muzzle
-	//		World->SpawnActor<ATheHazardsProjectile>(ProjectileClass, SpawnLocation, SpawnRotation, ActorSpawnParams);
-	//	}
-	//}
-
 	
-
 	// try and play the sound if specified
 	if (FireSound != NULL) {
 		UGameplayStatics::PlaySoundAtLocation(this, FireSound, GetActorLocation());
@@ -303,4 +291,14 @@ void AEntityBaseCharacter::OnSprintEnd()
 	IsSprinting = false;
 
 	GetCharacterMovement()->MaxWalkSpeed = BaseMoveSpeed;
+}
+
+
+void AEntityBaseCharacter::OnJumpBegin()
+{
+	Jump();
+
+	if (IsSprinting) {
+		LaunchCharacter(FVector(GetActorForwardVector().X * 500.f, GetActorForwardVector().Y * 500.f, 750.f), false, false);
+	}
 }
