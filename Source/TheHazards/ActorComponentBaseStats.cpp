@@ -35,7 +35,21 @@ void UActorComponentBaseStats::TickComponent(float DeltaTime, ELevelTick TickTyp
 }
 
 
-void UActorComponentBaseStats::ChangeCurrentAuraPoints(float Points)
+void UActorComponentBaseStats::UpdateCurrentHealthPoints(float Points)
+{
+	// Prevent the players' current HP fro exceeding their maximum HP
+	if (CurrentHealthPoints + Points > MaximumHealthPoints) {
+		CurrentHealthPoints = MaximumHealthPoints;
+	} else {
+		CurrentHealthPoints += Points;
+	}
+
+	// Update player's hud
+	Cast<AEntityBaseCharacter>(GetOwner())->WidgetHudBattleReference->UpdateHealthPointsInHud(CurrentHealthPoints, MaximumAuraPoints);
+}
+
+
+void UActorComponentBaseStats::UpdateCurrentAuraPoints(float Points)
 {
 	// Prevent the players' current AP fro exceeding their maximum AP
 	if (CurrentAuraPoints + Points > MaximumAuraPoints) {
@@ -44,7 +58,22 @@ void UActorComponentBaseStats::ChangeCurrentAuraPoints(float Points)
 		CurrentAuraPoints += Points;
 	}
 
-
 	// Update player's hud
-	Cast<AEntityBaseCharacter>(GetOwner())->WidgetHudBattleReference->UpdateAuraPointsText(CurrentAuraPoints, MaximumAuraPoints);
+	Cast<AEntityBaseCharacter>(GetOwner())->WidgetHudBattleReference->UpdateAuraPointsInHud(CurrentAuraPoints, MaximumAuraPoints);
+
+	// If the entity lost AP, start the regen timer
+	// If there are any timers already underway, cancel them
+	if (Points < 0.f) {
+		GetWorld()->GetTimerManager().ClearTimer(AuraPointsRegenTimerHandle);
+
+		GetWorld()->GetTimerManager().SetTimer(AuraPointsRegenTimerHandle, this, &UActorComponentBaseStats::AuraRegenIncrement, AuraRegenDelay, false);
+	}
+}
+
+
+void UActorComponentBaseStats::AuraRegenIncrement()
+{
+	UpdateCurrentAuraPoints(AuraPointsRegenPerSecond);
+
+	GetWorld()->GetTimerManager().SetTimer(AuraPointsRegenTimerHandle, this, &UActorComponentBaseStats::AuraRegenIncrement, 1.f, false);
 }

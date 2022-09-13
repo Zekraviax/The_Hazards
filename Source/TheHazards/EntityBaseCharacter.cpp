@@ -77,11 +77,12 @@ void AEntityBaseCharacter::BeginPlay()
 	if (WidgetHudBattleClass) {
 		WidgetHudBattleReference = CreateWidget<UWidgetHudBattle>(GetWorld(), WidgetHudBattleClass);
 
-		// To-Do: Add a ControllingEntity to the Battle HUD
+		// To-Do: Add a ControllingEntity to the Battle HUD ?
 		//WidgetHudBattleReference->SetOwningLocalPlayer = GetController();
 
 		// Set HUD variables for the first time
-		WidgetHudBattleReference->UpdateAuraPointsText(BaseStatsComponent->CurrentAuraPoints, BaseStatsComponent->MaximumAuraPoints);
+		WidgetHudBattleReference->UpdateHealthPointsInHud(BaseStatsComponent->CurrentHealthPoints, BaseStatsComponent->MaximumHealthPoints);
+		WidgetHudBattleReference->UpdateAuraPointsInHud(BaseStatsComponent->CurrentAuraPoints, BaseStatsComponent->MaximumAuraPoints);
 
 		WidgetHudBattleReference->AddToViewport();
 	}
@@ -162,7 +163,7 @@ void AEntityBaseCharacter::Tick(float DeltaTime)
 
 	// To-Do: Drain AP if sprinting
 	if (IsSprinting && GetMovementComponent()->IsMovingOnGround()) {
-		BaseStatsComponent->ChangeCurrentAuraPoints(LerpRate * -1);
+		BaseStatsComponent->UpdateCurrentAuraPoints(LerpRate * -1);
 	}
 
 	//
