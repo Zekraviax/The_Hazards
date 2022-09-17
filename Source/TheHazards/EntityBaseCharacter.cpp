@@ -161,12 +161,10 @@ void AEntityBaseCharacter::Tick(float DeltaTime)
 		));
 	}
 
-	// To-Do: Drain AP if sprinting
+	// Drain AP if sprinting
 	if (IsSprinting && GetMovementComponent()->IsMovingOnGround()) {
 		BaseStatsComponent->UpdateCurrentAuraPoints(LerpRate * -1);
 	}
-
-	//
 }
 
 

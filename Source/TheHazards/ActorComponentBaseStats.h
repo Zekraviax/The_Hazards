@@ -55,7 +55,7 @@ public:
 	// Add or subtract health points from this entity
 	/**
 	 * Handles subtracting aura points from this entity
-	 * @param Points	Amount of aura points to subtract
+	 * @param Points	Amount of aura points to add or subtract
 	 */
 	UFUNCTION()
 	void UpdateCurrentHealthPoints(float Points);
@@ -63,7 +63,7 @@ public:
 	// Add or subtract aura points from this entity
 	/**
 	 * Handles subtracting aura points from this entity
-	 * @param Points	Amount of aura points to subtract
+	 * @param Points	Amount of aura points to add or subtract
 	 */
 	UFUNCTION()
 	void UpdateCurrentAuraPoints(float Points);
