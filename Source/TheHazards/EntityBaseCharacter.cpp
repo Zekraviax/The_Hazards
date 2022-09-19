@@ -72,21 +72,6 @@ void AEntityBaseCharacter::BeginPlay()
 
 	//Attach gun mesh component to Skeleton, doing it here because the skeleton is not yet created in the constructor
 	FP_Gun->AttachToComponent(Mesh1P, FAttachmentTransformRules(EAttachmentRule::SnapToTarget, true), TEXT("GripPoint"));
-
-	
-	if (WidgetHudBattleClass) {
-		WidgetHudBattleReference = CreateWidget<UWidgetHudBattle>(GetWorld(), WidgetHudBattleClass);
-
-		// To-Do: Add a ControllingEntity to the Battle HUD ?
-		//WidgetHudBattleReference->SetOwningLocalPlayer = GetController();
-
-		// Set HUD variables for the first time
-		WidgetHudBattleReference->UpdateHealthPointsInHud(BaseStatsComponent->CurrentHealthPoints, BaseStatsComponent->MaximumHealthPoints);
-		WidgetHudBattleReference->UpdateAuraPointsInHud(BaseStatsComponent->CurrentAuraPoints, BaseStatsComponent->MaximumAuraPoints);
-
-		WidgetHudBattleReference->AddToViewport();
-	}
-
 }
 
 

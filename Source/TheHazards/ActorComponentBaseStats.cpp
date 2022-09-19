@@ -1,7 +1,6 @@
 #include "ActorComponentBaseStats.h"
 
 
-#include "EntityBaseCharacter.h"
 #include "WidgetHudBattle.h"
 
 
@@ -45,7 +44,10 @@ void UActorComponentBaseStats::UpdateCurrentHealthPoints(float Points)
 	}
 
 	// Update player's hud
-	Cast<AEntityBaseCharacter>(GetOwner())->WidgetHudBattleReference->UpdateHealthPointsInHud(CurrentHealthPoints, MaximumAuraPoints);
+	if (GetOwnerAsEntityBaseCharacter()->GetTheHazardsPlayerController()) {
+		GetOwnerAsEntityBaseCharacter()->GetTheHazardsPlayerController()->WidgetHudBattleReference->UpdateHealthPointsInHud(CurrentHealthPoints, MaximumAuraPoints);
+	}
+
 }
 
 
@@ -59,7 +61,7 @@ void UActorComponentBaseStats::UpdateCurrentAuraPoints(float Points)
 	}
 
 	// Update player's hud
-	Cast<AEntityBaseCharacter>(GetOwner())->WidgetHudBattleReference->UpdateAuraPointsInHud(CurrentAuraPoints, MaximumAuraPoints);
+	Cast<AEntityBaseCharacter>(GetOwner())->GetTheHazardsPlayerController()->WidgetHudBattleReference->UpdateAuraPointsInHud(CurrentAuraPoints, MaximumAuraPoints);
 
 	// If the entity lost AP, start the regen timer
 	// If there are any timers already underway, cancel them

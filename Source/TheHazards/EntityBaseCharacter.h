@@ -3,6 +3,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
+#include "TheHazardsPlayerController.h"
 #include "EntityBaseCharacter.generated.h"
 
 
@@ -73,14 +74,6 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Gameplay)
 	float BaseMoveSpeed = 600.f;
 
-	// Used to add the widget to the players' screen whenever their character is spawned
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Interface)
-	TSubclassOf<UWidgetHudBattle> WidgetHudBattleClass;
-
-	// Keep a reference to the widget itself so we can show and hide it instead of creating and destroying it every time
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Interface)
-	UWidgetHudBattle* WidgetHudBattleReference;
-
 	// Used in the tick function to adjust the camera height
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Gameplay)
 	bool IsCrouching = false;
@@ -144,6 +137,9 @@ public:
 	FORCEINLINE class UCameraComponent* GetFirstPersonCameraComponent() const { return FirstPersonCameraComponent; }
 	// Return entity's BaseStatsComponent
 	FORCEINLINE class UActorComponentBaseStats* GetBaseStatsComponent() const { return BaseStatsComponent; }
+	// Return this entity's player controller, cast as a TheHazardsPlayerController
+	FORCEINLINE class ATheHazardsPlayerController* GetTheHazardsPlayerController() const { return Cast<ATheHazardsPlayerController>(GetController()); }
+
 
 	// Used for crouching in the Tick() function
 	float LerpValue;

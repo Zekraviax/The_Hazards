@@ -97,7 +97,7 @@ public:
 	// Delegate that is called when a session is joined
 	FOnJoinSessionCompleteDelegate OnJoinSessionCompleteDelegate;
 
-	// Handle for the 'join sessions' delegate
+	// Handle for the 'join session' delegate
 	FDelegateHandle OnJoinSessionCompleteDelegateHandle;
 
 	/** This function is called when a session has been successfully joined
@@ -106,4 +106,18 @@ public:
 	* @param Result			The result of the attempt to join a session
 	*/
 	void OnJoinSessionComplete(FName SessionName, EOnJoinSessionCompleteResult::Type Result);
+
+
+	// Delegate that is called when a session is destroyed
+	FOnDestroySessionCompleteDelegate OnDestroySessionCompleteDelegate;
+
+	// Handle for the 'destroy session' delegate
+	FDelegateHandle OnDestroySessionCompleteDelegateHandle;
+
+	/** This function is called when a session has been destroyed
+	*
+	* @param SessionName	Name of the session that was destroyed
+	* @param WasSuccessful	Whether or not the the session was successfully destroyed
+	*/
+	void OnDestroySessionComplete(FName SessionName, bool WasSuccessful);
 };

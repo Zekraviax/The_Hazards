@@ -1,6 +1,7 @@
 #include "TheHazardsGameInstanceSubsystem.h"
 
 
+#include "Engine/GameInstance.h"
 #include "Kismet/GameplayStatics.h"
 #include "OnlineSessionSettings.h"
 #include "OnlineSubsystem.h"
@@ -17,6 +18,9 @@ UTheHazardsGameInstanceSubsystem::UTheHazardsGameInstanceSubsystem(const FObject
 
 	// Bind delegate for handling joining sessions
 	OnJoinSessionCompleteDelegate = FOnJoinSessionCompleteDelegate::CreateUObject(this, &UTheHazardsGameInstanceSubsystem::OnJoinSessionComplete);
+
+	// Bind delegate for handling destroying sessions
+	OnDestroySessionCompleteDelegate = FOnDestroySessionCompleteDelegate::CreateUObject(this, &UTheHazardsGameInstanceSubsystem::OnDestroySessionComplete);
 }
 
 
@@ -217,5 +221,55 @@ bool UTheHazardsGameInstanceSubsystem::JoinSession(TSharedPtr<const FUniqueNetId
 
 void UTheHazardsGameInstanceSubsystem::OnJoinSessionComplete(FName SessionName, EOnJoinSessionCompleteResult::Type Result)
 {
+	GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Red, FString::Printf(TEXT("Was Session %s Joined Successfully: %d"), *SessionName.ToString(), static_cast<int>(Result)));
+	UE_LOG(LogTemp, Warning, TEXT("OnJoinSessionComplete()  /  Was Session %s Joined Successfully: %d"), *SessionName.ToString(), static_cast<int32>(Result));
 
+	// Get the OnlineSubsystem
+	IOnlineSubsystem* const OnlineSubsystem = IOnlineSubsystem::Get();
+
+	if (OnlineSubsystem) {
+		// Get the online subsystem's session interface
+		IOnlineSessionPtr SessionInterface = OnlineSubsystem->GetSessionInterface();
+
+		if (SessionInterface.IsValid()) {
+			// Clear the 'find session' delegate handle since the join function has finished executing
+			SessionInterface->ClearOnJoinSessionCompleteDelegate_Handle(OnJoinSessionCompleteDelegateHandle);
+
+			// Get the first local player controller so we can use it for client travelling
+			APlayerController* const PlayerController = GetGameInstance()->GetFirstLocalPlayerController();
+
+			// The ClientTravel function requires a Url
+			// The SessionInterface can construct the Url if we pass it the session name
+			FString TravelUrl;
+
+			if (PlayerController && SessionInterface->GetResolvedConnectString(SessionName, TravelUrl)) {
+				PlayerController->ClientTravel(TravelUrl, ETravelType::TRAVEL_Absolute);
+			}
+		}
+	}
+}
+
+
+void UTheHazardsGameInstanceSubsystem::OnDestroySessionComplete(FName SessionName, bool WasSuccessful)
+{
+	GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Red, FString::Printf(TEXT("Was Session %s Destroyed Successfully: %d"), *SessionName.ToString(), WasSuccessful));
+	UE_LOG(LogTemp, Warning, TEXT("OnDestroySessionComplete()  /  Was Session %s Destroyed Successfully: %d"), *SessionName.ToString(), WasSuccessful);
+
+	// Get the OnlineSubsystem
+	IOnlineSubsystem* const OnlineSubsystem = IOnlineSubsystem::Get();
+
+	if (OnlineSubsystem) {
+		// Get the online subsystem's session interface
+		IOnlineSessionPtr SessionInterface = OnlineSubsystem->GetSessionInterface();
+
+		if (SessionInterface.IsValid()) {
+			// Clear the 'destroy session' delegate handle since the destroy function has finished executing
+			SessionInterface->ClearOnDestroySessionCompleteDelegate_Handle(OnDestroySessionCompleteDelegateHandle);
+
+			// If the destruction was successful, we can do things like travel to another level
+			if (WasSuccessful) {
+
+			}
+		}
+	}
 }

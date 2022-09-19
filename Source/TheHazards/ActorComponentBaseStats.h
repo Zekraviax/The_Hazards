@@ -2,6 +2,7 @@
 
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
+#include "EntityBaseCharacter.h"
 #include "ActorComponentBaseStats.generated.h"
 
 
@@ -73,4 +74,7 @@ public:
 	// Used instead of renerating aura per tick in a Tick() function
 	UFUNCTION()
 	void AuraRegenIncrement();
+
+	// Return this entity's owner, cast as a EntityBaseCharacter
+	FORCEINLINE class AEntityBaseCharacter* GetOwnerAsEntityBaseCharacter() const { return Cast<AEntityBaseCharacter>(GetOwner()); }
 };
