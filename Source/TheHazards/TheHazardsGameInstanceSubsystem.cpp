@@ -5,6 +5,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "OnlineSessionSettings.h"
 #include "OnlineSubsystem.h"
+#include "TheHazardsPlayerController.h"
 
 
 UTheHazardsGameInstanceSubsystem::UTheHazardsGameInstanceSubsystem(const FObjectInitializer& ObjectInitializer)
@@ -47,7 +48,7 @@ bool UTheHazardsGameInstanceSubsystem::HostSession(TSharedPtr<const FUniqueNetId
 			SessionSettings->bShouldAdvertise = true;
 			SessionSettings->bAllowJoinViaPresence = true;
 			SessionSettings->bAllowJoinViaPresenceFriendsOnly = false;
-			SessionSettings->Set(SETTING_MAPNAME, FString("NewMap"), EOnlineDataAdvertisementType::ViaOnlineService);
+			SessionSettings->Set(SETTING_MAPNAME, FString("FirstPersonExampleMap"), EOnlineDataAdvertisementType::ViaOnlineService);
 
 			// Set the session interface's handle to the 'create session' delegate
 			OnCreateSessionCompleteDelegateHandle = SessionInterface->AddOnCreateSessionCompleteDelegate_Handle(OnCreateSessionCompleteDelegate);
@@ -117,7 +118,15 @@ void UTheHazardsGameInstanceSubsystem::OnStartSessionComplete(FName SessionName,
 	// the 'listen' option is necessary for making the host into a listen server
 	if (WasSuccessful) {
 		UE_LOG(LogTemp, Warning, TEXT("OnStartSessionComplete()  /  Travel to another level"));
-		UGameplayStatics::OpenLevel(GetWorld(), "NewMap", true, "listen");
+
+		UGameplayStatics::OpenLevel(GetWorld(), "FirstPersonExampleMap", true, "listen");
+
+		// Need to make sure each player has input mode set to 'Game Only'
+		TArray<AActor*> FoundActors;
+		UGameplayStatics::GetAllActorsOfClass(GetWorld(), ATheHazardsPlayerController::StaticClass(), FoundActors);
+		for (AActor* PlayerController : FoundActors) {
+			Cast<ATheHazardsPlayerController>(PlayerController)->SetInputMode(FInputModeGameOnly());
+		}
 	}
 }
 

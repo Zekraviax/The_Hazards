@@ -2,8 +2,10 @@
 
 
 #include "CoreMinimal.h"
+
 #include "GameFramework/Character.h"
 #include "TheHazardsPlayerController.h"
+
 #include "EntityBaseCharacter.generated.h"
 
 
@@ -82,8 +84,13 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Gameplay)
 	bool IsSprinting = false;
 
+	// Used for crouching in the Tick() function
+	float LerpValue;
 
-protected:
+	// Used for values that are adjusted over time in the Tick() function,
+	// such as crouch height and HP/AP regeneration per tick
+	float LerpRate = 0.05f;
+
 	/** Fires a projectile. */
 	void OnFire();
 
@@ -120,14 +127,7 @@ protected:
 	// If the player is sprinting when they jump, launch them forward as a Long Jump
 	void OnJumpBegin();
 
-	
-protected:
-	// APawn interface
-	virtual void SetupPlayerInputComponent(UInputComponent* InputComponent) override;
-	// End of APawn interface
 
-
-public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
@@ -139,12 +139,4 @@ public:
 	FORCEINLINE class UActorComponentBaseStats* GetBaseStatsComponent() const { return BaseStatsComponent; }
 	// Return this entity's player controller, cast as a TheHazardsPlayerController
 	FORCEINLINE class ATheHazardsPlayerController* GetTheHazardsPlayerController() const { return Cast<ATheHazardsPlayerController>(GetController()); }
-
-
-	// Used for crouching in the Tick() function
-	float LerpValue;
-
-	// Used for values that are adjusted over time in the Tick() function,
-	// such as crouch height and HP/AP regeneration per tick
-	float LerpRate = 0.05f;
 };

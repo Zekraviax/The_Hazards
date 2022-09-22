@@ -15,7 +15,15 @@ class THEHAZARDS_API UWidgetMenuMultiplayer : public UUserWidget
 	GENERATED_BODY()
 	
 public:
+	// Button for opening the 'Host Session' menu
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget))
+	UButton* HostSessionMenuButton;
+
+	// Button for opening 'Find Session' menu
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget))
+	UButton* FindSessionMenuButton;
+
 	// Open the 'Host Session' menu
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Stats, meta = (BindWidget))
-	UButton* OpenHostSessionMenuButton;
+	UFUNCTION(BlueprintCallable)
+	void OpenHostSessionMenu();
 };
