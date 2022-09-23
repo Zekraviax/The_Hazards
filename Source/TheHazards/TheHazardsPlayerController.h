@@ -8,9 +8,11 @@
 
 class AEntityBaseCharacter;
 class UWidgetHudBattle;
+class UWidgetMenuFindSessions;
 class UWidgetMenuHostSession;
 class UWidgetMenuMultiplayer;
 class UWidgetMenuPause;
+class UWidgetSessionListEntry;
 
 
 UCLASS()
@@ -29,6 +31,9 @@ public:
 	TSubclassOf<UWidgetHudBattle> WidgetHudBattleClass;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Interface)
+	TSubclassOf<UWidgetMenuFindSessions> WidgetMenuFindSessionsClass;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Interface)
 	TSubclassOf<UWidgetMenuHostSession> WidgetMenuHostSessionClass;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Interface)
@@ -37,9 +42,15 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Interface)
 	TSubclassOf<UWidgetMenuPause> WidgetMenuPauseClass;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Interface)
+	TSubclassOf<UWidgetSessionListEntry> WidgetSessionListEntryClass;
+
 	// Keep a reference to the widget itself so we can show and hide it instead of creating and destroying it every time
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Interface)
 	UWidgetHudBattle* WidgetHudBattleReference;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Interface)
+	UWidgetMenuFindSessions* WidgetMenuFindSessionsReference;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Interface)
 	UWidgetMenuHostSession* WidgetMenuHostSessionReference;
@@ -49,6 +60,9 @@ public:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Interface)
 	UWidgetMenuPause* WidgetMenuPauseReference;
+
+	//UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Interface)
+	//UWidgetSessionListEntry* WidgetSessionListEntryReference;
 
 	// Use the variable to track what widgets need to be opened when one is closed
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Interface)

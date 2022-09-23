@@ -2,6 +2,8 @@
 
 
 #include "WidgetHudBattle.h"
+#include "WidgetMenuFindSessions.h"
+#include "WidgetMenuHostSession.h"
 #include "WidgetMenuMultiplayer.h"
 #include "WidgetMenuPause.h"
 
@@ -62,6 +64,13 @@ void AEntityPlayerCharacter::PauseGame()
 		// If the pause menu is on-screen, then unpause the game and display the HUD again
 		GetTheHazardsPlayerController()->OpenWidgetByClass(GetTheHazardsPlayerController()->WidgetHudBattleClass);
 	} else if (GetTheHazardsPlayerController()->CurrentOpenWidgetClass == GetTheHazardsPlayerController()->WidgetMenuMultiplayerClass) {
+		// If the multiplayer menu is on-screen, return to the main pause menu
 		GetTheHazardsPlayerController()->OpenWidgetByClass(GetTheHazardsPlayerController()->WidgetMenuPauseClass);
+	} else if (GetTheHazardsPlayerController()->CurrentOpenWidgetClass == GetTheHazardsPlayerController()->WidgetMenuHostSessionClass) {
+		// If the 'create host session' menu is on-screen, go back to the main multiplayer menu
+		GetTheHazardsPlayerController()->OpenWidgetByClass(GetTheHazardsPlayerController()->WidgetMenuMultiplayerClass);
+	} else if (GetTheHazardsPlayerController()->CurrentOpenWidgetClass == GetTheHazardsPlayerController()->WidgetMenuFindSessionsClass) {
+		// If the 'create host session' menu is on-screen, go back to the main multiplayer menu
+		GetTheHazardsPlayerController()->OpenWidgetByClass(GetTheHazardsPlayerController()->WidgetMenuMultiplayerClass);
 	}
 }

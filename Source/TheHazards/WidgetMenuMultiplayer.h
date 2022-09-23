@@ -26,4 +26,8 @@ public:
 	// Open the 'Host Session' menu
 	UFUNCTION(BlueprintCallable)
 	void OpenHostSessionMenu();
+
+	// Open the 'Find Session' menu
+	UFUNCTION(BlueprintCallable)
+	void OpenFindSessionMenu();
 };

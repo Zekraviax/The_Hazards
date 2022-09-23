@@ -6,6 +6,7 @@
 #include "OnlineSessionSettings.h"
 #include "OnlineSubsystem.h"
 #include "TheHazardsPlayerController.h"
+#include "WidgetMenuFindSessions.h"
 
 
 UTheHazardsGameInstanceSubsystem::UTheHazardsGameInstanceSubsystem(const FObjectInitializer& ObjectInitializer)
@@ -197,8 +198,10 @@ void UTheHazardsGameInstanceSubsystem::OnFindSessionsComplete(bool WasSuccessful
 				// SearchSettings->SearchResults is an array that holds any found Sessions
 				for (int i = 0; i < SearchSettings->SearchResults.Num(); i++) {
 					// To-Do: Remove this when UI is done
-					GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Red, FString::Printf(TEXT("Session Number: %d | Sessionname: %s "), i + 1, *(SearchSettings->SearchResults[i].Session.OwningUserName)));
+					GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Red, FString::Printf(TEXT("Session Number: %d | Session Name: %s "), i + 1, *(SearchSettings->SearchResults[i].Session.OwningUserName)));
 				}
+
+				Cast<ATheHazardsPlayerController>(GetGameInstance()->GetFirstLocalPlayerController())->WidgetMenuFindSessionsReference->PopulateFoundSessionsScrollBox(SearchSettings->SearchResults);
 			}
 		}
 	}

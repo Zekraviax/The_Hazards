@@ -5,6 +5,7 @@
 #include "EntityBaseCharacter.h"
 #include "Kismet/GameplayStatics.h"
 #include "WidgetHudBattle.h"
+#include "WidgetMenuFindSessions.h"
 #include "WidgetMenuHostSession.h"
 #include "WidgetMenuMultiplayer.h"
 #include "WidgetMenuPause.h"
@@ -13,7 +14,7 @@
 void ATheHazardsPlayerController::OnPossess(APawn* InPawn)
 {
 	Super::OnPossess(InPawn);
-	UE_LOG(LogTemp, Warning, TEXT("OnPossess()  /  Pawn is possessed!"));
+	UE_LOG(LogTemp, Warning, TEXT("OnPossess()  /  Pawn is possessed! Player Controller: %s"), *GetName());
 
 	// Create the player's HUD
 	if (WidgetHudBattleClass && !WidgetHudBattleReference) {
@@ -30,6 +31,12 @@ void ATheHazardsPlayerController::OnPossess(APawn* InPawn)
 	}
 
 	// Create the multiplayer menus
+	if (WidgetMenuFindSessionsClass && !WidgetMenuFindSessionsReference) {
+		WidgetMenuFindSessionsReference = CreateWidget<UWidgetMenuFindSessions>(GetWorld(), WidgetMenuFindSessionsClass);
+
+		ValidWidgets.Add(WidgetMenuFindSessionsReference);
+	}
+
 	if (WidgetMenuMultiplayerClass && !WidgetMenuMultiplayerReference) {
 		WidgetMenuMultiplayerReference = CreateWidget<UWidgetMenuMultiplayer>(GetWorld(), WidgetMenuMultiplayerClass);
 
@@ -82,5 +89,10 @@ void ATheHazardsPlayerController::OpenWidgetByClass(TSubclassOf<UUserWidget> Wid
 		SetInputMode(FInputModeGameAndUI());
 
 		UGameplayStatics::SetGamePaused(GetWorld(), true);
+	}
+
+	// Find Sessions
+	if (WidgetClass == WidgetMenuFindSessionsClass) {
+		WidgetMenuFindSessionsReference->BeginSearchForSessions();
 	}
 }

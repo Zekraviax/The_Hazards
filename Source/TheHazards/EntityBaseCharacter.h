@@ -4,6 +4,7 @@
 #include "CoreMinimal.h"
 
 #include "GameFramework/Character.h"
+#include "Net/UnrealNetwork.h"
 #include "TheHazardsPlayerController.h"
 
 #include "EntityBaseCharacter.generated.h"
@@ -20,11 +21,11 @@ class AEntityBaseCharacter : public ACharacter
 	GENERATED_BODY()
 
 	/** Pawn mesh: 1st person view (arms; seen only by self) */
-	UPROPERTY(VisibleDefaultsOnly, Category = Mesh)
+	UPROPERTY(VisibleDefaultsOnly, Replicated, Category = Mesh)
 	class USkeletalMeshComponent* Mesh1P;
 
 	/** Gun mesh: 1st person view (seen only by self) */
-	UPROPERTY(VisibleDefaultsOnly, Category = Mesh)
+	UPROPERTY(VisibleDefaultsOnly, Replicated, Category = Mesh)
 	class USkeletalMeshComponent* FP_Gun;
 
 	/** Location on gun mesh where projectiles should spawn. */
@@ -40,8 +41,11 @@ class AEntityBaseCharacter : public ACharacter
 	UActorComponentBaseStats* BaseStatsComponent;
 
 public:
+	// Constructor
 	AEntityBaseCharacter();
 
+	// Function needed to replicate things in multiplayer
+	void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 
 protected:
 	virtual void BeginPlay();

@@ -2,7 +2,6 @@
 
 
 #include "TheHazardsGameInstanceSubsystem.h"
-#include "TheHazardsGameMode.h"
 
 
 void UWidgetMenuHostSession::LaunchSession()
