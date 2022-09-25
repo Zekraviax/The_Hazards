@@ -1,16 +1,16 @@
 #include "WidgetMenuPause.h"
 
 
-#include "TheHazardsPlayerController.h"
+#include "EntityPlayerCharacter.h"
 #include "WidgetMenuMultiplayer.h"
 
 
 void UWidgetMenuPause::OpenMultiplayerMenu()
 {
-	// Tell the player controller to swap widgets in the viewport
-	ATheHazardsPlayerController* const PlayerController = Cast<ATheHazardsPlayerController>(GetGameInstance()->GetFirstLocalPlayerController());
+	// Use the player character to get widget classes and open widgets
+	AEntityPlayerCharacter* const PlayerCharacter = Cast<AEntityPlayerCharacter>(GetGameInstance()->GetFirstLocalPlayerController()->GetPawn());
 
-	if (PlayerController->IsValidLowLevel()) {
-		PlayerController->OpenWidgetByClass(PlayerController->WidgetMenuMultiplayerClass);
+	if (PlayerCharacter->IsValidLowLevel()) {
+		PlayerCharacter->OpenWidgetByClass(PlayerCharacter->WidgetMenuMultiplayerClass);
 	}
 }

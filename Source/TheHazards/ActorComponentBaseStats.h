@@ -1,8 +1,11 @@
 #pragma once
 
 #include "CoreMinimal.h"
+
 #include "Components/ActorComponent.h"
 #include "EntityBaseCharacter.h"
+#include "EntityPlayerCharacter.h"
+
 #include "ActorComponentBaseStats.generated.h"
 
 
@@ -15,6 +18,16 @@ public:
 	// Sets default values for this component's properties
 	UActorComponentBaseStats();
 
+	// Function needed to replicate things in multiplayer
+	void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
+
+
+protected:
+	// Called when the game starts
+	virtual void BeginPlay() override;
+
+
+public:	
 	// Entity's maximum health points
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float MaximumHealthPoints = 100.f;
@@ -25,11 +38,11 @@ public:
 	float CurrentHealthPoints = 100.f;
 
 	// Entity's maximum aura points
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Replicated)
 	float MaximumAuraPoints = 100.f;
 
 	// Entity's current aura points
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Replicated)
 	float CurrentAuraPoints = 100.f;
 
 	// Amount of time that must pass without losing aura before it starts to regenerate
@@ -43,13 +56,6 @@ public:
 	// TimerHandle for AP regeneration
 	FTimerHandle AuraPointsRegenTimerHandle;
 
-
-protected:
-	// Called when the game starts
-	virtual void BeginPlay() override;
-
-
-public:	
 	// Called every frame
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
@@ -75,6 +81,6 @@ public:
 	UFUNCTION()
 	void AuraRegenIncrement();
 
-	// Return this entity's owner, cast as a EntityBaseCharacter
-	FORCEINLINE class AEntityBaseCharacter* GetOwnerAsEntityBaseCharacter() const { return Cast<AEntityBaseCharacter>(GetOwner()); }
+	// Return this entity's owner, cast as a EntityPlayerCharacter
+	FORCEINLINE class AEntityPlayerCharacter* GetOwnerAsEntityPlayerCharacter() const { return Cast<AEntityPlayerCharacter>(GetOwner()); }
 };

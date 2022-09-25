@@ -1,6 +1,7 @@
 #include "WidgetMenuFindSessions.h"
 
 
+#include "EntityPlayerCharacter.h"
 #include "TheHazardsGameInstanceSubsystem.h"
 #include "TheHazardsPlayerController.h"
 #include "WidgetSessionListEntry.h"
@@ -10,12 +11,12 @@ void UWidgetMenuFindSessions::PopulateFoundSessionsScrollBox(TArray<FOnlineSessi
 {
 	UWidgetSessionListEntry* WidgetSessionListEntryReference;
 
-	// Get the session widget blueprint class from the player controller
-	ATheHazardsPlayerController* const PlayerController = Cast<ATheHazardsPlayerController>(GetGameInstance()->GetFirstLocalPlayerController());
+	// Get the session widget blueprint class from the player character
+	AEntityPlayerCharacter* const PlayerCharacter = Cast<AEntityPlayerCharacter>(GetGameInstance()->GetFirstLocalPlayerController()->GetPawn());
 
-	if (PlayerController->WidgetSessionListEntryClass->IsValidLowLevel()) {
+	if (PlayerCharacter->WidgetSessionListEntryClass->IsValidLowLevel()) {
 		for (FOnlineSessionSearchResult Session : FoundSessionsArray) {
-			WidgetSessionListEntryReference = CreateWidget<UWidgetSessionListEntry>(GetWorld(), PlayerController->WidgetSessionListEntryClass);
+			WidgetSessionListEntryReference = CreateWidget<UWidgetSessionListEntry>(GetWorld(), PlayerCharacter->WidgetSessionListEntryClass);
 
 			// Set widget info
 			WidgetSessionListEntryReference->Session = Session;

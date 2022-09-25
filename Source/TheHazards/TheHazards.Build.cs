@@ -1,6 +1,8 @@
 // Copyright Epic Games, Inc. All Rights Reserved.
 
+
 using UnrealBuildTool;
+
 
 public class TheHazards : ModuleRules
 {
@@ -16,6 +18,8 @@ public class TheHazards : ModuleRules
             "HeadMountedDisplay",
             "OnlineSubsystem",
             "OnlineSubsystemUtils",
+            "Networking",
+            "UMG",
         });
 
         DynamicallyLoadedModuleNames.Add("OnlineSubsystemNull");

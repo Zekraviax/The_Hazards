@@ -2,6 +2,7 @@
 
 
 #include "Engine/GameInstance.h"
+#include "EntityPlayerCharacter.h"
 #include "Kismet/GameplayStatics.h"
 #include "OnlineSessionSettings.h"
 #include "OnlineSubsystem.h"
@@ -201,7 +202,7 @@ void UTheHazardsGameInstanceSubsystem::OnFindSessionsComplete(bool WasSuccessful
 					GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Red, FString::Printf(TEXT("Session Number: %d | Session Name: %s "), i + 1, *(SearchSettings->SearchResults[i].Session.OwningUserName)));
 				}
 
-				Cast<ATheHazardsPlayerController>(GetGameInstance()->GetFirstLocalPlayerController())->WidgetMenuFindSessionsReference->PopulateFoundSessionsScrollBox(SearchSettings->SearchResults);
+				Cast<AEntityPlayerCharacter>(GetGameInstance()->GetFirstLocalPlayerController()->GetPawn())->WidgetMenuFindSessionsReference->PopulateFoundSessionsScrollBox(SearchSettings->SearchResults);
 			}
 		}
 	}
@@ -210,6 +211,9 @@ void UTheHazardsGameInstanceSubsystem::OnFindSessionsComplete(bool WasSuccessful
 
 bool UTheHazardsGameInstanceSubsystem::JoinSession(TSharedPtr<const FUniqueNetId> UserId, FName SessionName, const FOnlineSessionSearchResult& SearchResult)
 {
+	GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Red, FString::Printf(TEXT("Attempt to Join Session: %s"), *SessionName.ToString()));
+	UE_LOG(LogTemp, Warning, TEXT("JoinSession()  /  Attempt to Join Session: %s"), *SessionName.ToString());
+
 	// Get the OnlineSubsystem
 	IOnlineSubsystem* const OnlineSubsystem = IOnlineSubsystem::Get();
 

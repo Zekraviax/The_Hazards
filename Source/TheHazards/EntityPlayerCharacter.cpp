@@ -1,6 +1,8 @@
 #include "EntityPlayerCharacter.h"
 
 
+#include "ActorComponentBaseStats.h"
+#include "Kismet/GameplayStatics.h"
 #include "WidgetHudBattle.h"
 #include "WidgetMenuFindSessions.h"
 #include "WidgetMenuHostSession.h"
@@ -53,24 +55,114 @@ void AEntityPlayerCharacter::PauseGame()
 {
 	// To-Do: Prevent players from pausing when at the main menu
 
-	// Tell the controller to open the pause menu
-	//GetTheHazardsPlayerController()->OpenWidgetByClass(GetTheHazardsPlayerController()->WidgetMenuPauseClass);
-
 	// Open new widget based on closed widget
-	if (GetTheHazardsPlayerController()->CurrentOpenWidgetClass == GetTheHazardsPlayerController()->WidgetHudBattleClass) {
+	if (CurrentOpenWidgetClass == WidgetHudBattleClass) {
 		// If the HUD is on-screen, that must mean the game is unpaused
-		GetTheHazardsPlayerController()->OpenWidgetByClass(GetTheHazardsPlayerController()->WidgetMenuPauseClass);
-	} else if (GetTheHazardsPlayerController()->CurrentOpenWidgetClass == GetTheHazardsPlayerController()->WidgetMenuPauseClass) {
+		OpenWidgetByClass(WidgetMenuPauseClass);
+	} else if (CurrentOpenWidgetClass == WidgetMenuPauseClass) {
 		// If the pause menu is on-screen, then unpause the game and display the HUD again
-		GetTheHazardsPlayerController()->OpenWidgetByClass(GetTheHazardsPlayerController()->WidgetHudBattleClass);
-	} else if (GetTheHazardsPlayerController()->CurrentOpenWidgetClass == GetTheHazardsPlayerController()->WidgetMenuMultiplayerClass) {
+		OpenWidgetByClass(WidgetHudBattleClass);
+	} else if (CurrentOpenWidgetClass == WidgetMenuMultiplayerClass) {
 		// If the multiplayer menu is on-screen, return to the main pause menu
-		GetTheHazardsPlayerController()->OpenWidgetByClass(GetTheHazardsPlayerController()->WidgetMenuPauseClass);
-	} else if (GetTheHazardsPlayerController()->CurrentOpenWidgetClass == GetTheHazardsPlayerController()->WidgetMenuHostSessionClass) {
+		OpenWidgetByClass(WidgetMenuPauseClass);
+	} else if (CurrentOpenWidgetClass == WidgetMenuHostSessionClass) {
 		// If the 'create host session' menu is on-screen, go back to the main multiplayer menu
-		GetTheHazardsPlayerController()->OpenWidgetByClass(GetTheHazardsPlayerController()->WidgetMenuMultiplayerClass);
-	} else if (GetTheHazardsPlayerController()->CurrentOpenWidgetClass == GetTheHazardsPlayerController()->WidgetMenuFindSessionsClass) {
+		OpenWidgetByClass(WidgetMenuMultiplayerClass);
+	} else if (CurrentOpenWidgetClass == WidgetMenuFindSessionsClass) {
 		// If the 'create host session' menu is on-screen, go back to the main multiplayer menu
-		GetTheHazardsPlayerController()->OpenWidgetByClass(GetTheHazardsPlayerController()->WidgetMenuMultiplayerClass);
+		OpenWidgetByClass(WidgetMenuMultiplayerClass);
+	}
+}
+
+
+void AEntityPlayerCharacter::ServerCreateWidgets_Implementation()
+{
+	UE_LOG(LogTemp, Warning, TEXT("ServerCreateWidgets_Implementation()  /  Receive function call from server"));
+
+	ClientCreateWidgets();
+}
+
+
+void AEntityPlayerCharacter::ClientCreateWidgets_Implementation()
+{
+	UE_LOG(LogTemp, Warning, TEXT("ClientCreateWidgets_Implementation()  /  Execute function call from server"));
+
+	// Create the player's HUD
+	if (WidgetHudBattleClass && !WidgetHudBattleReference) {
+		WidgetHudBattleReference = CreateWidget<UWidgetHudBattle>(GetWorld(), WidgetHudBattleClass);
+
+		// Set HUD variables for the first time
+		WidgetHudBattleReference->UpdateHealthPointsInHud(GetBaseStatsComponent()->CurrentHealthPoints, GetBaseStatsComponent()->MaximumHealthPoints);
+		WidgetHudBattleReference->UpdateAuraPointsInHud(GetBaseStatsComponent()->CurrentAuraPoints, GetBaseStatsComponent()->MaximumAuraPoints);
+
+		WidgetHudBattleReference->AddToPlayerScreen();
+		CurrentOpenWidgetClass = WidgetHudBattleClass;
+
+		ValidWidgets.Add(WidgetHudBattleReference);
+	}
+
+	// Create the multiplayer menus
+	if (WidgetMenuFindSessionsClass && !WidgetMenuFindSessionsReference) {
+		WidgetMenuFindSessionsReference = CreateWidget<UWidgetMenuFindSessions>(GetWorld(), WidgetMenuFindSessionsClass);
+
+		ValidWidgets.Add(WidgetMenuFindSessionsReference);
+	}
+
+	if (WidgetMenuMultiplayerClass && !WidgetMenuMultiplayerReference) {
+		WidgetMenuMultiplayerReference = CreateWidget<UWidgetMenuMultiplayer>(GetWorld(), WidgetMenuMultiplayerClass);
+
+		ValidWidgets.Add(WidgetMenuMultiplayerReference);
+	}
+
+	if (WidgetMenuHostSessionClass && !WidgetMenuHostSessionReference) {
+		WidgetMenuHostSessionReference = CreateWidget<UWidgetMenuHostSession>(GetWorld(), WidgetMenuHostSessionClass);
+
+		ValidWidgets.Add(WidgetMenuHostSessionReference);
+	}
+
+	// Create the in-game pause menu
+	if (WidgetMenuPauseClass && !WidgetMenuPauseReference) {
+		WidgetMenuPauseReference = CreateWidget<UWidgetMenuPause>(GetWorld(), WidgetMenuPauseClass);
+
+		ValidWidgets.Add(WidgetMenuPauseReference);
+	}
+
+	// Set the input mode
+	GetTheHazardsPlayerController()->SetInputMode(FInputModeGameOnly());
+}
+
+
+void AEntityPlayerCharacter::OpenWidgetByClass(TSubclassOf<UUserWidget> WidgetClass)
+{
+	for (UUserWidget* Widget : ValidWidgets) {
+		if (Widget->GetClass() == WidgetClass) {
+			Widget->AddToViewport();
+			CurrentOpenWidgetClass = WidgetClass;
+		}
+		else {
+			Widget->RemoveFromViewport();
+		}
+	}
+
+	// To-Do: Activate special functions based on which widget has been added to the viewport
+
+	// Show or hide the cursor
+	// Change input modes based on whether or not the current widget on-screen is the HUD
+	if (WidgetClass == WidgetHudBattleClass) {
+		GetTheHazardsPlayerController()->bShowMouseCursor = false;
+		GetTheHazardsPlayerController()->SetInputMode(FInputModeGameOnly());
+
+		UGameplayStatics::SetGamePaused(GetWorld(), false);
+	}
+	else {
+		GetTheHazardsPlayerController()->bShowMouseCursor = true;
+		GetTheHazardsPlayerController()->SetInputMode(FInputModeGameAndUI());
+
+		UGameplayStatics::SetGamePaused(GetWorld(), true);
+	}
+
+	// Find Sessions
+	if (WidgetClass == WidgetMenuFindSessionsClass) {
+		WidgetMenuFindSessionsReference->BeginSearchForSessions();
 	}
 }

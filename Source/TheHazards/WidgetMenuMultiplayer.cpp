@@ -1,29 +1,28 @@
 #include "WidgetMenuMultiplayer.h"
 
 
-#include "EntityBaseCharacter.h"
-#include "TheHazardsPlayerController.h"
+#include "EntityPlayerCharacter.h"
 #include "WidgetMenuFindSessions.h"
 #include "WidgetMenuHostSession.h"
 
 
 void UWidgetMenuMultiplayer::OpenHostSessionMenu()
 {
-	// Use the player's controller to get widget classes and open widgets
-	ATheHazardsPlayerController* const PlayerController = Cast<ATheHazardsPlayerController>(GetGameInstance()->GetFirstLocalPlayerController());
+	// Use the player character to get widget classes and open widgets
+	AEntityPlayerCharacter* const PlayerCharacter = Cast<AEntityPlayerCharacter>(GetGameInstance()->GetFirstLocalPlayerController()->GetPawn());
 
-	if (PlayerController->IsValidLowLevel()) {
-		PlayerController->OpenWidgetByClass(PlayerController->WidgetMenuHostSessionClass);
+	if (PlayerCharacter->IsValidLowLevel()) {
+		PlayerCharacter->OpenWidgetByClass(PlayerCharacter->WidgetMenuHostSessionClass);
 	}
 }
 
 
 void UWidgetMenuMultiplayer::OpenFindSessionMenu()
 {
-	// Use the player's controller to get widget classes and open widgets
-	ATheHazardsPlayerController* const PlayerController = Cast<ATheHazardsPlayerController>(GetGameInstance()->GetFirstLocalPlayerController());
+	// Use the player character to get widget classes and open widgets
+	AEntityPlayerCharacter* const PlayerCharacter = Cast<AEntityPlayerCharacter>(GetGameInstance()->GetFirstLocalPlayerController()->GetPawn());
 
-	if (PlayerController->IsValidLowLevel()) {
-		PlayerController->OpenWidgetByClass(PlayerController->WidgetMenuFindSessionsClass);
+	if (PlayerCharacter->IsValidLowLevel()) {
+		PlayerCharacter->OpenWidgetByClass(PlayerCharacter->WidgetMenuFindSessionsClass);
 	}
 }

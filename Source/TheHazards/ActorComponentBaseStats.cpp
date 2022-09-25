@@ -10,8 +10,18 @@ UActorComponentBaseStats::UActorComponentBaseStats()
 	// Set this component to be initialized when the game starts, and to be ticked every frame.
 	// You can turn these features off to improve performance if you don't need them.
 	PrimaryComponentTick.bCanEverTick = false;
+	//bReplicates = true;
+	//SetIsReplicated(true);
+}
 
-	// ...
+
+void UActorComponentBaseStats::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+
+	// Each property of the component that is replicated needs to be specified here
+	DOREPLIFETIME(UActorComponentBaseStats, MaximumAuraPoints);
+	DOREPLIFETIME(UActorComponentBaseStats, CurrentAuraPoints);
 }
 
 
@@ -19,9 +29,6 @@ UActorComponentBaseStats::UActorComponentBaseStats()
 void UActorComponentBaseStats::BeginPlay()
 {
 	Super::BeginPlay();
-
-	// ...
-	
 }
 
 
@@ -29,8 +36,6 @@ void UActorComponentBaseStats::BeginPlay()
 void UActorComponentBaseStats::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
-
-	// ...
 }
 
 
@@ -44,8 +49,8 @@ void UActorComponentBaseStats::UpdateCurrentHealthPoints(float Points)
 	}
 
 	// Update player's hud
-	if (GetOwnerAsEntityBaseCharacter()->GetTheHazardsPlayerController()) {
-		GetOwnerAsEntityBaseCharacter()->GetTheHazardsPlayerController()->WidgetHudBattleReference->UpdateHealthPointsInHud(CurrentHealthPoints, MaximumAuraPoints);
+	if (GetOwnerAsEntityPlayerCharacter()) {
+		GetOwnerAsEntityPlayerCharacter()->WidgetHudBattleReference->UpdateHealthPointsInHud(CurrentHealthPoints, MaximumHealthPoints);
 	}
 
 }
@@ -61,7 +66,9 @@ void UActorComponentBaseStats::UpdateCurrentAuraPoints(float Points)
 	}
 
 	// Update player's hud
-	Cast<AEntityBaseCharacter>(GetOwner())->GetTheHazardsPlayerController()->WidgetHudBattleReference->UpdateAuraPointsInHud(CurrentAuraPoints, MaximumAuraPoints);
+	if (GetOwnerAsEntityPlayerCharacter()) {
+		GetOwnerAsEntityPlayerCharacter()->WidgetHudBattleReference->UpdateAuraPointsInHud(CurrentAuraPoints, MaximumAuraPoints);
+	}
 
 	// If the entity lost AP, start the regen timer
 	// If there are any timers already underway, cancel them

@@ -59,6 +59,7 @@ AEntityBaseCharacter::AEntityBaseCharacter()
 
 	// Gameplay components
 	BaseStatsComponent = CreateDefaultSubobject<UActorComponentBaseStats>(TEXT("EntityBaseStats"));
+	BaseStatsComponent->SetIsReplicated(true);
 
 	// Multiplayer
 	bReplicates = true;
