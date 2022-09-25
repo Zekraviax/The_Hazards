@@ -45,6 +45,8 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Replicated)
 	float CurrentAuraPoints = 100.f;
 
+	// To-Do: Implement health regen with delay
+
 	// Amount of time that must pass without losing aura before it starts to regenerate
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float AuraRegenDelay = 5.f;

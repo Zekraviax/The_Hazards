@@ -17,9 +17,7 @@ class THEHAZARDS_API UWidgetMenuFindSessions : public UUserWidget
 	GENERATED_BODY()
 	
 public:
-	// Session scroll box entry blueprint class and reference
-
-	// Box for displaying all found sessions
+	// Scroll Box for displaying all found sessions
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget))
 	UScrollBox* FoundSessionsScrollBox;
 

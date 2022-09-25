@@ -75,14 +75,6 @@ void AEntityPlayerCharacter::PauseGame()
 }
 
 
-void AEntityPlayerCharacter::ServerCreateWidgets_Implementation()
-{
-	UE_LOG(LogTemp, Warning, TEXT("ServerCreateWidgets_Implementation()  /  Receive function call from server"));
-
-	ClientCreateWidgets();
-}
-
-
 void AEntityPlayerCharacter::ClientCreateWidgets_Implementation()
 {
 	UE_LOG(LogTemp, Warning, TEXT("ClientCreateWidgets_Implementation()  /  Execute function call from server"));
@@ -153,8 +145,7 @@ void AEntityPlayerCharacter::OpenWidgetByClass(TSubclassOf<UUserWidget> WidgetCl
 		GetTheHazardsPlayerController()->SetInputMode(FInputModeGameOnly());
 
 		UGameplayStatics::SetGamePaused(GetWorld(), false);
-	}
-	else {
+	} else {
 		GetTheHazardsPlayerController()->bShowMouseCursor = true;
 		GetTheHazardsPlayerController()->SetInputMode(FInputModeGameAndUI());
 

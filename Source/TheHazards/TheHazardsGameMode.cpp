@@ -66,7 +66,6 @@ void ATheHazardsGameMode::PostLogin(APlayerController* NewPlayerController)
 	// Tell the player character to create widgets and add the HUD to their viewport
 	Cast<AEntityPlayerCharacter>(NewPlayerController->GetPawn())->ClientCreateWidgets();
 
-	// To-Do: Set player controller's input mode to GameOnly and make sure their game is unpaused
-	// Lock mouse to window as well (?)
+	// Set player controller's input mode to GameOnly and make sure their game is unpaused
 	NewPlayerController->SetInputMode(FInputModeGameOnly());
 }

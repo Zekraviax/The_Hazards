@@ -77,10 +77,6 @@ public:
 	// Close one menu and open another related menu
 	void PauseGame();
 
-	// Server sends this function to tell a client to create widgets
-	UFUNCTION(Server, Reliable)
-	void ServerCreateWidgets();
-
 	// Client side function that creates widgets and adds the HUD to the player's viewport
 	UFUNCTION(Client, Reliable, BlueprintCallable)
 	void ClientCreateWidgets();

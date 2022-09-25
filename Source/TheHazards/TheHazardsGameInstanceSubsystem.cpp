@@ -29,6 +29,9 @@ UTheHazardsGameInstanceSubsystem::UTheHazardsGameInstanceSubsystem(const FObject
 
 bool UTheHazardsGameInstanceSubsystem::HostSession(TSharedPtr<const FUniqueNetId> UserId, FName SessionName, bool IsLanMatch, bool IsPresence, int32 MaxNumPlayers)
 {
+	GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Red, FString::Printf(TEXT("Attempt to Host Session")));
+	UE_LOG(LogTemp, Warning, TEXT("FindSessions()  /  Attempt to Host Session"));
+
 	// Get the OnlineSubsystem
 	IOnlineSubsystem* const OnlineSubsystem = IOnlineSubsystem::Get();
 
@@ -135,6 +138,9 @@ void UTheHazardsGameInstanceSubsystem::OnStartSessionComplete(FName SessionName,
 
 void UTheHazardsGameInstanceSubsystem::FindSessions(TSharedPtr<const FUniqueNetId> UserId, bool IsLanMatch, bool IsPresence)
 {
+	GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Red, FString::Printf(TEXT("Attempt to Find Sessions")));
+	UE_LOG(LogTemp, Warning, TEXT("FindSessions()  /  Attempt to Find Sessions"));
+
 	// Get the OnlineSubsystem
 	IOnlineSubsystem* const OnlineSubsystem = IOnlineSubsystem::Get();
 
@@ -281,11 +287,6 @@ void UTheHazardsGameInstanceSubsystem::OnDestroySessionComplete(FName SessionNam
 		if (SessionInterface.IsValid()) {
 			// Clear the 'destroy session' delegate handle since the destroy function has finished executing
 			SessionInterface->ClearOnDestroySessionCompleteDelegate_Handle(OnDestroySessionCompleteDelegateHandle);
-
-			// If the destruction was successful, we can do things like travel to another level
-			if (WasSuccessful) {
-
-			}
 		}
 	}
 }
