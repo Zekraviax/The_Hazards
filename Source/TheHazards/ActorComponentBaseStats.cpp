@@ -50,6 +50,14 @@ void UActorComponentBaseStats::UpdateCurrentHealthPoints(float Points)
 	if (GetOwnerAsEntityPlayerCharacter()) {
 		GetOwnerAsEntityPlayerCharacter()->WidgetHudBattleReference->UpdateHealthPointsInHud(CurrentHealthPoints, MaximumHealthPoints);
 	}
+
+	// If the entity lost HP, start the regen timer
+	// If there are any timers already underway, cancel them
+	if (Points < 0.f) {
+		//GetWorld()->GetTimerManager().ClearTimer(HealthPointsRegenTimerHandle);
+
+		GetWorld()->GetTimerManager().SetTimer(HealthPointsRegenTimerHandle, this, &UActorComponentBaseStats::HealthRegenIncrement, HealthRegenDelay, false);
+	}
 }
 
 
@@ -70,10 +78,18 @@ void UActorComponentBaseStats::UpdateCurrentAuraPoints(float Points)
 	// If the entity lost AP, start the regen timer
 	// If there are any timers already underway, cancel them
 	if (Points < 0.f) {
-		GetWorld()->GetTimerManager().ClearTimer(AuraPointsRegenTimerHandle);
+		//GetWorld()->GetTimerManager().ClearTimer(AuraPointsRegenTimerHandle);
 
 		GetWorld()->GetTimerManager().SetTimer(AuraPointsRegenTimerHandle, this, &UActorComponentBaseStats::AuraRegenIncrement, AuraRegenDelay, false);
 	}
+}
+
+
+void UActorComponentBaseStats::HealthRegenIncrement()
+{
+	UpdateCurrentHealthPoints(HealthPointsRegenPerSecond);
+
+	GetWorld()->GetTimerManager().SetTimer(HealthPointsRegenTimerHandle, this, &UActorComponentBaseStats::HealthRegenIncrement, 1.f, false);
 }
 
 

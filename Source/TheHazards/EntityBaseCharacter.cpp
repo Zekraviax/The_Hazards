@@ -125,6 +125,8 @@ void AEntityBaseCharacter::Tick(float DeltaTime)
 	}
 
 	// Drain AP if sprinting
+	// To-Do: Prevent entity from sprinting if they don't have any AP
+	// If they don't, stop them sprinting
 	if (IsSprinting && GetMovementComponent()->IsMovingOnGround()) {
 		BaseStatsComponent->UpdateCurrentAuraPoints(LerpRate * -1);
 	}
@@ -158,7 +160,6 @@ void AEntityBaseCharacter::OnFire()
 	GetWorld()->LineTraceSingleByChannel(Hit, TraceStart, TraceEnd, ECollisionChannel::ECC_Pawn);
 
 	// Use DrawDebugLine to show the line trace
-	//DrawDebugLine();
 	DrawDebugLine(GetWorld(), TraceStart, TraceEnd, FColor::Red, false, 2.5f);
 	
 	// try and play the sound if specified
@@ -263,4 +264,8 @@ void AEntityBaseCharacter::OnJumpBegin()
 	if (IsSprinting) {
 		LaunchCharacter(FVector(GetActorForwardVector().X * 500.f, GetActorForwardVector().Y * 500.f, 750.f), false, false);
 	}
+
+	// To-Do: Remove this when testing is done
+	// Test: If this entity's health and/or aura are less than the max when this entity is spawned, begin the regen countdown
+	BaseStatsComponent->UpdateCurrentHealthPoints(-1.f);
 }

@@ -35,7 +35,7 @@ public:
 	// Entity's current health points
 	// They die when it reaches zero
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float CurrentHealthPoints = 100.f;
+	float CurrentHealthPoints = 50.f;
 
 	// Entity's maximum aura points
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Replicated)
@@ -45,7 +45,13 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Replicated)
 	float CurrentAuraPoints = 100.f;
 
-	// To-Do: Implement health regen with delay
+	// Amount of time that must pass without losing health before it starts to regenerate
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float HealthRegenDelay = 5.f;
+
+	// Amound of HP to regenerate per second
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float HealthPointsRegenPerSecond = 1.f;
 
 	// Amount of time that must pass without losing aura before it starts to regenerate
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
@@ -54,6 +60,9 @@ public:
 	// Amound of AP to regenerate per second
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float AuraPointsRegenPerSecond = 1.f;
+
+	// TimerHandle for AP regeneration
+	FTimerHandle HealthPointsRegenTimerHandle;
 
 	// TimerHandle for AP regeneration
 	FTimerHandle AuraPointsRegenTimerHandle;
@@ -77,7 +86,13 @@ public:
 	UFUNCTION()
 	void UpdateCurrentAuraPoints(float Points);
 
-	// Function used to regenerate entity's aura
+	// Function used to regenerate entity's health points
+	// Should be called only once per second
+	// Used instead of renerating aura per tick in a Tick() function
+	UFUNCTION()
+	void HealthRegenIncrement();
+
+	// Function used to regenerate entity's aura points
 	// Should be called only once per second
 	// Used instead of renerating aura per tick in a Tick() function
 	UFUNCTION()

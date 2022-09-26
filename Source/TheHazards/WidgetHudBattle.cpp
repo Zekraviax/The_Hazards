@@ -3,15 +3,23 @@
 
 void UWidgetHudBattle::UpdateHealthPointsInHud(float Current, float Maximum)
 {
-	HealthPointsText->SetText(FText::FromString("HP: " + FString::FromInt(FMath::TruncToInt(Current)) + " / " + FString::FromInt(FMath::TruncToInt(Maximum))));
+	if (HealthPointsText) {
+		HealthPointsText->SetText(FText::FromString("HP: " + FString::FromInt(FMath::TruncToInt(Current)) + " / " + FString::FromInt(FMath::TruncToInt(Maximum))));
+	}
 
-	HealthPointsProgressBar->SetPercent(Current / Maximum);
+	if (HealthPointsProgressBar) {
+		HealthPointsProgressBar->SetPercent(Current / Maximum);
+	}
 }
 
 
 void UWidgetHudBattle::UpdateAuraPointsInHud(float Current, float Maximum)
 {
-	AuraPointsText->SetText(FText::FromString("AP: " + FString::FromInt(FMath::TruncToInt(Current)) + " / " + FString::FromInt(FMath::TruncToInt(Maximum))));
+	if (AuraPointsText) {
+		AuraPointsText->SetText(FText::FromString("AP: " + FString::FromInt(FMath::TruncToInt(Current)) + " / " + FString::FromInt(FMath::TruncToInt(Maximum))));
+	}
 
-	AuraPointsProgressBar->SetPercent(Current / Maximum);
+	if (AuraPointsProgressBar) {
+		AuraPointsProgressBar->SetPercent(Current / Maximum);
+	}
 }
