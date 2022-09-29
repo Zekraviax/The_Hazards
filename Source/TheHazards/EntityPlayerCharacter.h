@@ -7,6 +7,7 @@
 
 
 class UWidgetHudBattle;
+class UWidgetMenuDeveloper;
 class UWidgetMenuFindSessions;
 class UWidgetMenuHostSession;
 class UWidgetMenuMultiplayer;
@@ -31,6 +32,9 @@ public:
 	TSubclassOf<UWidgetHudBattle> WidgetHudBattleClass;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Interface)
+	TSubclassOf<UWidgetMenuDeveloper> WidgetMenuDeveloperClass;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Interface)
 	TSubclassOf<UWidgetMenuFindSessions> WidgetMenuFindSessionsClass;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Interface)
@@ -48,6 +52,9 @@ public:
 	// Keep a reference to the widget itself so we can show and hide it instead of creating and destroying it every time
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Interface)
 	UWidgetHudBattle* WidgetHudBattleReference;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Interface)
+	UWidgetMenuDeveloper* WidgetMenuDeveloperReference;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Interface)
 	UWidgetMenuFindSessions* WidgetMenuFindSessionsReference;
@@ -73,13 +80,18 @@ protected:
 
 
 public:
+	// Client side function that creates widgets and adds the HUD to the player's viewport
+	UFUNCTION(Client, Reliable, BlueprintCallable)
+	void ClientCreateWidgets();
+
 	// Pause the game and open the pause menu, or
 	// Close one menu and open another related menu
 	void PauseGame();
 
-	// Client side function that creates widgets and adds the HUD to the player's viewport
-	UFUNCTION(Client, Reliable, BlueprintCallable)
-	void ClientCreateWidgets();
+	// Open the dev menu
+	// Or close the dev menu and return the HUD
+	UFUNCTION()
+	void OpenDevMenu();
 
 	// Loop through all valid widgets, opening the designated widget and closing all others
 	UFUNCTION()

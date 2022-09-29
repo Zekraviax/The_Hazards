@@ -125,10 +125,14 @@ void AEntityBaseCharacter::Tick(float DeltaTime)
 	}
 
 	// Drain AP if sprinting
-	// To-Do: Prevent entity from sprinting if they don't have any AP
-	// If they don't, stop them sprinting
-	if (IsSprinting && GetMovementComponent()->IsMovingOnGround()) {
-		BaseStatsComponent->UpdateCurrentAuraPoints(LerpRate * -1);
+	// Prevent entity from sprinting if they don't have any AP
+	// If they run out of AP mid-sprint, stop them from sprinting
+	if (IsSprinting && GetMovementComponent()->IsMovingOnGround() && GetVelocity().Size() > 0.f) {
+		if (GetBaseStatsComponent()->CurrentAuraPoints > 0.f) {
+			BaseStatsComponent->UpdateCurrentAuraPoints(LerpRate * -1);
+		} else {
+			OnSprintEnd();
+		}
 	}
 }
 
@@ -264,8 +268,4 @@ void AEntityBaseCharacter::OnJumpBegin()
 	if (IsSprinting) {
 		LaunchCharacter(FVector(GetActorForwardVector().X * 500.f, GetActorForwardVector().Y * 500.f, 750.f), false, false);
 	}
-
-	// To-Do: Remove this when testing is done
-	// Test: If this entity's health and/or aura are less than the max when this entity is spawned, begin the regen countdown
-	BaseStatsComponent->UpdateCurrentHealthPoints(-1.f);
 }

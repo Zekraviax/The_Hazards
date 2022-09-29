@@ -4,6 +4,7 @@
 #include "ActorComponentBaseStats.h"
 #include "Kismet/GameplayStatics.h"
 #include "WidgetHudBattle.h"
+#include "WidgetMenuDeveloper.h"
 #include "WidgetMenuFindSessions.h"
 #include "WidgetMenuHostSession.h"
 #include "WidgetMenuMultiplayer.h"
@@ -48,6 +49,10 @@ void AEntityPlayerCharacter::SetupPlayerInputComponent(class UInputComponent* Pl
 	// Open pause menu
 	// Close current menu and open a related menu
 	PlayerInputComponent->BindAction("PauseGame", IE_Released, this, &AEntityPlayerCharacter::PauseGame).bExecuteWhenPaused = true;
+
+	// Open or close the dev menu
+	// When closing, return the HUD to the player's viewport
+	PlayerInputComponent->BindAction("DevMenu", IE_Released, this, &AEntityPlayerCharacter::OpenDevMenu).bExecuteWhenPaused = true;
 }
 
 
@@ -93,6 +98,13 @@ void AEntityPlayerCharacter::ClientCreateWidgets_Implementation()
 		ValidWidgets.Add(WidgetHudBattleReference);
 	}
 
+	// Create the dev menu
+	if (WidgetMenuDeveloperClass && !WidgetMenuDeveloperReference) {
+		WidgetMenuDeveloperReference = CreateWidget<UWidgetMenuDeveloper>(GetWorld(), WidgetMenuDeveloperClass);
+
+		ValidWidgets.Add(WidgetMenuDeveloperReference);
+	}
+
 	// Create the multiplayer menus
 	if (WidgetMenuFindSessionsClass && !WidgetMenuFindSessionsReference) {
 		WidgetMenuFindSessionsReference = CreateWidget<UWidgetMenuFindSessions>(GetWorld(), WidgetMenuFindSessionsClass);
@@ -124,6 +136,16 @@ void AEntityPlayerCharacter::ClientCreateWidgets_Implementation()
 }
 
 
+void AEntityPlayerCharacter::OpenDevMenu()
+{
+	if (CurrentOpenWidgetClass != WidgetMenuDeveloperClass) {
+		OpenWidgetByClass(WidgetMenuDeveloperClass);
+	} else {
+		OpenWidgetByClass(WidgetHudBattleClass);
+	}
+}
+
+
 void AEntityPlayerCharacter::OpenWidgetByClass(TSubclassOf<UUserWidget> WidgetClass)
 {
 	for (UUserWidget* Widget : ValidWidgets) {
@@ -150,6 +172,11 @@ void AEntityPlayerCharacter::OpenWidgetByClass(TSubclassOf<UUserWidget> WidgetCl
 		GetTheHazardsPlayerController()->SetInputMode(FInputModeGameAndUI());
 
 		UGameplayStatics::SetGamePaused(GetWorld(), true);
+	}
+
+	// Dev Menu: populate the widgets with the player's data
+	if (WidgetClass == WidgetMenuDeveloperClass) {
+		WidgetMenuDeveloperReference->PopulateEditableTextBoxes();
 	}
 
 	// Find Sessions

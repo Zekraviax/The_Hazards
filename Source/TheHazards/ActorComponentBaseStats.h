@@ -35,7 +35,7 @@ public:
 	// Entity's current health points
 	// They die when it reaches zero
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float CurrentHealthPoints = 50.f;
+	float CurrentHealthPoints = 100.f;
 
 	// Entity's maximum aura points
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Replicated)
