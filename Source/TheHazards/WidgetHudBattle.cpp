@@ -23,3 +23,19 @@ void UWidgetHudBattle::UpdateAuraPointsInHud(float Current, float Maximum)
 		AuraPointsProgressBar->SetPercent(Current / Maximum);
 	}
 }
+
+
+void UWidgetHudBattle::UpdateLevelInHud(int Level)
+{
+	if (LevelText) {
+		LevelText->SetText(FText::FromString("Level: " + FString::FromInt(Level)));
+	}
+}
+
+
+void UWidgetHudBattle::UpdateExperiencePointsInHud(float Points)
+{
+	if (CurrentExperiencePointsText) {
+		CurrentExperiencePointsText->SetText(FText::FromString("EXP: " + FString::FromInt(FMath::TruncToInt(Points))));
+	}
+}

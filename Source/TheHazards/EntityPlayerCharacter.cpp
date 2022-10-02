@@ -24,6 +24,7 @@ void AEntityPlayerCharacter::SetupPlayerInputComponent(class UInputComponent* Pl
 
 	// Bind fire event
 	PlayerInputComponent->BindAction("Fire", IE_Pressed, this, &AEntityBaseCharacter::OnFire);
+	PlayerInputComponent->BindAction("Fire", IE_Released, this, &AEntityBaseCharacter::OnStopFiring);
 
 	// Bind movement events
 	PlayerInputComponent->BindAxis("MoveForward", this, &AEntityBaseCharacter::MoveForward);
@@ -91,6 +92,8 @@ void AEntityPlayerCharacter::ClientCreateWidgets_Implementation()
 		// Set HUD variables for the first time
 		WidgetHudBattleReference->UpdateHealthPointsInHud(GetBaseStatsComponent()->CurrentHealthPoints, GetBaseStatsComponent()->MaximumHealthPoints);
 		WidgetHudBattleReference->UpdateAuraPointsInHud(GetBaseStatsComponent()->CurrentAuraPoints, GetBaseStatsComponent()->MaximumAuraPoints);
+		WidgetHudBattleReference->UpdateLevelInHud(GetBaseStatsComponent()->Level);
+		WidgetHudBattleReference->UpdateExperiencePointsInHud(GetBaseStatsComponent()->CurrentExperiencePoints);
 
 		WidgetHudBattleReference->AddToPlayerScreen();
 		CurrentOpenWidgetClass = WidgetHudBattleClass;

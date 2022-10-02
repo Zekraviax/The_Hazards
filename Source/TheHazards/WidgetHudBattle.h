@@ -33,6 +33,15 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Stats, meta = (BindWidget))
 	UProgressBar* AuraPointsProgressBar;
 
+	// Text for displaying level
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Stats, meta = (BindWidget))
+	UTextBlock* LevelText;
+
+	// Text for displaying current experience points
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Stats, meta = (BindWidget))
+	UTextBlock* CurrentExperiencePointsText;
+
+
 	/**
 	 * Called only when the text needs to be changed, as opposed to every tick
 	 * @param Current	The player entity's current health points
@@ -48,4 +57,18 @@ public:
 	 */
 	UFUNCTION()
 	void UpdateAuraPointsInHud(float Current, float Maximum);
+
+	/**
+	 * Called only when the text needs to be changed, as opposed to every tick
+	 * @param Level		The new number to display
+	 */
+	UFUNCTION()
+	void UpdateLevelInHud(int Level);
+
+	/**
+	 * Called only when the text needs to be changed, as opposed to every tick
+	 * @param Points		The new number to display
+	 */
+	UFUNCTION()
+	void UpdateExperiencePointsInHud(float Points);
 };

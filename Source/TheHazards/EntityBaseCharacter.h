@@ -72,6 +72,9 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Gameplay)
 	class UAnimMontage* FireAnimation;
 
+	// TimerHandle for automatically firing a weapon
+	FTimerHandle AutomaticWeaponFireTimerHandle;
+
 	// Used to position the camera off the ground
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Gameplay)
 	float CharacterHeight = 64.f;
@@ -97,6 +100,9 @@ public:
 
 	/** Fires a projectile. */
 	void OnFire();
+
+	// Clear any automatic firing TimerHandles when the fire button is de-pressed
+	void OnStopFiring();
 
 	/** Handles moving forward/backward */
 	void MoveForward(float Val);
@@ -131,6 +137,12 @@ public:
 	// If the player is sprinting when they jump, launch them forward as a Long Jump
 	void OnJumpBegin();
 
+	/**
+	 * Function called when something hurts this entity
+	 * @param Damage	Result of damage formula from attacker
+	 * @param Source	Whichever entity is attacking
+	 */
+	void ReceiveDamage(float Damage, AEntityBaseCharacter* Source);
 
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;

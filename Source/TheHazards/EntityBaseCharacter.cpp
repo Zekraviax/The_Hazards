@@ -7,6 +7,7 @@
 #include "Components/CapsuleComponent.h"
 #include "Components/InputComponent.h"
 #include "DrawDebugHelpers.h"
+#include "EntityPlayerCharacter.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/InputSettings.h"
 #include "Kismet/GameplayStatics.h"
@@ -89,54 +90,6 @@ void AEntityBaseCharacter::BeginPlay()
 }
 
 
-void AEntityBaseCharacter::Tick(float DeltaTime)
-{
-	// Adjust height if crouching
-	if (IsCrouching && LerpValue < 1) {
-		// At a rate of 0.01 per tick, and a rate of 60 ticks per second,
-		// it should take 1.4 seconds to reach maximum crouch
-		LerpValue += LerpRate;
-
-		FirstPersonCameraComponent->SetRelativeLocation(FMath::Lerp(
-			FVector(
-				FirstPersonCameraComponent->GetRelativeLocation().X, 
-				FirstPersonCameraComponent->GetRelativeLocation().Y, 
-				CharacterHeight),
-			FVector(
-				FirstPersonCameraComponent->GetRelativeLocation().X,
-				FirstPersonCameraComponent->GetRelativeLocation().Y,
-				(CharacterHeight / 2)),
-			LerpValue
-		));
-	} else if (!IsCrouching && LerpValue > 0) {
-		LerpValue -= LerpRate;
-
-		FirstPersonCameraComponent->SetRelativeLocation(FMath::Lerp(
-			FVector(
-				FirstPersonCameraComponent->GetRelativeLocation().X,
-				FirstPersonCameraComponent->GetRelativeLocation().Y,
-				CharacterHeight),
-			FVector(
-				FirstPersonCameraComponent->GetRelativeLocation().X,
-				FirstPersonCameraComponent->GetRelativeLocation().Y,
-				(CharacterHeight / 2)),
-			LerpValue
-		));
-	}
-
-	// Drain AP if sprinting
-	// Prevent entity from sprinting if they don't have any AP
-	// If they run out of AP mid-sprint, stop them from sprinting
-	if (IsSprinting && GetMovementComponent()->IsMovingOnGround() && GetVelocity().Size() > 0.f) {
-		if (GetBaseStatsComponent()->CurrentAuraPoints > 0.f) {
-			BaseStatsComponent->UpdateCurrentAuraPoints(LerpRate * -1);
-		} else {
-			OnSprintEnd();
-		}
-	}
-}
-
-
 void AEntityBaseCharacter::OnFire()
 {
 	// Use LineTraces for weapon fire
@@ -180,6 +133,20 @@ void AEntityBaseCharacter::OnFire()
 			AnimInstance->Montage_Play(FireAnimation, 1.f);
 		}
 	}
+
+	// If the line trace connects with a valid entity, deal damage to them
+	if (Cast<AEntityBaseCharacter>(Hit.Actor.Get())) {
+		Cast<AEntityBaseCharacter>(Hit.Actor.Get())->ReceiveDamage(20.f, this);
+	}
+
+	// Set a timer to automatically fire the weapon
+	GetWorld()->GetTimerManager().SetTimer(AutomaticWeaponFireTimerHandle, this, &AEntityBaseCharacter::OnFire, 0.334f, false);
+}
+
+
+void AEntityBaseCharacter::OnStopFiring()
+{
+	GetWorld()->GetTimerManager().ClearTimer(AutomaticWeaponFireTimerHandle);
 }
 
 
@@ -267,5 +234,70 @@ void AEntityBaseCharacter::OnJumpBegin()
 
 	if (IsSprinting) {
 		LaunchCharacter(FVector(GetActorForwardVector().X * 500.f, GetActorForwardVector().Y * 500.f, 750.f), false, false);
+	}
+}
+
+
+void AEntityBaseCharacter::ReceiveDamage(float Damage, AEntityBaseCharacter* Source)
+{
+	GetBaseStatsComponent()->UpdateCurrentHealthPoints(Damage * -1.f);
+
+	// To-Do: Handle deaths for NPCs and players
+	if (GetBaseStatsComponent()->CurrentHealthPoints <= 0.0f) {
+		Destroy();
+
+		if (Cast<AEntityPlayerCharacter>(Source)) {
+			Cast<AEntityPlayerCharacter>(Source)->GetBaseStatsComponent()->UpdateCurrentExperiencePoints(50);
+		}
+	}
+}
+
+
+void AEntityBaseCharacter::Tick(float DeltaTime)
+{
+	// Adjust height if crouching
+	if (IsCrouching && LerpValue < 1) {
+		// At a rate of 0.01 per tick, and a rate of 60 ticks per second,
+		// it should take 1.4 seconds to reach maximum crouch
+		LerpValue += LerpRate;
+
+		FirstPersonCameraComponent->SetRelativeLocation(FMath::Lerp(
+			FVector(
+				FirstPersonCameraComponent->GetRelativeLocation().X,
+				FirstPersonCameraComponent->GetRelativeLocation().Y,
+				CharacterHeight),
+			FVector(
+				FirstPersonCameraComponent->GetRelativeLocation().X,
+				FirstPersonCameraComponent->GetRelativeLocation().Y,
+				(CharacterHeight / 2)),
+			LerpValue
+		));
+	}
+	else if (!IsCrouching && LerpValue > 0) {
+		LerpValue -= LerpRate;
+
+		FirstPersonCameraComponent->SetRelativeLocation(FMath::Lerp(
+			FVector(
+				FirstPersonCameraComponent->GetRelativeLocation().X,
+				FirstPersonCameraComponent->GetRelativeLocation().Y,
+				CharacterHeight),
+			FVector(
+				FirstPersonCameraComponent->GetRelativeLocation().X,
+				FirstPersonCameraComponent->GetRelativeLocation().Y,
+				(CharacterHeight / 2)),
+			LerpValue
+		));
+	}
+
+	// Drain AP if sprinting
+	// Prevent entity from sprinting if they don't have any AP
+	// If they run out of AP mid-sprint, stop them from sprinting
+	if (IsSprinting && GetMovementComponent()->IsMovingOnGround() && GetVelocity().Size() > 0.f) {
+		if (GetBaseStatsComponent()->CurrentAuraPoints > 0.f) {
+			BaseStatsComponent->UpdateCurrentAuraPoints(LerpRate * -1);
+		}
+		else {
+			OnSprintEnd();
+		}
 	}
 }

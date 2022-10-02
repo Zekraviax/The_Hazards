@@ -78,8 +78,6 @@ void UActorComponentBaseStats::UpdateCurrentAuraPoints(float Points)
 	// If the entity lost AP, start the regen timer
 	// If there are any timers already underway, cancel them
 	if (Points < 0.f) {
-		//GetWorld()->GetTimerManager().ClearTimer(AuraPointsRegenTimerHandle);
-
 		GetWorld()->GetTimerManager().SetTimer(AuraPointsRegenTimerHandle, this, &UActorComponentBaseStats::AuraRegenIncrement, AuraRegenDelay, false);
 	}
 }
@@ -98,4 +96,33 @@ void UActorComponentBaseStats::AuraRegenIncrement()
 	UpdateCurrentAuraPoints(AuraPointsRegenPerSecond);
 
 	GetWorld()->GetTimerManager().SetTimer(AuraPointsRegenTimerHandle, this, &UActorComponentBaseStats::AuraRegenIncrement, 1.f, false);
+}
+
+
+void UActorComponentBaseStats::UpdateLevel(int Increment)
+{
+	Level += Increment;
+
+	// Update player's hud
+	if (GetOwnerAsEntityPlayerCharacter()) {
+		GetOwnerAsEntityPlayerCharacter()->WidgetHudBattleReference->UpdateLevelInHud(Level);
+	}
+}
+
+
+void UActorComponentBaseStats::UpdateCurrentExperiencePoints(float Increment)
+{
+	CurrentExperiencePoints += Increment;
+
+	// Level up the player if they reach the exp threshold
+	if (CurrentExperiencePoints >= (Level * 100)) {
+		CurrentExperiencePoints -= (Level * 100);
+
+		UpdateLevel(1);
+	}
+
+	// Update player's hud
+	if (GetOwnerAsEntityPlayerCharacter()) {
+		GetOwnerAsEntityPlayerCharacter()->WidgetHudBattleReference->UpdateExperiencePointsInHud(CurrentExperiencePoints);
+	}
 }

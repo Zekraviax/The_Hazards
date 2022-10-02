@@ -29,36 +29,36 @@ protected:
 
 public:	
 	// Entity's maximum health points
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	float MaximumHealthPoints = 100.f;
 
 	// Entity's current health points
 	// They die when it reaches zero
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	float CurrentHealthPoints = 100.f;
 
 	// Entity's maximum aura points
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Replicated)
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Replicated)
 	float MaximumAuraPoints = 100.f;
 
 	// Entity's current aura points
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Replicated)
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Replicated)
 	float CurrentAuraPoints = 100.f;
 
 	// Amount of time that must pass without losing health before it starts to regenerate
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	float HealthRegenDelay = 5.f;
 
 	// Amound of HP to regenerate per second
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	float HealthPointsRegenPerSecond = 1.f;
 
 	// Amount of time that must pass without losing aura before it starts to regenerate
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	float AuraRegenDelay = 5.f;
 
 	// Amound of AP to regenerate per second
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	float AuraPointsRegenPerSecond = 1.f;
 
 	// TimerHandle for AP regeneration
@@ -66,6 +66,14 @@ public:
 
 	// TimerHandle for AP regeneration
 	FTimerHandle AuraPointsRegenTimerHandle;
+
+	// Player's level
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	int Level = 1;
+
+	// Player's current experience points
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	float CurrentExperiencePoints;
 
 	// Called every frame
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
@@ -100,4 +108,19 @@ public:
 
 	// Return this entity's owner, cast as a EntityPlayerCharacter
 	FORCEINLINE class AEntityPlayerCharacter* GetOwnerAsEntityPlayerCharacter() const { return Cast<AEntityPlayerCharacter>(GetOwner()); }
+
+	/**
+	 * Handles level-up related functions
+	 * @param Increment		Number to add or subtract
+	 */
+	UFUNCTION()
+	void UpdateLevel(int Increment);
+
+
+	/**
+	 * Add or subtract experience points from this entity
+	 * @param Increment		Number to add or subtract
+	 */
+	UFUNCTION()
+	void UpdateCurrentExperiencePoints(float Increment);
 };
