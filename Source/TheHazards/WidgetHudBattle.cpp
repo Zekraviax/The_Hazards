@@ -39,3 +39,19 @@ void UWidgetHudBattle::UpdateExperiencePointsInHud(float Points)
 		CurrentExperiencePointsText->SetText(FText::FromString("EXP: " + FString::FromInt(FMath::TruncToInt(Points))));
 	}
 }
+
+
+void UWidgetHudBattle::UpdateCreditsInHud(int Credits)
+{
+	if (CreditsText) {
+		CreditsText->SetText(FText::FromString("Credits: " + FString::FromInt(Credits)));
+	}
+}
+
+
+void UWidgetHudBattle::UpdateScrapInHud(int Scrap)
+{
+	if (ScrapText) {
+		ScrapText->SetText(FText::FromString("Scrap: " + FString::FromInt(Scrap)));
+	}
+}

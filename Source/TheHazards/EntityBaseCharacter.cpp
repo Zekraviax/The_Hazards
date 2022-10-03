@@ -128,8 +128,7 @@ void AEntityBaseCharacter::OnFire()
 	if (FireAnimation != NULL) {
 		// Get the animation object for the arms mesh
 		UAnimInstance* AnimInstance = Mesh1P->GetAnimInstance();
-		if (AnimInstance != NULL)
-		{
+		if (AnimInstance != NULL) {
 			AnimInstance->Montage_Play(FireAnimation, 1.f);
 		}
 	}
@@ -244,10 +243,14 @@ void AEntityBaseCharacter::ReceiveDamage(float Damage, AEntityBaseCharacter* Sou
 
 	// To-Do: Handle deaths for NPCs and players
 	if (GetBaseStatsComponent()->CurrentHealthPoints <= 0.0f) {
+		// To-Do: For each level, create a pool of entities that are loaded when the level is
+		// When one of those entities dies, return it to the pool instead of destroying it
 		Destroy();
 
 		if (Cast<AEntityPlayerCharacter>(Source)) {
 			Cast<AEntityPlayerCharacter>(Source)->GetBaseStatsComponent()->UpdateCurrentExperiencePoints(50);
+			Cast<AEntityPlayerCharacter>(Source)->GetBaseStatsComponent()->UpdateCredits(50);
+			Cast<AEntityPlayerCharacter>(Source)->GetBaseStatsComponent()->UpdateScrap(50);
 		}
 	}
 }
@@ -272,8 +275,7 @@ void AEntityBaseCharacter::Tick(float DeltaTime)
 				(CharacterHeight / 2)),
 			LerpValue
 		));
-	}
-	else if (!IsCrouching && LerpValue > 0) {
+	} else if (!IsCrouching && LerpValue > 0) {
 		LerpValue -= LerpRate;
 
 		FirstPersonCameraComponent->SetRelativeLocation(FMath::Lerp(
@@ -295,8 +297,7 @@ void AEntityBaseCharacter::Tick(float DeltaTime)
 	if (IsSprinting && GetMovementComponent()->IsMovingOnGround() && GetVelocity().Size() > 0.f) {
 		if (GetBaseStatsComponent()->CurrentAuraPoints > 0.f) {
 			BaseStatsComponent->UpdateCurrentAuraPoints(LerpRate * -1);
-		}
-		else {
+		} else {
 			OnSprintEnd();
 		}
 	}

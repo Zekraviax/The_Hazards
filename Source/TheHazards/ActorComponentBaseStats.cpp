@@ -126,3 +126,25 @@ void UActorComponentBaseStats::UpdateCurrentExperiencePoints(float Increment)
 		GetOwnerAsEntityPlayerCharacter()->WidgetHudBattleReference->UpdateExperiencePointsInHud(CurrentExperiencePoints);
 	}
 }
+
+
+void UActorComponentBaseStats::UpdateCredits(int Increment)
+{
+	Credits += Increment;
+
+	// Update player's hud
+	if (GetOwnerAsEntityPlayerCharacter()) {
+		GetOwnerAsEntityPlayerCharacter()->WidgetHudBattleReference->UpdateCreditsInHud(Credits);
+	}
+}
+
+
+void UActorComponentBaseStats::UpdateScrap(int Increment)
+{
+	Scrap += Increment;
+
+	// Update player's hud
+	if (GetOwnerAsEntityPlayerCharacter()) {
+		GetOwnerAsEntityPlayerCharacter()->WidgetHudBattleReference->UpdateScrapInHud(Scrap);
+	}
+}

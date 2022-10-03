@@ -72,8 +72,18 @@ public:
 	int Level = 1;
 
 	// Player's current experience points
+	// To-Do: Make NPCs give this much exp when killed
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	float CurrentExperiencePoints;
+
+	// Money
+	// NPCs should drop this amount when killed
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	int Credits;
+
+	// Used in weapon crafting
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	int Scrap;
 
 	// Called every frame
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
@@ -116,11 +126,24 @@ public:
 	UFUNCTION()
 	void UpdateLevel(int Increment);
 
-
 	/**
 	 * Add or subtract experience points from this entity
 	 * @param Increment		Number to add or subtract
 	 */
 	UFUNCTION()
 	void UpdateCurrentExperiencePoints(float Increment);
+
+	/**
+	 * Add or subtract money from this entity
+	 * @param Increment		Number to add or subtract
+	 */
+	UFUNCTION()
+	void UpdateCredits(int Increment);
+
+	/**
+	 * Add or subtract money from this entity
+	 * @param Increment		Number to add or subtract
+	 */
+	UFUNCTION()
+	void UpdateScrap(int Increment);
 };

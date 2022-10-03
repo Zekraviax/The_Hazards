@@ -41,6 +41,14 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Stats, meta = (BindWidget))
 	UTextBlock* CurrentExperiencePointsText;
 
+	// Text for displaying money
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Stats, meta = (BindWidget))
+	UTextBlock* CreditsText;
+
+	// Text for displaying scrap
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Stats, meta = (BindWidget))
+	UTextBlock* ScrapText;
+
 
 	/**
 	 * Called only when the text needs to be changed, as opposed to every tick
@@ -71,4 +79,18 @@ public:
 	 */
 	UFUNCTION()
 	void UpdateExperiencePointsInHud(float Points);
+
+	/**
+	 * Called only when the text needs to be changed, as opposed to every tick
+	 * @param Credits		The new number to display
+	 */
+	UFUNCTION()
+	void UpdateCreditsInHud(int Credits);
+
+	/**
+	 * Called only when the text needs to be changed, as opposed to every tick
+	 * @param Scrap		The new number to display
+	 */
+	UFUNCTION()
+	void UpdateScrapInHud(int Scrap);
 };

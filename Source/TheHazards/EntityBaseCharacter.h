@@ -32,15 +32,15 @@ class AEntityBaseCharacter : public ACharacter
 	UPROPERTY(VisibleDefaultsOnly, Category = Mesh)
 	class USceneComponent* FP_MuzzleLocation;
 
-	/** First person camera */
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
-	class UCameraComponent* FirstPersonCameraComponent;
-
 	// Entity's statistics
 	UPROPERTY(VisibleDefaultsOnly, Category = Gameplay)
 	UActorComponentBaseStats* BaseStatsComponent;
 
 public:
+	/** First person camera */
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
+	class UCameraComponent* FirstPersonCameraComponent;
+
 	// Constructor
 	AEntityBaseCharacter();
 

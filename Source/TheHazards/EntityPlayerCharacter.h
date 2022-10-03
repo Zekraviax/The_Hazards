@@ -6,6 +6,7 @@
 #include "EntityPlayerCharacter.generated.h"
 
 
+class AActorInteractable;
 class UWidgetHudBattle;
 class UWidgetMenuDeveloper;
 class UWidgetMenuFindSessions;
@@ -72,6 +73,9 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Interface)
 	TSubclassOf<UUserWidget> CurrentOpenWidgetClass;
 
+	// Save a reference to the actor we're currently looking at so we can interact with it if it's within range
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Gameplay)
+	AActor* LookAtInteractableActor;
 
 protected:
 	// APawn interface
@@ -80,6 +84,9 @@ protected:
 
 
 public:
+	// Called every frame
+	virtual void Tick(float DeltaTime) override;
+
 	// Client side function that creates widgets and adds the HUD to the player's viewport
 	UFUNCTION(Client, Reliable, BlueprintCallable)
 	void ClientCreateWidgets();
@@ -96,4 +103,8 @@ public:
 	// Loop through all valid widgets, opening the designated widget and closing all others
 	UFUNCTION()
 	void OpenWidgetByClass(TSubclassOf<UUserWidget> WidgetClass);
+
+	// Attempt to interact with an entity
+	UFUNCTION()
+	void OnInteract();
 };

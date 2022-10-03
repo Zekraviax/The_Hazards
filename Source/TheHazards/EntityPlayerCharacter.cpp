@@ -2,6 +2,9 @@
 
 
 #include "ActorComponentBaseStats.h"
+#include "ActorInteractable.h"
+#include "Camera/CameraComponent.h"
+#include "InterfaceInteractions.h"
 #include "Kismet/GameplayStatics.h"
 #include "WidgetHudBattle.h"
 #include "WidgetMenuDeveloper.h"
@@ -9,6 +12,28 @@
 #include "WidgetMenuHostSession.h"
 #include "WidgetMenuMultiplayer.h"
 #include "WidgetMenuPause.h"
+
+
+void AEntityPlayerCharacter::Tick(float DeltaTime)
+{
+	// Line trace to find the actor/object the entity is directly looking at
+	FHitResult Hit;
+	TArray<AActor*> ActorsToIgnore;
+
+	FVector TraceStart = FirstPersonCameraComponent->GetComponentLocation();
+	FVector TraceEnd = FirstPersonCameraComponent->GetComponentLocation() + FirstPersonCameraComponent->GetForwardVector() * 10000.0f;
+	UKismetSystemLibrary::LineTraceSingle(this, TraceStart, TraceEnd, UEngineTypes::ConvertToTraceType(ECC_Camera), false, ActorsToIgnore, EDrawDebugTrace::ForOneFrame, Hit, true);
+
+
+	if (Hit.Actor.Get() == NULL && LookAtInteractableActor != NULL) {
+		LookAtInteractableActor = NULL;
+	} else if (Hit.Actor.Get() != LookAtInteractableActor) {
+		// Check if the 'look at' actor implements the interact interface
+		if (Cast<IInterfaceInteractions>(Hit.Actor.Get())) {
+			LookAtInteractableActor = Hit.Actor.Get();
+		}
+	}
+}
 
 
 //////////////////////////////////////////////////////////////////////////
@@ -54,6 +79,9 @@ void AEntityPlayerCharacter::SetupPlayerInputComponent(class UInputComponent* Pl
 	// Open or close the dev menu
 	// When closing, return the HUD to the player's viewport
 	PlayerInputComponent->BindAction("DevMenu", IE_Released, this, &AEntityPlayerCharacter::OpenDevMenu).bExecuteWhenPaused = true;
+
+	// Interact with entities in the world
+	PlayerInputComponent->BindAction("Interact", IE_Released, this, &AEntityPlayerCharacter::OnInteract);
 }
 
 
@@ -94,6 +122,8 @@ void AEntityPlayerCharacter::ClientCreateWidgets_Implementation()
 		WidgetHudBattleReference->UpdateAuraPointsInHud(GetBaseStatsComponent()->CurrentAuraPoints, GetBaseStatsComponent()->MaximumAuraPoints);
 		WidgetHudBattleReference->UpdateLevelInHud(GetBaseStatsComponent()->Level);
 		WidgetHudBattleReference->UpdateExperiencePointsInHud(GetBaseStatsComponent()->CurrentExperiencePoints);
+		WidgetHudBattleReference->UpdateCreditsInHud(GetBaseStatsComponent()->Credits);
+		WidgetHudBattleReference->UpdateScrapInHud(GetBaseStatsComponent()->Scrap);
 
 		WidgetHudBattleReference->AddToPlayerScreen();
 		CurrentOpenWidgetClass = WidgetHudBattleClass;
@@ -185,5 +215,21 @@ void AEntityPlayerCharacter::OpenWidgetByClass(TSubclassOf<UUserWidget> WidgetCl
 	// Find Sessions
 	if (WidgetClass == WidgetMenuFindSessionsClass) {
 		WidgetMenuFindSessionsReference->BeginSearchForSessions();
+	}
+}
+
+
+void AEntityPlayerCharacter::OnInteract()
+{
+	if (LookAtInteractableActor != NULL) {
+		if (Cast<IInterfaceInteractions>(LookAtInteractableActor)) {
+			// To-Do: Check if entity is overlapping with the lookat actor's box collision component
+			TArray<AActor*> OverlappingActors;
+			GetOverlappingActors(OverlappingActors, AActor::StaticClass());
+
+			if (OverlappingActors.Contains(LookAtInteractableActor)) {
+				Cast<IInterfaceInteractions>(LookAtInteractableActor)->Execute_OnInteract(LookAtInteractableActor);
+			}
+		}
 	}
 }
