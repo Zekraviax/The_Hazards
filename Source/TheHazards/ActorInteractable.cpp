@@ -1,6 +1,9 @@
 #include "ActorInteractable.h"
 
 
+#include "EntityBaseCharacter.h"
+
+
 // Sets default values
 AActorInteractable::AActorInteractable()
 {
@@ -25,6 +28,7 @@ void AActorInteractable::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 
 }
+
 
 bool AActorInteractable::OnInteract_Implementation()
 {

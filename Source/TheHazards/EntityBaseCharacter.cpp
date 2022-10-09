@@ -2,6 +2,7 @@
 
 
 #include "ActorComponentBaseStats.h"
+#include "ActorComponentInventory.h"
 #include "Animation/AnimInstance.h"
 #include "Camera/CameraComponent.h"
 #include "Components/CapsuleComponent.h"
@@ -61,6 +62,9 @@ AEntityBaseCharacter::AEntityBaseCharacter()
 	// Gameplay components
 	BaseStatsComponent = CreateDefaultSubobject<UActorComponentBaseStats>(TEXT("EntityBaseStats"));
 	BaseStatsComponent->SetIsReplicated(true);
+
+	InventoryComponent = CreateDefaultSubobject<UActorComponentInventory>(TEXT("EntityInventory"));
+	InventoryComponent->SetIsReplicated(true);
 
 	// Multiplayer
 	bReplicates = true;

@@ -224,12 +224,12 @@ void AEntityPlayerCharacter::OnInteract()
 	if (LookAtInteractableActor != NULL) {
 		if (Cast<IInterfaceInteractions>(LookAtInteractableActor)) {
 			// To-Do: Check if entity is overlapping with the lookat actor's box collision component
-			TArray<AActor*> OverlappingActors;
-			GetOverlappingActors(OverlappingActors, AActor::StaticClass());
+			//TArray<AActor*> OverlappingActors;
+			//GetOverlappingActors(OverlappingActors, AActor::StaticClass());
 
-			if (OverlappingActors.Contains(LookAtInteractableActor)) {
-				Cast<IInterfaceInteractions>(LookAtInteractableActor)->Execute_OnInteract(LookAtInteractableActor);
-			}
+			//if (OverlappingActors.Contains(LookAtInteractableActor)) {
+			Cast<IInterfaceInteractions>(LookAtInteractableActor)->Execute_OnInteract(LookAtInteractableActor);
+			//}
 		}
 	}
 }

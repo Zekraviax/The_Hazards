@@ -2,7 +2,10 @@
 
 
 #include "CoreMinimal.h"
+
 #include "Components/ActorComponent.h"
+#include "TheHazardsVariables.h"
+
 #include "ActorComponentInventory.generated.h"
 
 
@@ -23,5 +26,7 @@ public:
 	// Called every frame
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
-	// To-Do: Create list of items in inventory and their positions
+	// List of weapons in this inventory and their positions on the inventory screen
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TArray<FItemBase> ItemsList;
 };

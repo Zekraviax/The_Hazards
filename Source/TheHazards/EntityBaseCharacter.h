@@ -11,6 +11,7 @@
 
 
 class UActorComponentBaseStats;
+class UActorComponentInventory;
 class UInputComponent;
 class UWidgetHudBattle;
 
@@ -35,6 +36,10 @@ class AEntityBaseCharacter : public ACharacter
 	// Entity's statistics
 	UPROPERTY(VisibleDefaultsOnly, Category = Gameplay)
 	UActorComponentBaseStats* BaseStatsComponent;
+
+	// Holds the entity's items
+	UPROPERTY(VisibleDefaultsOnly, Category = Gameplay)
+	UActorComponentInventory* InventoryComponent;
 
 public:
 	/** First person camera */
@@ -153,6 +158,8 @@ public:
 	FORCEINLINE class UCameraComponent* GetFirstPersonCameraComponent() const { return FirstPersonCameraComponent; }
 	// Return entity's BaseStatsComponent
 	FORCEINLINE class UActorComponentBaseStats* GetBaseStatsComponent() const { return BaseStatsComponent; }
+	// Return entity's InventoryComponent
+	FORCEINLINE class UActorComponentInventory* GetInventoryComponent() const { return InventoryComponent; }
 	// Return this entity's player controller, cast as a TheHazardsPlayerController
 	FORCEINLINE class ATheHazardsPlayerController* GetTheHazardsPlayerController() const { return Cast<ATheHazardsPlayerController>(GetController()); }
 };
