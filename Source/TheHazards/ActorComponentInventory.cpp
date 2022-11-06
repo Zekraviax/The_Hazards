@@ -32,3 +32,9 @@ void UActorComponentInventory::TickComponent(float DeltaTime, ELevelTick TickTyp
 	// ...
 }
 
+
+void UActorComponentInventory::ReturnEquippedWeaponsData(float& DamagePerShot)
+{
+	DamagePerShot = EquippedPrimaryWeapon.WeaponData.DamagePerShot;
+}
+

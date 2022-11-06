@@ -96,8 +96,10 @@ void AEntityBaseCharacter::BeginPlay()
 
 void AEntityBaseCharacter::OnFire()
 {
-	// Use LineTraces for weapon fire
+	float WeaponDamagePerShot = 1.f;
+	float DelayUntilNextAttack = 0.25f;
 
+	// Use LineTraces for to determine where weapon shot will land
 	// Two FHitResults will store all data returned by our line traces
 	FHitResult FirstHit, Hit;
 
@@ -122,6 +124,13 @@ void AEntityBaseCharacter::OnFire()
 
 	// Use DrawDebugLine to show the line trace
 	DrawDebugLine(GetWorld(), TraceStart, TraceEnd, FColor::Red, false, 2.5f);
+
+
+	// Use this entity's inventory component to get their weapon's stats, sounds, etc.
+	if (GetInventoryComponent()) {
+		GetInventoryComponent()->ReturnEquippedWeaponsData(WeaponDamagePerShot);
+	}
+
 	
 	// try and play the sound if specified
 	if (FireSound != NULL) {
@@ -139,11 +148,11 @@ void AEntityBaseCharacter::OnFire()
 
 	// If the line trace connects with a valid entity, deal damage to them
 	if (Cast<AEntityBaseCharacter>(Hit.Actor.Get())) {
-		Cast<AEntityBaseCharacter>(Hit.Actor.Get())->ReceiveDamage(20.f, this);
+		Cast<AEntityBaseCharacter>(Hit.Actor.Get())->ReceiveDamage(WeaponDamagePerShot, this);
 	}
 
 	// Set a timer to automatically fire the weapon
-	GetWorld()->GetTimerManager().SetTimer(AutomaticWeaponFireTimerHandle, this, &AEntityBaseCharacter::OnFire, 0.334f, false);
+	GetWorld()->GetTimerManager().SetTimer(AutomaticWeaponFireTimerHandle, this, &AEntityBaseCharacter::OnFire, DelayUntilNextAttack, false);
 }
 
 
