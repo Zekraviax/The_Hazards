@@ -10,6 +10,7 @@
 #include "WidgetMenuDeveloper.h"
 #include "WidgetMenuFindSessions.h"
 #include "WidgetMenuHostSession.h"
+#include "WidgetMenuInventory.h"
 #include "WidgetMenuMultiplayer.h"
 #include "WidgetMenuPause.h"
 
@@ -82,6 +83,9 @@ void AEntityPlayerCharacter::SetupPlayerInputComponent(class UInputComponent* Pl
 
 	// Interact with entities in the world
 	PlayerInputComponent->BindAction("Interact", IE_Released, this, &AEntityPlayerCharacter::OnInteract);
+
+	// Open or close the inventory
+	PlayerInputComponent->BindAction("Inventory", IE_Released, this, &AEntityPlayerCharacter::OpenInventory).bExecuteWhenPaused = true;
 }
 
 
@@ -164,6 +168,13 @@ void AEntityPlayerCharacter::ClientCreateWidgets_Implementation()
 		ValidWidgets.Add(WidgetMenuPauseReference);
 	}
 
+	// Create other menus
+	if (WidgetMenuInventoryClass && !WidgetMenuInventoryReference) {
+		WidgetMenuInventoryReference = CreateWidget<UWidgetMenuInventory>(GetWorld(), WidgetMenuInventoryClass);
+
+		ValidWidgets.Add(WidgetMenuInventoryReference);
+	}
+
 	// Set the input mode
 	GetTheHazardsPlayerController()->SetInputMode(FInputModeGameOnly());
 }
@@ -179,14 +190,23 @@ void AEntityPlayerCharacter::OpenDevMenu()
 }
 
 
+void AEntityPlayerCharacter::OpenInventory()
+{
+	if (CurrentOpenWidgetClass != WidgetMenuInventoryClass) {
+		OpenWidgetByClass(WidgetMenuInventoryClass);
+	} else {
+		OpenWidgetByClass(WidgetHudBattleClass);
+	}
+}
+
+
 void AEntityPlayerCharacter::OpenWidgetByClass(TSubclassOf<UUserWidget> WidgetClass)
 {
 	for (UUserWidget* Widget : ValidWidgets) {
 		if (Widget->GetClass() == WidgetClass) {
 			Widget->AddToViewport();
 			CurrentOpenWidgetClass = WidgetClass;
-		}
-		else {
+		} else {
 			Widget->RemoveFromViewport();
 		}
 	}

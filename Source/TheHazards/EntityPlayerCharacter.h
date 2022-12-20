@@ -11,6 +11,7 @@ class UWidgetHudBattle;
 class UWidgetMenuDeveloper;
 class UWidgetMenuFindSessions;
 class UWidgetMenuHostSession;
+class UWidgetMenuInventory;
 class UWidgetMenuMultiplayer;
 class UWidgetMenuPause;
 class UWidgetSessionListEntry;
@@ -28,6 +29,8 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Interface)
 	TArray<UUserWidget*> ValidWidgets;
 
+	// Classes
+
 	// Used to add the widget to the players' screen whenever their character is spawned
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Interface)
 	TSubclassOf<UWidgetHudBattle> WidgetHudBattleClass;
@@ -42,6 +45,9 @@ public:
 	TSubclassOf<UWidgetMenuHostSession> WidgetMenuHostSessionClass;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Interface)
+	TSubclassOf<UWidgetMenuInventory> WidgetMenuInventoryClass;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Interface)
 	TSubclassOf<UWidgetMenuMultiplayer> WidgetMenuMultiplayerClass;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Interface)
@@ -49,6 +55,8 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Interface)
 	TSubclassOf<UWidgetSessionListEntry> WidgetSessionListEntryClass;
+
+	// References
 
 	// Keep a reference to the widget itself so we can show and hide it instead of creating and destroying it every time
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Interface)
@@ -62,6 +70,9 @@ public:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Interface)
 	UWidgetMenuHostSession* WidgetMenuHostSessionReference;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Interface)
+	UWidgetMenuInventory* WidgetMenuInventoryReference;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Interface)
 	UWidgetMenuMultiplayer* WidgetMenuMultiplayerReference;
@@ -99,6 +110,10 @@ public:
 	// Or close the dev menu and return the HUD
 	UFUNCTION()
 	void OpenDevMenu();
+
+	// Open or close the inventory and return the HUD
+	UFUNCTION()
+	void OpenInventory();
 
 	// Loop through all valid widgets, opening the designated widget and closing all others
 	UFUNCTION()
