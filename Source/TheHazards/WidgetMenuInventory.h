@@ -5,6 +5,7 @@
 
 #include "Blueprint/UserWidget.h"
 #include "Components/ScrollBox.h"
+#include "Components/UniformGridPanel.h"
 
 #include "WidgetMenuInventory.generated.h"
 
@@ -18,9 +19,14 @@ class THEHAZARDS_API UWidgetMenuInventory : public UUserWidget
 	GENERATED_BODY()
 	
 public:
-	// Scroll Box for displaying all items that aren't equipped
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget))
-	UScrollBox* UnequippedItemsScrollBox;
+	UUniformGridPanel* InventoryItemsGridPanel;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TSubclassOf<UWidgetInventoryListItem> InventoryListItemClass;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	UWidgetInventoryListItem* InventoryListItemReference;
 
 	UFUNCTION(BlueprintCallable)
 	void PopulateUnequippedItemsScrollBox();

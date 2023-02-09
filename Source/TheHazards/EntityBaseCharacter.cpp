@@ -250,6 +250,44 @@ void AEntityBaseCharacter::OnJumpBegin()
 }
 
 
+void AEntityBaseCharacter::OnChargeBeginHeldDown()
+{
+	// Tick up the Charge timer if the player is holding down the Charge button
+	UE_LOG(LogTemp, Warning, TEXT("OnChargeBegin()  /  Entity begun winding up for charge"));
+
+	IsChargeHeldDown = true;
+
+	GetWorld()->GetTimerManager().SetTimer(ChargeTimerHandle, this, &AEntityBaseCharacter::OnChargeEndHeldDown, 10.f, false);
+
+	//GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Blue, FString::Printf(TEXT("IsChargeHeldDown: %s"), IsChargeHeldDown ? TEXT("true") : TEXT("false")));
+}
+
+
+void AEntityBaseCharacter::OnChargeEndHeldDown()
+{
+	// Launch the player forward if they've held the Charge button down for the minimum required time and the button is released
+	UE_LOG(LogTemp, Warning, TEXT("OnChargeEnd()  /  Entity begun sprinting"));
+
+	if (GetCharacterMovement()->MaxWalkSpeed != BaseMoveSpeed * 6) {
+		GetCharacterMovement()->MaxWalkSpeed += BaseMoveSpeed * 6;
+
+		// Set acceleration to be near-instant
+	}
+}
+
+
+void AEntityBaseCharacter::OnChargeTimerReachedZero()
+{
+	UE_LOG(LogTemp, Warning, TEXT("OnChargeEnd()  /  Entity finished sprinting"));
+
+	if (GetCharacterMovement()->MaxWalkSpeed != BaseMoveSpeed) {
+		GetCharacterMovement()->MaxWalkSpeed = BaseMoveSpeed;
+
+		// Set acceleration to be normal
+	}
+}
+
+
 void AEntityBaseCharacter::ReceiveDamage(float Damage, AEntityBaseCharacter* Source)
 {
 	GetBaseStatsComponent()->UpdateCurrentHealthPoints(Damage * -1.f);
@@ -314,4 +352,6 @@ void AEntityBaseCharacter::Tick(float DeltaTime)
 			OnSprintEnd();
 		}
 	}
+
+	if 
 }

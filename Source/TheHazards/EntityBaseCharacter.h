@@ -96,6 +96,15 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Gameplay)
 	bool IsSprinting = false;
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Gameplay)
+	bool IsChargeHeldDown;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Gameplay)
+	bool CallChargeTimerReachedZero = false;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Gameplay)
+	FTimerHandle ChargeTimerHandle;
+
 	// Used for crouching in the Tick() function
 	float LerpValue;
 
@@ -141,6 +150,13 @@ public:
 
 	// If the player is sprinting when they jump, launch them forward as a Long Jump
 	void OnJumpBegin();
+
+	// Special movements
+	void OnChargeBeginHeldDown();
+
+	void OnChargeEndHeldDown();
+
+	void OnChargeTimerReachedZero();
 
 	/**
 	 * Function called when something hurts this entity

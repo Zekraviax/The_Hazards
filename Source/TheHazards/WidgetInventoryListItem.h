@@ -15,6 +15,6 @@ class THEHAZARDS_API UWidgetInventoryListItem : public UUserWidget
 	GENERATED_BODY()
 	
 public:
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget))
-	UTextBlock* ItemNameText;
+	//UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget))
+	//UTextBlock* ItemNameText;
 };

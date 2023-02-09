@@ -34,6 +34,17 @@ void AEntityPlayerCharacter::Tick(float DeltaTime)
 			LookAtInteractableActor = Hit.Actor.Get();
 		}
 	}
+
+
+	// Launch the player forward if they've held the Charge button down for the minimum required time and the button is released
+	GEngine->AddOnScreenDebugMessage(-1, 0.1f, FColor::Red, FString::Printf(TEXT("IsChargeHeldDown: %s"), IsChargeHeldDown ? TEXT("true") : TEXT("false")));
+
+	if (Cast<ATheHazardsPlayerController>(GetController())) {
+
+		//ChargeHeldDownTimer += DeltaTime;
+		//UE_LOG(LogTemp, Warning, TEXT("Tick()  /  Charge Timer: %f"), ChargeHeldDownTimer);
+		UE_LOG(LogTemp, Warning, TEXT("AEntityPlayerCharacter  /  Tick()  /  Charge Timer: %f"), GetWorld()->GetTimerManager().GetTimerElapsed(ChargeTimerHandle));
+	}
 }
 
 
@@ -86,6 +97,10 @@ void AEntityPlayerCharacter::SetupPlayerInputComponent(class UInputComponent* Pl
 
 	// Open or close the inventory
 	PlayerInputComponent->BindAction("Inventory", IE_Released, this, &AEntityPlayerCharacter::OpenInventory).bExecuteWhenPaused = true;
+
+	// Special movements
+	PlayerInputComponent->BindAction("Charge", IE_Pressed, this, &AEntityBaseCharacter::OnChargeBeginHeldDown);
+	PlayerInputComponent->BindAction("Charge", IE_Released, this, &AEntityBaseCharacter::OnChargeEndHeldDown);
 }
 
 
@@ -235,6 +250,11 @@ void AEntityPlayerCharacter::OpenWidgetByClass(TSubclassOf<UUserWidget> WidgetCl
 	// Find Sessions
 	if (WidgetClass == WidgetMenuFindSessionsClass) {
 		WidgetMenuFindSessionsReference->BeginSearchForSessions();
+	}
+
+	// Populate the inventory with the player's items
+	if (WidgetClass == WidgetMenuInventoryClass) {
+		WidgetMenuInventoryReference->PopulateUnequippedItemsScrollBox();
 	}
 }
 
