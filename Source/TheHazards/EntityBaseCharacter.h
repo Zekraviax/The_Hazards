@@ -97,10 +97,10 @@ public:
 	bool IsSprinting = false;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Gameplay)
-	bool IsChargeHeldDown;
+	bool IsCharging = false;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Gameplay)
-	bool CallChargeTimerReachedZero = false;
+	FTimerHandle BeginChargeTimerHandle;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Gameplay)
 	FTimerHandle ChargeTimerHandle;
@@ -135,6 +135,14 @@ public:
 	 * @param Rate	This is a normalized rate, i.e. 1.0 means 100% of desired turn rate
 	 */
 	void LookUpAtRate(float Rate);
+
+	// Our implementation of the function allows us to dynamically change the turn rate
+	// e.g. when charging, the turn and look at rates should be very low
+	// yaw input is for left/right turning
+	void EntityAddYawInput(float Val);
+
+	// pitch input is for up/down turning
+	void EntityAddPitchInput(float Val);
 
 	// On begin crouching, reduce the camera position by half
 	void OnCrouchBegin();

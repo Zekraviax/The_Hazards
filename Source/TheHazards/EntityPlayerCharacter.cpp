@@ -35,14 +35,11 @@ void AEntityPlayerCharacter::Tick(float DeltaTime)
 		}
 	}
 
-
-	// Launch the player forward if they've held the Charge button down for the minimum required time and the button is released
-	GEngine->AddOnScreenDebugMessage(-1, 0.1f, FColor::Red, FString::Printf(TEXT("IsChargeHeldDown: %s"), IsChargeHeldDown ? TEXT("true") : TEXT("false")));
-
 	if (Cast<ATheHazardsPlayerController>(GetController())) {
+		GEngine->AddOnScreenDebugMessage(-1, 0.1f, FColor::Red, FString::Printf(TEXT("Begin Charge Timer: %f"), GetWorld()->GetTimerManager().GetTimerElapsed(BeginChargeTimerHandle)));
+		UE_LOG(LogTemp, Warning, TEXT("AEntityPlayerCharacter  /  Tick()  /  Begin Charge Timer: %f"), GetWorld()->GetTimerManager().GetTimerElapsed(BeginChargeTimerHandle));
 
-		//ChargeHeldDownTimer += DeltaTime;
-		//UE_LOG(LogTemp, Warning, TEXT("Tick()  /  Charge Timer: %f"), ChargeHeldDownTimer);
+		GEngine->AddOnScreenDebugMessage(-1, 0.1f, FColor::Red, FString::Printf(TEXT("Charge Timer: %f"), GetWorld()->GetTimerManager().GetTimerElapsed(ChargeTimerHandle)));
 		UE_LOG(LogTemp, Warning, TEXT("AEntityPlayerCharacter  /  Tick()  /  Charge Timer: %f"), GetWorld()->GetTimerManager().GetTimerElapsed(ChargeTimerHandle));
 	}
 }
@@ -70,9 +67,9 @@ void AEntityPlayerCharacter::SetupPlayerInputComponent(class UInputComponent* Pl
 	// We have 2 versions of the rotation bindings to handle different kinds of devices differently
 	// "turn" handles devices that provide an absolute delta, such as a mouse.
 	// "turnrate" is for devices that we choose to treat as a rate of change, such as an analog joystick
-	PlayerInputComponent->BindAxis("Turn", this, &APawn::AddControllerYawInput);
+	PlayerInputComponent->BindAxis("Turn", this, &AEntityBaseCharacter::EntityAddYawInput);
 	PlayerInputComponent->BindAxis("TurnRate", this, &AEntityBaseCharacter::TurnAtRate);
-	PlayerInputComponent->BindAxis("LookUp", this, &APawn::AddControllerPitchInput);
+	PlayerInputComponent->BindAxis("LookUp", this, &AEntityBaseCharacter::EntityAddPitchInput);
 	PlayerInputComponent->BindAxis("LookUpRate", this, &AEntityBaseCharacter::LookUpAtRate);
 
 	// Begin and end crouching

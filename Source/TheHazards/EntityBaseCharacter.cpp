@@ -196,6 +196,36 @@ void AEntityBaseCharacter::LookUpAtRate(float Rate)
 }
 
 
+void AEntityBaseCharacter::EntityAddYawInput(float Val)
+{
+	if (Val != 0.f && Controller && Controller->IsLocalPlayerController())
+	{
+		APlayerController* const PC = CastChecked<APlayerController>(Controller);
+
+		if (IsCharging) {
+			PC->AddYawInput(Val * 0.1f);
+		} else {
+			PC->AddYawInput(Val);
+		}
+	}
+}
+
+
+void AEntityBaseCharacter::EntityAddPitchInput(float Val)
+{
+	if (Val != 0.f && Controller && Controller->IsLocalPlayerController())
+	{
+		APlayerController* const PC = CastChecked<APlayerController>(Controller);
+
+		if (IsCharging) {
+			PC->AddPitchInput(Val * 0.1f);
+		} else {
+			PC->AddPitchInput(Val);
+		}
+	}
+}
+
+
 void AEntityBaseCharacter::OnCrouchBegin()
 {
 	UE_LOG(LogTemp, Warning, TEXT("OnCrouchBegin()  /  Entity begun crouching"));
@@ -255,11 +285,7 @@ void AEntityBaseCharacter::OnChargeBeginHeldDown()
 	// Tick up the Charge timer if the player is holding down the Charge button
 	UE_LOG(LogTemp, Warning, TEXT("OnChargeBegin()  /  Entity begun winding up for charge"));
 
-	IsChargeHeldDown = true;
-
-	GetWorld()->GetTimerManager().SetTimer(ChargeTimerHandle, this, &AEntityBaseCharacter::OnChargeEndHeldDown, 10.f, false);
-
-	//GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Blue, FString::Printf(TEXT("IsChargeHeldDown: %s"), IsChargeHeldDown ? TEXT("true") : TEXT("false")));
+	GetWorld()->GetTimerManager().SetTimer(BeginChargeTimerHandle, this, &AEntityBaseCharacter::OnChargeEndHeldDown, 10.f, false);
 }
 
 
@@ -268,11 +294,19 @@ void AEntityBaseCharacter::OnChargeEndHeldDown()
 	// Launch the player forward if they've held the Charge button down for the minimum required time and the button is released
 	UE_LOG(LogTemp, Warning, TEXT("OnChargeEnd()  /  Entity begun sprinting"));
 
+	GetWorld()->GetTimerManager().SetTimer(ChargeTimerHandle, this, &AEntityBaseCharacter::OnChargeTimerReachedZero, GetWorld()->GetTimerManager().GetTimerElapsed(BeginChargeTimerHandle), false);
+	GetWorld()->GetTimerManager().ClearTimer(BeginChargeTimerHandle);
+
 	if (GetCharacterMovement()->MaxWalkSpeed != BaseMoveSpeed * 6) {
 		GetCharacterMovement()->MaxWalkSpeed += BaseMoveSpeed * 6;
 
 		// Set acceleration to be near-instant
+
+		// Set turn rate to be very low
+		//BaseTurnRate = 4.5f;
 	}
+
+	IsCharging = true;
 }
 
 
@@ -284,7 +318,15 @@ void AEntityBaseCharacter::OnChargeTimerReachedZero()
 		GetCharacterMovement()->MaxWalkSpeed = BaseMoveSpeed;
 
 		// Set acceleration to be normal
+
+		// Set turn rate to be normal
+		//BaseTurnRate = 45.f;
 	}
+
+	IsCharging = false;
+
+	// To-Do: End a charge if the charger runs in to an obstacle
+	// or if a charging player releases the move forward key
 }
 
 
@@ -353,5 +395,5 @@ void AEntityBaseCharacter::Tick(float DeltaTime)
 		}
 	}
 
-	if 
+	// if 
 }
