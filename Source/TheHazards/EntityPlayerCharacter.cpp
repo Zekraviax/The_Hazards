@@ -35,13 +35,10 @@ void AEntityPlayerCharacter::Tick(float DeltaTime)
 		}
 	}
 
-	if (Cast<ATheHazardsPlayerController>(GetController())) {
-		GEngine->AddOnScreenDebugMessage(-1, 0.1f, FColor::Red, FString::Printf(TEXT("Begin Charge Timer: %f"), GetWorld()->GetTimerManager().GetTimerElapsed(BeginChargeTimerHandle)));
-		UE_LOG(LogTemp, Warning, TEXT("AEntityPlayerCharacter  /  Tick()  /  Begin Charge Timer: %f"), GetWorld()->GetTimerManager().GetTimerElapsed(BeginChargeTimerHandle));
-
-		GEngine->AddOnScreenDebugMessage(-1, 0.1f, FColor::Red, FString::Printf(TEXT("Charge Timer: %f"), GetWorld()->GetTimerManager().GetTimerElapsed(ChargeTimerHandle)));
-		UE_LOG(LogTemp, Warning, TEXT("AEntityPlayerCharacter  /  Tick()  /  Charge Timer: %f"), GetWorld()->GetTimerManager().GetTimerElapsed(ChargeTimerHandle));
-	}
+	//if (Cast<ATheHazardsPlayerController>(GetController())) {
+	//	UE_LOG(LogTemp, Warning, TEXT("AEntityPlayerCharacter  /  Tick()  /  Begin Charge Timer: %f"), GetWorld()->GetTimerManager().GetTimerElapsed(BeginChargeTimerHandle));
+	//	UE_LOG(LogTemp, Warning, TEXT("AEntityPlayerCharacter  /  Tick()  /  Charge Timer: %f"), GetWorld()->GetTimerManager().GetTimerElapsed(ChargeTimerHandle));
+	//}
 }
 
 
@@ -94,10 +91,6 @@ void AEntityPlayerCharacter::SetupPlayerInputComponent(class UInputComponent* Pl
 
 	// Open or close the inventory
 	PlayerInputComponent->BindAction("Inventory", IE_Released, this, &AEntityPlayerCharacter::OpenInventory).bExecuteWhenPaused = true;
-
-	// Special movements
-	PlayerInputComponent->BindAction("Charge", IE_Pressed, this, &AEntityBaseCharacter::OnChargeBeginHeldDown);
-	PlayerInputComponent->BindAction("Charge", IE_Released, this, &AEntityBaseCharacter::OnChargeEndHeldDown);
 }
 
 

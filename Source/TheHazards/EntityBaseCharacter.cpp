@@ -69,8 +69,8 @@ AEntityBaseCharacter::AEntityBaseCharacter()
 	// Multiplayer
 	bReplicates = true;
 
-	// Note: The ProjectileClass and the skeletal mesh/anim blueprints for Mesh1P, FP_Gun, and VR_Gun 
-	// are set in the derived blueprint asset named MyCharacter to avoid direct content references in C++.
+
+	//GetRootComponent()
 }
 
 
@@ -89,8 +89,30 @@ void AEntityBaseCharacter::BeginPlay()
 	// Call the base class  
 	Super::BeginPlay();
 
+	// Bind delegates
+	GetCapsuleComponent()->OnComponentHit.AddDynamic(this, &AEntityBaseCharacter::OnCapsuleComponentHit);
+
 	//Attach gun mesh component to Skeleton, doing it here because the skeleton is not yet created in the constructor
 	FP_Gun->AttachToComponent(Mesh1P, FAttachmentTransformRules(EAttachmentRule::SnapToTarget, true), TEXT("GripPoint"));
+}
+
+
+void AEntityBaseCharacter::OnCapsuleComponentHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
+{
+	GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Red, FString::Printf(TEXT("AEntityBaseCharacter / OnCapsuleComponentHit / Collided With Actor: %s"), *OtherActor->GetName()));
+
+	if (IsCharging) {
+		GetMovementComponent()->Velocity = FVector(0, 0, 0);
+
+		OnChargeTimerReachedZero();
+		GetWorld()->GetTimerManager().ClearTimer(BeginChargeTimerHandle);
+
+		if (Cast<AEntityBaseCharacter>(OtherActor)) {
+			Cast<AEntityBaseCharacter>(OtherActor)->ReceiveDamage(150.f, this);
+		} else {
+			OnStunBegin();
+		}
+	}
 }
 
 
@@ -164,17 +186,24 @@ void AEntityBaseCharacter::OnStopFiring()
 
 void AEntityBaseCharacter::MoveForward(float Value)
 {
-	if (Value != 0.0f)
+	//MoveForwardValue = Value;
+
+	if (Value != 0.0f && !IsStunned)
 	{
 		// add movement in that direction
 		AddMovementInput(GetActorForwardVector(), Value);
+		MoveForwardHeldDown = true;
+	} else {
+		MoveForwardHeldDown = false;
 	}
 }
 
 
 void AEntityBaseCharacter::MoveRight(float Value)
 {
-	if (Value != 0.0f)
+	MoveRightValue = Value;
+
+	if (Value != 0.0f && !IsStunned)
 	{
 		// add movement in that direction
 		AddMovementInput(GetActorRightVector(), Value);
@@ -185,25 +214,29 @@ void AEntityBaseCharacter::MoveRight(float Value)
 void AEntityBaseCharacter::TurnAtRate(float Rate)
 {
 	// calculate delta for this frame from the rate information
-	AddControllerYawInput(Rate * BaseTurnRate * GetWorld()->GetDeltaSeconds());
+	if (!IsStunned) {
+		AddControllerYawInput(Rate * BaseTurnRate * GetWorld()->GetDeltaSeconds());
+	}
 }
 
 
 void AEntityBaseCharacter::LookUpAtRate(float Rate)
 {
 	// calculate delta for this frame from the rate information
-	AddControllerPitchInput(Rate * BaseLookUpRate * GetWorld()->GetDeltaSeconds());
+	if (!IsStunned) {
+		AddControllerPitchInput(Rate * BaseLookUpRate * GetWorld()->GetDeltaSeconds());
+	}
 }
 
 
 void AEntityBaseCharacter::EntityAddYawInput(float Val)
 {
-	if (Val != 0.f && Controller && Controller->IsLocalPlayerController())
+	if (Val != 0.f && Controller && Controller->IsLocalPlayerController() && !IsStunned)
 	{
 		APlayerController* const PC = CastChecked<APlayerController>(Controller);
 
 		if (IsCharging) {
-			PC->AddYawInput(Val * 0.1f);
+			PC->AddYawInput(Val * 0.05f);
 		} else {
 			PC->AddYawInput(Val);
 		}
@@ -213,12 +246,12 @@ void AEntityBaseCharacter::EntityAddYawInput(float Val)
 
 void AEntityBaseCharacter::EntityAddPitchInput(float Val)
 {
-	if (Val != 0.f && Controller && Controller->IsLocalPlayerController())
+	if (Val != 0.f && Controller && Controller->IsLocalPlayerController() && !IsStunned)
 	{
 		APlayerController* const PC = CastChecked<APlayerController>(Controller);
 
 		if (IsCharging) {
-			PC->AddPitchInput(Val * 0.1f);
+			PC->AddPitchInput(Val * 0.05f);
 		} else {
 			PC->AddPitchInput(Val);
 		}
@@ -250,12 +283,18 @@ void AEntityBaseCharacter::OnCrouchEnd()
 
 void AEntityBaseCharacter::OnSprintBegin()
 {
-	UE_LOG(LogTemp, Warning, TEXT("OnSprintBegin()  /  Entity begun sprinting"));
-
 	if (!IsCrouching) {
-		IsSprinting = true;
+		if (MoveForwardHeldDown) {
+			UE_LOG(LogTemp, Warning, TEXT("OnSprintBegin()  /  Entity begun sprinting"));
 
-		GetCharacterMovement()->MaxWalkSpeed = BaseMoveSpeed * 1.5;
+			IsSprinting = true;
+
+			GetCharacterMovement()->MaxWalkSpeed = BaseMoveSpeed * 1.5;
+		} else {
+			if (GetWorld()->GetTimerManager().GetTimerElapsed(BeginChargeTimerHandle) <= 0.f && GetWorld()->GetTimerManager().GetTimerElapsed(ChargeTimerHandle) <= 0.f) {
+				OnChargeBeginHeldDown();
+			}
+		}
 	}
 }
 
@@ -267,6 +306,10 @@ void AEntityBaseCharacter::OnSprintEnd()
 	IsSprinting = false;
 
 	GetCharacterMovement()->MaxWalkSpeed = BaseMoveSpeed;
+
+	if (GetWorld()->GetTimerManager().GetTimerElapsed(BeginChargeTimerHandle) > 0.f) {
+		OnChargeEndHeldDown();
+	}
 }
 
 
@@ -330,6 +373,20 @@ void AEntityBaseCharacter::OnChargeTimerReachedZero()
 }
 
 
+void AEntityBaseCharacter::OnStunBegin()
+{
+	IsStunned = true;
+
+	GetWorld()->GetTimerManager().SetTimer(StunTimerHandle, this, &AEntityBaseCharacter::OnStunEnd, 2.f, false);
+}
+
+
+void AEntityBaseCharacter::OnStunEnd()
+{
+	IsStunned = false;
+}
+
+
 void AEntityBaseCharacter::ReceiveDamage(float Damage, AEntityBaseCharacter* Source)
 {
 	GetBaseStatsComponent()->UpdateCurrentHealthPoints(Damage * -1.f);
@@ -351,6 +408,10 @@ void AEntityBaseCharacter::ReceiveDamage(float Damage, AEntityBaseCharacter* Sou
 
 void AEntityBaseCharacter::Tick(float DeltaTime)
 {
+	if (GetWorld()->GetTimerManager().GetTimerElapsed(StunTimerHandle) >= 0.f) {
+		GEngine->AddOnScreenDebugMessage(-1, 0.15f, FColor::Red, FString::Printf(TEXT("AEntityBaseCharacter / Tick / Stun Timer: %f"), GetWorld()->GetTimerManager().GetTimerElapsed(StunTimerHandle)));
+	}
+
 	// Adjust height if crouching
 	if (IsCrouching && LerpValue < 1) {
 		// At a rate of 0.01 per tick, and a rate of 60 ticks per second,

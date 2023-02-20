@@ -99,11 +99,25 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Gameplay)
 	bool IsCharging = false;
 
+	// Timer for holding the charge
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Gameplay)
 	FTimerHandle BeginChargeTimerHandle;
 
+	// Timer for the charge duration
+	// Charge duration is equal to how long the charge is held
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Gameplay)
 	FTimerHandle ChargeTimerHandle;
+
+	bool IsStunned;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Gameplay)
+	FTimerHandle StunTimerHandle;
+
+	float MoveForwardValue;
+	float MoveRightValue;
+
+	bool MoveForwardHeldDown;
+	bool MoveRightHeldDown;
 
 	// Used for crouching in the Tick() function
 	float LerpValue;
@@ -114,6 +128,9 @@ public:
 
 	/** Fires a projectile. */
 	void OnFire();
+
+	UFUNCTION()
+	void OnCapsuleComponentHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);
 
 	// Clear any automatic firing TimerHandles when the fire button is de-pressed
 	void OnStopFiring();
@@ -161,10 +178,11 @@ public:
 
 	// Special movements
 	void OnChargeBeginHeldDown();
-
 	void OnChargeEndHeldDown();
-
 	void OnChargeTimerReachedZero();
+
+	void OnStunBegin();
+	void OnStunEnd();
 
 	/**
 	 * Function called when something hurts this entity
