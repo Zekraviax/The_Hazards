@@ -68,9 +68,6 @@ AEntityBaseCharacter::AEntityBaseCharacter()
 
 	// Multiplayer
 	bReplicates = true;
-
-
-	//GetRootComponent()
 }
 
 
@@ -99,7 +96,7 @@ void AEntityBaseCharacter::BeginPlay()
 
 void AEntityBaseCharacter::OnCapsuleComponentHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
 {
-	GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Red, FString::Printf(TEXT("AEntityBaseCharacter / OnCapsuleComponentHit / Collided With Actor: %s"), *OtherActor->GetName()));
+	//GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Red, FString::Printf(TEXT("AEntityBaseCharacter / OnCapsuleComponentHit / Collided With Actor: %s"), *OtherActor->GetName()));
 
 	if (IsCharging) {
 		GetMovementComponent()->Velocity = FVector(0, 0, 0);

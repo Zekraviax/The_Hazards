@@ -34,11 +34,6 @@ void AEntityPlayerCharacter::Tick(float DeltaTime)
 			LookAtInteractableActor = Hit.Actor.Get();
 		}
 	}
-
-	//if (Cast<ATheHazardsPlayerController>(GetController())) {
-	//	UE_LOG(LogTemp, Warning, TEXT("AEntityPlayerCharacter  /  Tick()  /  Begin Charge Timer: %f"), GetWorld()->GetTimerManager().GetTimerElapsed(BeginChargeTimerHandle));
-	//	UE_LOG(LogTemp, Warning, TEXT("AEntityPlayerCharacter  /  Tick()  /  Charge Timer: %f"), GetWorld()->GetTimerManager().GetTimerElapsed(ChargeTimerHandle));
-	//}
 }
 
 

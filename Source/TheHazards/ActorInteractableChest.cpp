@@ -26,7 +26,7 @@ void AActorInteractableChest::OnInteract()
 
 			float LaunchX = FMath::RandRange(GetActorLocation().X - 1000.f, GetActorLocation().X + 1000.f);
 			float LaunchY = FMath::RandRange(GetActorLocation().Y - 1000.f, GetActorLocation().Y + 1000.f);
-			float LaunchZ = 5000.f;
+			float LaunchZ = 500.f;
 
 			ItemObject->GetMeshComponent()->AddImpulse(FVector(LaunchX, LaunchY, LaunchZ), NAME_None, true);
 		}
