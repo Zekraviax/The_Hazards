@@ -183,8 +183,6 @@ void AEntityBaseCharacter::OnStopFiring()
 
 void AEntityBaseCharacter::MoveForward(float Value)
 {
-	//MoveForwardValue = Value;
-
 	if (Value != 0.0f && !IsStunned)
 	{
 		// add movement in that direction

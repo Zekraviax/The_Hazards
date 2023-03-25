@@ -26,15 +26,14 @@ public:
 	// Called every frame
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
-	//
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	FItemBase EquippedPrimaryWeapon;
 
-	// List of weapons in this inventory and their positions on the inventory screen
+	// List of weapons in this character's inventory
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TArray<FItemBase> ItemsList;
 
-	// Return equipped weapons' data
+	// ?
 	UFUNCTION()
 	void ReturnEquippedWeaponsData(float& DamagePerShot);
 };

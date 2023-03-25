@@ -89,6 +89,8 @@ public:
 	AActor* LookAtInteractableActor;
 
 protected:
+	virtual void BeginPlay();
+
 	// APawn interface
 	virtual void SetupPlayerInputComponent(UInputComponent* InputComponent) override;
 	// End of APawn interface

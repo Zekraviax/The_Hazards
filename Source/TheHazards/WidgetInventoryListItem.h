@@ -4,7 +4,7 @@
 #include "CoreMinimal.h"
 
 #include "Blueprint/UserWidget.h"
-#include "Components/TextBlock.h"
+#include "TheHazardsVariables.h"
 
 #include "WidgetInventoryListItem.generated.h"
 
@@ -15,6 +15,18 @@ class THEHAZARDS_API UWidgetInventoryListItem : public UUserWidget
 	GENERATED_BODY()
 	
 public:
-	//UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget))
-	//UTextBlock* ItemNameText;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	FItemBase ItemReference;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	EItemSlotTypes ItemSlot = EItemSlotTypes::Default;
+
+	UFUNCTION(BlueprintCallable)
+	void OnCursorBeginHover();
+
+	UFUNCTION(BlueprintCallable)
+	void OnCursorEndHover();
+
+	UFUNCTION(BlueprintCallable)
+	void OnRightClick();
 };

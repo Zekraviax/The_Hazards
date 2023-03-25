@@ -201,6 +201,7 @@ public:
 	// Return entity's BaseStatsComponent
 	FORCEINLINE class UActorComponentBaseStats* GetBaseStatsComponent() const { return BaseStatsComponent; }
 	// Return entity's InventoryComponent
+	// We use this function to get the inventory component because it is a private variable
 	FORCEINLINE class UActorComponentInventory* GetInventoryComponent() const { return InventoryComponent; }
 	// Return this entity's player controller, cast as a TheHazardsPlayerController
 	FORCEINLINE class ATheHazardsPlayerController* GetTheHazardsPlayerController() const { return Cast<ATheHazardsPlayerController>(GetController()); }

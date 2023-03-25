@@ -10,6 +10,7 @@
 #include "WidgetMenuInventory.generated.h"
 
 
+class UActorComponentInventory;
 class UWidgetInventoryListItem;
 
 
@@ -20,7 +21,10 @@ class THEHAZARDS_API UWidgetMenuInventory : public UUserWidget
 	
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget))
-	UUniformGridPanel* InventoryItemsGridPanel;
+	UUniformGridPanel* UnequippedInventoryItemsGridPanel;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget))
+	UUniformGridPanel* EquippedInventoryItemsGridPanel;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TSubclassOf<UWidgetInventoryListItem> InventoryListItemClass;
@@ -30,4 +34,7 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	void PopulateUnequippedItemsScrollBox();
+
+	UFUNCTION(BlueprintCallable)
+	void PopulateEquippedItemsScrollBox(UActorComponentInventory* Inventory);
 };

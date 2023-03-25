@@ -9,17 +9,31 @@
 
 // This class is for declaring variables that are used in a wide variety of other classes
 
+
 UENUM(BlueprintType)
 enum class EItemTypes : uint8
 {
-	EWeapon,
-	EArmour,
-	EConsumable,
-	EAmmo,
-	ECustomPart,
-	EBlueprint,
-	ECollectable,
-	EMiscellaneous
+	Weapon,
+	Armour,
+	Consumable,
+	Ammo,
+	CustomPart,
+	Blueprint,
+	Collectable,
+	Miscellaneous
+};
+
+
+UENUM(BlueprintType)
+enum class EItemSlotTypes : uint8
+{
+	Default,
+	Head,
+	Body,
+	Legs,
+	Boots,
+	PrimaryWeapon,
+	SecondaryWeapon,
 };
 
 
@@ -35,6 +49,11 @@ struct THEHAZARDS_API FWeapon
 	FWeapon()
 	{
 		DamagePerShot = 1.f;
+	}
+
+	FWeapon(float NewDamagePerShot) 
+	{
+		DamagePerShot = NewDamagePerShot;
 	}
 };
 
@@ -54,9 +73,22 @@ struct THEHAZARDS_API FItemBase
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	FWeapon WeaponData;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	EItemSlotTypes EquipSlot;
+
 	FItemBase()
 	{
 		Name = "Default";
-		ItemType = EItemTypes::EWeapon;
+		ItemType = EItemTypes::Weapon;
+		EquipSlot = EItemSlotTypes::PrimaryWeapon;
+	}
+
+	// Constructor for weapons
+	FItemBase(FString NewName, FWeapon NewWeaponData)
+	{
+		Name = NewName;
+		ItemType = EItemTypes::Weapon;
+		WeaponData = NewWeaponData;
+		EquipSlot = EItemSlotTypes::PrimaryWeapon;
 	}
 };
