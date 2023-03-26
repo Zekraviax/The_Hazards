@@ -2,7 +2,6 @@
 
 
 #include "ActorComponentBaseStats.h"
-#include "ActorComponentInventory.h"
 #include "ActorInteractable.h"
 #include "Camera/CameraComponent.h"
 #include "InterfaceInteractions.h"
@@ -33,22 +32,7 @@ void AEntityPlayerCharacter::Tick(float DeltaTime)
 		// Check if the 'look at' actor implements the interact interface
 		if (Cast<IInterfaceInteractions>(Hit.Actor.Get())) {
 			LookAtInteractableActor = Hit.Actor.Get();
-		} else {
-			//UE_LOG(LogTemp, Warning, TEXT("AEntityPlayerCharacter / Tick() / Looked-at actor does not implement the Interactable interface"));
 		}
-	} else {
-		//UE_LOG(LogTemp, Warning, TEXT("AEntityPlayerCharacter / Tick() / Looked-at actor is not equal to the LookAtInteractableActor"));
-	}
-}
-
-
-void AEntityPlayerCharacter::BeginPlay()
-{
-	if (IsValid(GetInventoryComponent())) {
-		// If the inventory component is valid, give the player a default ranged weapon
-		GetInventoryComponent()->EquippedPrimaryWeapon = FItemBase("Default Weapon", FWeapon(12.5f));
-	} else {
-		UE_LOG(LogTemp, Warning, TEXT("AEntityPlayerCharacter / BeginPlay() / Error: InventoryComponent is not valid."));
 	}
 }
 
@@ -256,7 +240,6 @@ void AEntityPlayerCharacter::OpenWidgetByClass(TSubclassOf<UUserWidget> WidgetCl
 	// Populate the inventory with the player's items
 	if (WidgetClass == WidgetMenuInventoryClass) {
 		WidgetMenuInventoryReference->PopulateUnequippedItemsScrollBox();
-		WidgetMenuInventoryReference->PopulateEquippedItemsScrollBox(GetInventoryComponent());
 	}
 }
 
