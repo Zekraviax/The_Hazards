@@ -239,7 +239,8 @@ void AEntityPlayerCharacter::OpenWidgetByClass(TSubclassOf<UUserWidget> WidgetCl
 
 	// Populate the inventory with the player's items
 	if (WidgetClass == WidgetMenuInventoryClass) {
-		WidgetMenuInventoryReference->PopulateUnequippedItemsScrollBox();
+		WidgetMenuInventoryReference->PopulateUnequippedItemsScrollBox(GetInventoryComponent());
+		WidgetMenuInventoryReference->PopulateEquippedItemsScrollBox(GetInventoryComponent());
 	}
 }
 

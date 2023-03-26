@@ -33,7 +33,7 @@ public:
 	UWidgetInventoryListItem* InventoryListItemReference;
 
 	UFUNCTION(BlueprintCallable)
-	void PopulateUnequippedItemsScrollBox();
+	void PopulateUnequippedItemsScrollBox(UActorComponentInventory* Inventory);
 
 	UFUNCTION(BlueprintCallable)
 	void PopulateEquippedItemsScrollBox(UActorComponentInventory* Inventory);

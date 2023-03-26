@@ -50,6 +50,9 @@ void UWidgetItemRightClickMenu::EquipButtonPressed()
 
 		// Overwrite the second item with the temporary item duplicate variable
 		ClickedWidgetInventoryListItem->ItemReference = TemporaryEquippedItemCopy;
+
+		// 'Close' the right click menu
+		this->SetVisibility(ESlateVisibility::Collapsed);
 	} else {
 		UE_LOG(LogTemp, Warning, TEXT("UWidgetItemRightClickMenu / EquipButtonPressed() / Error: Could not find InventoryListItem widget to swap items."));
 	}

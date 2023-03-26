@@ -3,5 +3,11 @@
 
 void UWIdgetItemDescription::SetDescriptionText(FItemBase ItemReference)
 {
-	Description->SetText(FText::FromString("Name: " + ItemReference.Name));
+	FString DescriptionString = "Name: " + ItemReference.Name;
+
+	if (ItemReference.ItemType == EItemTypes::Weapon) {
+		DescriptionString.Append("\nDamage Per Shot: " + FString::SanitizeFloat(ItemReference.WeaponData.DamagePerShot));
+	}
+
+	Description->SetText(FText::FromString(DescriptionString));
 }

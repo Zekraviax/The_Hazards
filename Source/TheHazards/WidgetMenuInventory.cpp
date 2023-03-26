@@ -6,12 +6,15 @@
 #include "WidgetInventoryListItem.h"
 
 
-void UWidgetMenuInventory::PopulateUnequippedItemsScrollBox()
+void UWidgetMenuInventory::PopulateUnequippedItemsScrollBox(UActorComponentInventory* Inventory)
 {
 	if (IsValid(InventoryListItemClass)) {
 		for (int i = 0; i <= 11; i++) {
 			InventoryListItemReference = CreateWidget<UWidgetInventoryListItem>(GetWorld(), InventoryListItemClass);
-			//InventoryListItemReference->ItemSlot = EItemSlotTypes::Default;
+
+			if (Inventory->ItemsList.IsValidIndex(i)) {
+				InventoryListItemReference->ItemReference = Inventory->ItemsList[i];
+			}
 
 			UUniformGridSlot* GridSlot = UnequippedInventoryItemsGridPanel->AddChildToUniformGrid(InventoryListItemReference, (i % 4), (i / 4));
 
@@ -26,21 +29,13 @@ void UWidgetMenuInventory::PopulateUnequippedItemsScrollBox()
 
 void UWidgetMenuInventory::PopulateEquippedItemsScrollBox(UActorComponentInventory* Inventory)
 {
-	//if (IsValid(InventoryListItemClass)) {
-	//	for (int i = 0; i <= 11; i++) {
-	//		InventoryListItemReference = CreateWidget<UWidgetInventoryListItem>(GetWorld(), InventoryListItemClass);
+	for (int i = 0; i < EquippedInventoryItemsGridPanel->GetAllChildren().Num(); i++) {
+		InventoryListItemReference = Cast<UWidgetInventoryListItem>(EquippedInventoryItemsGridPanel->GetChildAt(i));
 
-	//		UUniformGridSlot* GridSlot = EquippedInventoryItemsGridPanel->AddChildToUniformGrid(InventoryListItemReference, (i % 4), (i / 4));
-
-	//		GridSlot->SetHorizontalAlignment(EHorizontalAlignment::HAlign_Fill);
-	//		GridSlot->SetVerticalAlignment(EVerticalAlignment::VAlign_Fill);
-
-	//		// Populate pre-determined slot with equipped items
-	//		if (i == 0) {
-	//			InventoryListItemReference->ItemReference = Inventory->EquippedPrimaryWeapon;
-	//		}
-	//	}
-	//} else {
-	//	UE_LOG(LogTemp, Warning, TEXT("UWidgetMenuInventory / PopulateEquippedItemsScrollBox() / Error: InventoryListItemClass is not valid."));
-	//}
+		if (InventoryListItemReference->ItemSlot == EItemSlotTypes::PrimaryWeapon) {
+			InventoryListItemReference->ItemReference = Inventory->EquippedPrimaryWeapon;
+		} else {
+			UE_LOG(LogTemp, Warning, TEXT("UWidgetMenuInventory / PopulateUnequippedItemsScrollBox() / Error: InventoryListItem widget does not have a proper ItemSlot."));
+		}
+	}
 }
