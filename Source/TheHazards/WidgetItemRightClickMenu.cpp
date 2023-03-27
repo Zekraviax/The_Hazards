@@ -1,9 +1,11 @@
 #include "WidgetItemRightClickMenu.h"
 
 
+#include "ActorComponentInventory.h"
 #include "Blueprint/WidgetBlueprintLibrary.h"
 #include "TheHazardsVariables.h"
 #include "WidgetInventoryListItem.h"
+#include "WidgetMenuInventory.h"
 
 
 void UWidgetItemRightClickMenu::ShowHideEquipUnequipButtons(bool ShowEquipButton)
@@ -50,6 +52,19 @@ void UWidgetItemRightClickMenu::EquipButtonPressed()
 
 		// Overwrite the second item with the temporary item duplicate variable
 		ClickedWidgetInventoryListItem->ItemReference = TemporaryEquippedItemCopy;
+
+		// Apply the new data to the relevant variable
+		TArray<UUserWidget*> FoundInventoryWidgets;
+		UWidgetBlueprintLibrary::GetAllWidgetsOfClass(GetWorld(), FoundInventoryWidgets, UWidgetMenuInventory::StaticClass(), false);
+		if (FoundInventoryWidgets.Num() > 0) {
+			if (Cast<UWidgetMenuInventory>(FoundInventoryWidgets[0])) {
+				UWidgetMenuInventory* InventoryWidget = Cast<UWidgetMenuInventory>(FoundInventoryWidgets[0]);
+
+				if (SelectedItem.ItemType == EItemTypes::Weapon) {
+					InventoryWidget->OwningEntityInventoryComponent->EquippedPrimaryWeapon = SelectedItem;
+				}
+			}
+		}
 
 		// 'Close' the right click menu
 		this->SetVisibility(ESlateVisibility::Collapsed);

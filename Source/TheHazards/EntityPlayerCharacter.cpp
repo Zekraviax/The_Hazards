@@ -171,6 +171,7 @@ void AEntityPlayerCharacter::ClientCreateWidgets_Implementation()
 	// Create other menus
 	if (WidgetMenuInventoryClass && !WidgetMenuInventoryReference) {
 		WidgetMenuInventoryReference = CreateWidget<UWidgetMenuInventory>(GetWorld(), WidgetMenuInventoryClass);
+		WidgetMenuInventoryReference->OwningEntityInventoryComponent = GetInventoryComponent();
 
 		ValidWidgets.Add(WidgetMenuInventoryReference);
 	}

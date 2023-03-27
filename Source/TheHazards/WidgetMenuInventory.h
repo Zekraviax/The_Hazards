@@ -32,6 +32,9 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	UWidgetInventoryListItem* InventoryListItemReference;
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	UActorComponentInventory* OwningEntityInventoryComponent;
+
 	UFUNCTION(BlueprintCallable)
 	void PopulateUnequippedItemsScrollBox(UActorComponentInventory* Inventory);
 
