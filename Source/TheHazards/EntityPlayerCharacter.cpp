@@ -7,6 +7,7 @@
 #include "InterfaceInteractions.h"
 #include "Kismet/GameplayStatics.h"
 #include "WidgetHudBattle.h"
+#include "WidgetMenuCraftingWindow.h"
 #include "WidgetMenuDeveloper.h"
 #include "WidgetMenuFindSessions.h"
 #include "WidgetMenuHostSession.h"
@@ -86,6 +87,8 @@ void AEntityPlayerCharacter::SetupPlayerInputComponent(class UInputComponent* Pl
 
 	// Open or close the inventory
 	PlayerInputComponent->BindAction("Inventory", IE_Released, this, &AEntityPlayerCharacter::OpenInventory).bExecuteWhenPaused = true;
+
+	PlayerInputComponent->BindAction("CraftingWindow", IE_Released, this, &AEntityPlayerCharacter::OpenCraftingWindow).bExecuteWhenPaused = true;
 }
 
 
@@ -135,7 +138,6 @@ void AEntityPlayerCharacter::ClientCreateWidgets_Implementation()
 		ValidWidgets.Add(WidgetHudBattleReference);
 	}
 
-	// Create the dev menu
 	if (WidgetMenuDeveloperClass && !WidgetMenuDeveloperReference) {
 		WidgetMenuDeveloperReference = CreateWidget<UWidgetMenuDeveloper>(GetWorld(), WidgetMenuDeveloperClass);
 
@@ -176,6 +178,12 @@ void AEntityPlayerCharacter::ClientCreateWidgets_Implementation()
 		ValidWidgets.Add(WidgetMenuInventoryReference);
 	}
 
+	if (WidgetMenuCraftingWindowClass && !WidgetMenuCraftingWindowReference) {
+		WidgetMenuCraftingWindowReference = CreateWidget<UWidgetMenuCraftingWindow>(GetWorld(), WidgetMenuCraftingWindowClass);
+
+		ValidWidgets.Add(WidgetMenuCraftingWindowReference);
+	}
+
 	// Set the input mode
 	GetTheHazardsPlayerController()->SetInputMode(FInputModeGameOnly());
 }
@@ -196,6 +204,17 @@ void AEntityPlayerCharacter::OpenInventory()
 	if (CurrentOpenWidgetClass != WidgetMenuInventoryClass) {
 		OpenWidgetByClass(WidgetMenuInventoryClass);
 	} else {
+		OpenWidgetByClass(WidgetHudBattleClass);
+	}
+}
+
+
+void AEntityPlayerCharacter::OpenCraftingWindow()
+{
+	if (CurrentOpenWidgetClass != WidgetMenuCraftingWindowClass) {
+		OpenWidgetByClass(WidgetMenuCraftingWindowClass);
+	}
+	else {
 		OpenWidgetByClass(WidgetHudBattleClass);
 	}
 }

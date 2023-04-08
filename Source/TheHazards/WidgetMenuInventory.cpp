@@ -9,14 +9,16 @@
 void UWidgetMenuInventory::PopulateUnequippedItemsScrollBox(UActorComponentInventory* Inventory)
 {
 	if (IsValid(InventoryListItemClass)) {
-		for (int i = 0; i <= 11; i++) {
+		for (int i = 0; i < Inventory->ItemsList.Num(); i++) {
 			InventoryListItemReference = CreateWidget<UWidgetInventoryListItem>(GetWorld(), InventoryListItemClass);
 
 			if (Inventory->ItemsList.IsValidIndex(i)) {
 				InventoryListItemReference->ItemReference = Inventory->ItemsList[i];
+			} else {
+				UE_LOG(LogTemp, Warning, TEXT("UWidgetMenuInventory / PopulateUnequippedItemsScrollBox() / Error: Inventory ItemsList at index %d is not valid."), i);
 			}
 
-			UUniformGridSlot* GridSlot = UnequippedInventoryItemsGridPanel->AddChildToUniformGrid(InventoryListItemReference, (i % 4), (i / 4));
+			UUniformGridSlot* GridSlot = UnequippedInventoryItemsGridPanel->AddChildToUniformGrid(InventoryListItemReference, (i / 4), (i % 4));
 
 			GridSlot->SetHorizontalAlignment(EHorizontalAlignment::HAlign_Fill);
 			GridSlot->SetVerticalAlignment(EVerticalAlignment::VAlign_Fill);
@@ -35,7 +37,18 @@ void UWidgetMenuInventory::PopulateEquippedItemsScrollBox(UActorComponentInvento
 		if (InventoryListItemReference->ItemSlot == EItemSlotTypes::PrimaryWeapon) {
 			InventoryListItemReference->ItemReference = Inventory->EquippedPrimaryWeapon;
 		} else {
-			UE_LOG(LogTemp, Warning, TEXT("UWidgetMenuInventory / PopulateUnequippedItemsScrollBox() / Error: InventoryListItem widget does not have a proper ItemSlot."));
+			//UE_LOG(LogTemp, Warning, TEXT("UWidgetMenuInventory / PopulateUnequippedItemsScrollBox() / Error: InventoryListItem widget does not have a proper ItemSlotType."));
 		}
 	}
+}
+
+
+void UWidgetMenuInventory::OnCursorBeginOverItemSlot()
+{
+
+}
+
+void UWidgetMenuInventory::OnCursorEndOverItemSlot()
+{
+
 }

@@ -17,10 +17,22 @@ enum class EItemTypes : uint8
 	Armour,
 	Consumable,
 	Ammo,
-	CustomPart,
+	Part,
 	Blueprint,
 	Collectable,
-	Miscellaneous
+	Miscellaneous,
+	Default
+};
+
+
+UENUM(BlueprintType)
+enum class EPartTypes : uint8
+{
+	Barrel,
+	Trigger,
+	RecoilPad,
+	Magazine,
+	Grip
 };
 
 
@@ -57,6 +69,26 @@ struct THEHAZARDS_API FWeapon
 	}
 };
 
+USTRUCT(BlueprintType)
+struct THEHAZARDS_API FPart
+{
+	GENERATED_BODY()
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	EPartTypes PartType;
+
+	FPart()
+	{
+		PartType = EPartTypes::Barrel;
+	}
+
+	FPart(EPartTypes NewPartType)
+	{
+		PartType = NewPartType;
+	}
+};
+
+
 
 // Items
 USTRUCT(BlueprintType)
@@ -71,15 +103,18 @@ struct THEHAZARDS_API FItemBase
 	EItemTypes ItemType;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	EItemSlotTypes EquipSlot;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	FWeapon WeaponData;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	EItemSlotTypes EquipSlot;
+	FPart PartData;
 
 	FItemBase()
 	{
 		Name = "Default";
-		ItemType = EItemTypes::Weapon;
+		ItemType = EItemTypes::Default;
 		EquipSlot = EItemSlotTypes::PrimaryWeapon;
 	}
 
@@ -90,5 +125,13 @@ struct THEHAZARDS_API FItemBase
 		ItemType = EItemTypes::Weapon;
 		WeaponData = NewWeaponData;
 		EquipSlot = EItemSlotTypes::PrimaryWeapon;
+	}
+
+	// Constructor for parts
+	FItemBase(FString NewName, FPart NewPartData)
+	{
+		Name = NewName;
+		ItemType = EItemTypes::Part;
+		PartData = NewPartData;
 	}
 };

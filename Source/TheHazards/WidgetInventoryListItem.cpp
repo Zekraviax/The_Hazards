@@ -11,10 +11,10 @@ void UWidgetInventoryListItem::OnCursorBeginHover()
 	// Find any item description widgets
 	TArray<UUserWidget*> FoundDescriptionWidgets;
 
-	UWidgetBlueprintLibrary::GetAllWidgetsOfClass(GetWorld(), FoundDescriptionWidgets, UWIdgetItemDescription::StaticClass(), false);
+	UWidgetBlueprintLibrary::GetAllWidgetsOfClass(GetWorld(), FoundDescriptionWidgets, UWidgetItemDescription::StaticClass(), false);
 
 	if (FoundDescriptionWidgets.Num() > 0) {
-		UWIdgetItemDescription* FoundDescriptionWidget = Cast<UWIdgetItemDescription>(FoundDescriptionWidgets[0]);
+		UWidgetItemDescription* FoundDescriptionWidget = Cast<UWidgetItemDescription>(FoundDescriptionWidgets[0]);
 
 		FoundDescriptionWidget->SetVisibility(ESlateVisibility::SelfHitTestInvisible);
 
@@ -31,16 +31,17 @@ void UWidgetInventoryListItem::OnCursorEndHover()
 	// Find any item description widgets
 	TArray<UUserWidget*> FoundDescriptionWidgets;
 
-	UWidgetBlueprintLibrary::GetAllWidgetsOfClass(GetWorld(), FoundDescriptionWidgets, UWIdgetItemDescription::StaticClass(), false);
+	UWidgetBlueprintLibrary::GetAllWidgetsOfClass(GetWorld(), FoundDescriptionWidgets, UWidgetItemDescription::StaticClass(), false);
 
 	if (FoundDescriptionWidgets.Num() > 0) {
-		UWIdgetItemDescription* FoundDescriptionWidget = Cast<UWIdgetItemDescription>(FoundDescriptionWidgets[0]);
+		UWidgetItemDescription* FoundDescriptionWidget = Cast<UWidgetItemDescription>(FoundDescriptionWidgets[0]);
 
 		FoundDescriptionWidget->SetVisibility(ESlateVisibility::Collapsed);
 	} else {
 		UE_LOG(LogTemp, Warning, TEXT("UWidgetInventoryListItem / OnCursorEndHover() / Error: No ItemDescription widgets could be found."));
 	}
 }
+
 
 void UWidgetInventoryListItem::OnRightClick()
 {

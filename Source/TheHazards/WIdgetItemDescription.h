@@ -7,11 +7,11 @@
 #include "Blueprint/UserWidget.h"
 #include "TheHazardsVariables.h"
 
-#include "WIdgetItemDescription.generated.h"
+#include "WidgetItemDescription.generated.h"
 
 
 UCLASS()
-class THEHAZARDS_API UWIdgetItemDescription : public UUserWidget
+class THEHAZARDS_API UWidgetItemDescription : public UUserWidget
 {
 	GENERATED_BODY()
 	

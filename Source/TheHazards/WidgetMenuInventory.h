@@ -40,4 +40,10 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	void PopulateEquippedItemsScrollBox(UActorComponentInventory* Inventory);
+
+	UFUNCTION()
+	void OnCursorBeginOverItemSlot();
+
+	UFUNCTION()
+	void OnCursorEndOverItemSlot();
 };

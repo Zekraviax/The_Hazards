@@ -8,6 +8,7 @@
 
 class AActorInteractable;
 class UWidgetHudBattle;
+class UWidgetMenuCraftingWindow;
 class UWidgetMenuDeveloper;
 class UWidgetMenuFindSessions;
 class UWidgetMenuHostSession;
@@ -36,6 +37,9 @@ public:
 	TSubclassOf<UWidgetHudBattle> WidgetHudBattleClass;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Interface)
+	TSubclassOf<UWidgetMenuCraftingWindow> WidgetMenuCraftingWindowClass;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Interface)
 	TSubclassOf<UWidgetMenuDeveloper> WidgetMenuDeveloperClass;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Interface)
@@ -61,6 +65,9 @@ public:
 	// Keep a reference to the widget itself so we can show and hide it instead of creating and destroying it every time
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Interface)
 	UWidgetHudBattle* WidgetHudBattleReference;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Interface)
+	UWidgetMenuCraftingWindow* WidgetMenuCraftingWindowReference;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Interface)
 	UWidgetMenuDeveloper* WidgetMenuDeveloperReference;
@@ -114,6 +121,9 @@ public:
 	// Open or close the inventory and return the HUD
 	UFUNCTION()
 	void OpenInventory();
+
+	UFUNCTION()
+	void OpenCraftingWindow();
 
 	// Loop through all valid widgets, opening the designated widget and closing all others
 	UFUNCTION()
