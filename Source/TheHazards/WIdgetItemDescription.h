@@ -3,8 +3,8 @@
 
 #include "CoreMinimal.h"
 
-#include "Components/TextBlock.h"
 #include "Blueprint/UserWidget.h"
+#include "Components/TextBlock.h"
 #include "TheHazardsVariables.h"
 
 #include "WidgetItemDescription.generated.h"

@@ -26,6 +26,13 @@ enum class EItemTypes : uint8
 
 
 UENUM(BlueprintType)
+enum class EWeaponTypes : uint8
+{
+	Shotgun
+};
+
+
+UENUM(BlueprintType)
 enum class EPartTypes : uint8
 {
 	Barrel,
@@ -54,6 +61,9 @@ USTRUCT(BlueprintType)
 struct THEHAZARDS_API FWeapon
 {
 	GENERATED_BODY()
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	EWeaponTypes WeaponType;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float DamagePerShot;
@@ -89,6 +99,55 @@ struct THEHAZARDS_API FPart
 };
 
 
+USTRUCT(BlueprintType)
+struct THEHAZARDS_API FCraftingBlueprintSlotData
+{
+	GENERATED_BODY()
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	int Column;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	int Row;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	EPartTypes PartType;
+
+	FCraftingBlueprintSlotData()
+	{
+		Column = 0;
+		Row = 0;
+		PartType = EPartTypes::Barrel;
+	}
+
+	FCraftingBlueprintSlotData(int InColumn, int InRow, EPartTypes InPartType)
+	{
+		Column = InColumn;
+		Row = InRow;
+		PartType = InPartType;
+	}
+};
+
+
+USTRUCT(BlueprintType)
+struct THEHAZARDS_API FCraftingBlueprint
+{
+	GENERATED_BODY()
+
+	// Array of slots that this blueprint uses in the crafting window
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TArray<FCraftingBlueprintSlotData> CraftingWindowSlots;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	EWeaponTypes WeaponType;
+
+	FCraftingBlueprint()
+	{
+		WeaponType = EWeaponTypes::Shotgun;
+	}
+};
+
+
 
 // Items
 USTRUCT(BlueprintType)
@@ -110,6 +169,9 @@ struct THEHAZARDS_API FItemBase
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	FPart PartData;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FCraftingBlueprint BlueprintData;
 
 	FItemBase()
 	{
@@ -133,5 +195,13 @@ struct THEHAZARDS_API FItemBase
 		Name = NewName;
 		ItemType = EItemTypes::Part;
 		PartData = NewPartData;
+	}
+
+	// Constructor for blueprints
+	FItemBase(FString NewName, FCraftingBlueprint NewBlueprintData)
+	{
+		Name = NewName;
+		ItemType = EItemTypes::Blueprint;
+		BlueprintData = NewBlueprintData;
 	}
 };

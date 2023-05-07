@@ -2,6 +2,8 @@
 
 
 #include "Blueprint/WidgetBlueprintLibrary.h"
+#include "WidgetCraftingWindowDescription.h"
+#include "WidgetCraftingWindowItemSlot.h"
 #include "WidgetMenuCraftingWindow.h"
 
 
@@ -43,5 +45,27 @@ void UWidgetCraftingWindowItemSlot::OnMouseHoverEnd()
 		}
 	} else {
 		UE_LOG(LogTemp, Warning, TEXT("UWidgetCraftingWindowItemSlot / OnMouseHoverEnd() / Error: Could not find any UWidgetMenuCraftingWindow widgets."));
+	}
+}
+
+
+void UWidgetCraftingWindowItemSlot::OnMouseButtonDownBegin()
+{
+	if (ItemData.ItemType != EItemTypes::Default) {
+		// Hide description widgets
+		TArray<UUserWidget*> FoundDescriptionWidgets;
+
+		UWidgetBlueprintLibrary::GetAllWidgetsOfClass(GetWorld(), FoundDescriptionWidgets, UWidgetCraftingWindowDescription::StaticClass(), false);
+		if (FoundDescriptionWidgets.Num() > 0) {
+			FoundDescriptionWidgets[0]->SetVisibility(ESlateVisibility::Collapsed);
+		}
+
+		// Create a clone of this widget that follows the player's mouse cursor
+		UWidgetCraftingWindowItemSlot* DragItemSlot = CreateWidget<UWidgetCraftingWindowItemSlot>(GetWorld(), this->GetClass());
+		DragItemSlot->FollowCursor = true;
+		DragItemSlot->AddToViewport();
+		
+	} else {
+		// ItemType is default, which means there should be no item in this slot
 	}
 }

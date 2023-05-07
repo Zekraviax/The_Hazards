@@ -180,6 +180,7 @@ void AEntityPlayerCharacter::ClientCreateWidgets_Implementation()
 
 	if (WidgetMenuCraftingWindowClass && !WidgetMenuCraftingWindowReference) {
 		WidgetMenuCraftingWindowReference = CreateWidget<UWidgetMenuCraftingWindow>(GetWorld(), WidgetMenuCraftingWindowClass);
+		WidgetMenuCraftingWindowReference->OwningEntityInventoryComponent = GetInventoryComponent();
 
 		ValidWidgets.Add(WidgetMenuCraftingWindowReference);
 	}
@@ -213,8 +214,7 @@ void AEntityPlayerCharacter::OpenCraftingWindow()
 {
 	if (CurrentOpenWidgetClass != WidgetMenuCraftingWindowClass) {
 		OpenWidgetByClass(WidgetMenuCraftingWindowClass);
-	}
-	else {
+	} else {
 		OpenWidgetByClass(WidgetHudBattleClass);
 	}
 }
@@ -261,6 +261,10 @@ void AEntityPlayerCharacter::OpenWidgetByClass(TSubclassOf<UUserWidget> WidgetCl
 	if (WidgetClass == WidgetMenuInventoryClass) {
 		WidgetMenuInventoryReference->PopulateUnequippedItemsScrollBox(GetInventoryComponent());
 		WidgetMenuInventoryReference->PopulateEquippedItemsScrollBox(GetInventoryComponent());
+	}
+
+	if (WidgetClass == WidgetMenuCraftingWindowClass) {
+		WidgetMenuCraftingWindowReference->PopulateScrollBoxes();
 	}
 }
 
