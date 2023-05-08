@@ -180,7 +180,7 @@ void AEntityPlayerCharacter::ClientCreateWidgets_Implementation()
 
 	if (WidgetMenuCraftingWindowClass && !WidgetMenuCraftingWindowReference) {
 		WidgetMenuCraftingWindowReference = CreateWidget<UWidgetMenuCraftingWindow>(GetWorld(), WidgetMenuCraftingWindowClass);
-		WidgetMenuCraftingWindowReference->OwningEntityInventoryComponent = GetInventoryComponent();
+		//WidgetMenuCraftingWindowReference->OwningEntityInventoryComponent = GetInventoryComponent();
 
 		ValidWidgets.Add(WidgetMenuCraftingWindowReference);
 	}
