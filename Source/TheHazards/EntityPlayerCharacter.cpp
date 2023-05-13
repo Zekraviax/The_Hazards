@@ -180,6 +180,8 @@ void AEntityPlayerCharacter::ClientCreateWidgets_Implementation()
 
 	if (WidgetMenuCraftingWindowClass && !WidgetMenuCraftingWindowReference) {
 		WidgetMenuCraftingWindowReference = CreateWidget<UWidgetMenuCraftingWindow>(GetWorld(), WidgetMenuCraftingWindowClass);
+
+		// To-do: Figure out why this line causes the game to crash when inspecting the player BP while playing-in-editor
 		//WidgetMenuCraftingWindowReference->OwningEntityInventoryComponent = GetInventoryComponent();
 
 		ValidWidgets.Add(WidgetMenuCraftingWindowReference);

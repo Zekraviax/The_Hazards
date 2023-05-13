@@ -41,8 +41,10 @@ void UWidgetCraftingWindowItemScrollBox::OnMouseButtonDownBegin()
 
 void UWidgetCraftingWindowItemScrollBox::OnDragItemBegin()
 {
-	// Hide description widgets
-	if (false) {
+	// Hide description widgets (?)
+	bool HideDescriptionWidgets = true;
+
+	if (HideDescriptionWidgets) {
 		TArray<UUserWidget*> FoundDescriptionWidgets;
 
 		UWidgetBlueprintLibrary::GetAllWidgetsOfClass(GetWorld(), FoundDescriptionWidgets, UWidgetCraftingWindowDescription::StaticClass(), false);
@@ -50,8 +52,8 @@ void UWidgetCraftingWindowItemScrollBox::OnDragItemBegin()
 			FoundDescriptionWidgets[0]->SetVisibility(ESlateVisibility::Collapsed);
 		}
 
-		UWidgetCraftingWindowItemSlot* DragItemSlot = CreateWidget<UWidgetCraftingWindowItemSlot>(GetWorld(), this->GetClass());
-		DragItemSlot->SetVisibility(ESlateVisibility::HitTestInvisible);
-		DragItemSlot->AddToViewport();
+		//UWidgetCraftingWindowItemSlot* DragItemSlot = CreateWidget<UWidgetCraftingWindowItemSlot>(GetWorld(), this->GetClass());
+		//DragItemSlot->SetVisibility(ESlateVisibility::HitTestInvisible);
+		//DragItemSlot->AddToViewport();
 	}
 }
