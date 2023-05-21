@@ -2,6 +2,8 @@
 
 
 #include "Blueprint/WidgetBlueprintLibrary.h"
+#include "Components/SizeBox.h"
+#include "TheHazardsPlayerController.h"
 #include "WidgetCraftingWindowDescription.h"
 #include "WidgetCraftingWindowItemSlot.h"
 #include "WidgetMenuCraftingWindow.h"
@@ -16,7 +18,7 @@ void UWidgetCraftingWindowItemScrollBox::SetData(FItemBase NewItemData)
 
 void UWidgetCraftingWindowItemScrollBox::OnMouseButtonDownBegin()
 {
-	if (ItemData.ItemType != EItemTypes::Default) {
+	if (ItemData.ItemType != EItemTypes::None) {
 		if (ItemData.ItemType == EItemTypes::Blueprint) {
 			// Find the main crafting window widget
 			TArray<UUserWidget*> FoundCraftingWindowWidgets;
@@ -51,9 +53,19 @@ void UWidgetCraftingWindowItemScrollBox::OnDragItemBegin()
 		if (FoundDescriptionWidgets.Num() > 0) {
 			FoundDescriptionWidgets[0]->SetVisibility(ESlateVisibility::Collapsed);
 		}
+	}
 
-		//UWidgetCraftingWindowItemSlot* DragItemSlot = CreateWidget<UWidgetCraftingWindowItemSlot>(GetWorld(), this->GetClass());
-		//DragItemSlot->SetVisibility(ESlateVisibility::HitTestInvisible);
-		//DragItemSlot->AddToViewport();
+	if (IsValid(WidgetCraftingWindowItemSlotBlueprintClass)) {
+		DragItemSlot = CreateWidget<UWidgetCraftingWindowItemSlot>(GetWorld(), WidgetCraftingWindowItemSlotBlueprintClass);
+
+		DragItemSlot->SetVisibility(ESlateVisibility::HitTestInvisible);
+		DragItemSlot->SetDesiredSizeInViewport(FVector2D(100.f, 100.f));
+		DragItemSlot->FollowCursor = true;
+
+		Cast<ATheHazardsPlayerController>(GetWorld()->GetFirstPlayerController())->CurrentDraggingWidget = DragItemSlot;
+
+		DragItemSlot->AddToViewport();
+	} else {
+		UE_LOG(LogTemp, Warning, TEXT("UWidgetCraftingWindowItemScrollBox / OnDragItemBegin() / Error: WidgetCraftingWindowItemScrollBoxWidgetClass is not valid."));
 	}
 }

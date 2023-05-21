@@ -285,7 +285,6 @@ void AEntityBaseCharacter::OnSprintBegin()
 			UE_LOG(LogTemp, Warning, TEXT("OnSprintBegin()  /  Entity begun sprinting"));
 
 			IsSprinting = true;
-
 			GetCharacterMovement()->MaxWalkSpeed = BaseMoveSpeed * 1.5;
 		} else {
 			if (GetWorld()->GetTimerManager().GetTimerElapsed(BeginChargeTimerHandle) <= 0.f && GetWorld()->GetTimerManager().GetTimerElapsed(ChargeTimerHandle) <= 0.f) {
@@ -301,7 +300,6 @@ void AEntityBaseCharacter::OnSprintEnd()
 	UE_LOG(LogTemp, Warning, TEXT("OnSprintEnd()  /  Entity finished sprinting"));
 
 	IsSprinting = false;
-
 	GetCharacterMovement()->MaxWalkSpeed = BaseMoveSpeed;
 
 	if (GetWorld()->GetTimerManager().GetTimerElapsed(BeginChargeTimerHandle) > 0.f) {
@@ -445,6 +443,10 @@ void AEntityBaseCharacter::Tick(float DeltaTime)
 	// Drain AP if sprinting
 	// Prevent entity from sprinting if they don't have any AP
 	// If they run out of AP mid-sprint, stop them from sprinting
+	//GEngine->AddOnScreenDebugMessage(-1, 0.15f, FColor::Red, FString::Printf(TEXT("AEntityBaseCharacter / Tick / IsSprinting?: %s"), IsSprinting ? TEXT("True") : TEXT("False")));
+	//GEngine->AddOnScreenDebugMessage(-1, 0.15f, FColor::Red, FString::Printf(TEXT("AEntityBaseCharacter / Tick / IsMovingOnGround?: %s"), GetMovementComponent()->IsMovingOnGround() ? TEXT("True") : TEXT("False")));
+	//GEngine->AddOnScreenDebugMessage(-1, 0.15f, FColor::Red, FString::Printf(TEXT("AEntityBaseCharacter / Tick / Velocity: %d"), GetVelocity().Size()));
+
 	if (IsSprinting && GetMovementComponent()->IsMovingOnGround() && GetVelocity().Size() > 0.f) {
 		if (GetBaseStatsComponent()->CurrentAuraPoints > 0.f) {
 			BaseStatsComponent->UpdateCurrentAuraPoints(LerpRate * -1);

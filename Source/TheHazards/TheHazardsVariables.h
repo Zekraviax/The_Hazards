@@ -13,6 +13,7 @@
 UENUM(BlueprintType)
 enum class EItemTypes : uint8
 {
+	None,
 	Weapon,
 	Armour,
 	Consumable,
@@ -20,14 +21,14 @@ enum class EItemTypes : uint8
 	Part,
 	Blueprint,
 	Collectable,
-	Miscellaneous,
-	Default
+	Miscellaneous
 };
 
 
 UENUM(BlueprintType)
 enum class EWeaponTypes : uint8
 {
+	None,
 	Shotgun
 };
 
@@ -35,6 +36,7 @@ enum class EWeaponTypes : uint8
 UENUM(BlueprintType)
 enum class EPartTypes : uint8
 {
+	None,
 	Barrel,
 	Trigger,
 	RecoilPad,
@@ -46,7 +48,7 @@ enum class EPartTypes : uint8
 UENUM(BlueprintType)
 enum class EItemSlotTypes : uint8
 {
-	Default,
+	None,
 	Head,
 	Body,
 	Legs,
@@ -70,6 +72,7 @@ struct THEHAZARDS_API FWeapon
 
 	FWeapon()
 	{
+		WeaponType = EWeaponTypes::None;
 		DamagePerShot = 1.f;
 	}
 
@@ -89,7 +92,7 @@ struct THEHAZARDS_API FPart
 
 	FPart()
 	{
-		PartType = EPartTypes::Barrel;
+		PartType = EPartTypes::None;
 	}
 
 	FPart(EPartTypes NewPartType)
@@ -117,7 +120,7 @@ struct THEHAZARDS_API FCraftingBlueprintSlotData
 	{
 		Column = 0;
 		Row = 0;
-		PartType = EPartTypes::Barrel;
+		PartType = EPartTypes::None;
 	}
 
 	FCraftingBlueprintSlotData(int InColumn, int InRow, EPartTypes InPartType)
@@ -143,7 +146,7 @@ struct THEHAZARDS_API FCraftingBlueprint
 
 	FCraftingBlueprint()
 	{
-		WeaponType = EWeaponTypes::Shotgun;
+		WeaponType = EWeaponTypes::None;
 	}
 };
 
@@ -176,8 +179,11 @@ struct THEHAZARDS_API FItemBase
 	FItemBase()
 	{
 		Name = "Default";
-		ItemType = EItemTypes::Default;
+		ItemType = EItemTypes::None;
 		EquipSlot = EItemSlotTypes::PrimaryWeapon;
+		WeaponData = FWeapon();
+		PartData = FPart();
+		BlueprintData = FCraftingBlueprint();
 	}
 
 	// Constructor for weapons
@@ -187,6 +193,8 @@ struct THEHAZARDS_API FItemBase
 		ItemType = EItemTypes::Weapon;
 		WeaponData = NewWeaponData;
 		EquipSlot = EItemSlotTypes::PrimaryWeapon;
+		PartData = FPart();
+		BlueprintData = FCraftingBlueprint();
 	}
 
 	// Constructor for parts
@@ -194,7 +202,9 @@ struct THEHAZARDS_API FItemBase
 	{
 		Name = NewName;
 		ItemType = EItemTypes::Part;
+		WeaponData = FWeapon();
 		PartData = NewPartData;
+		BlueprintData = FCraftingBlueprint();
 	}
 
 	// Constructor for blueprints
@@ -203,5 +213,7 @@ struct THEHAZARDS_API FItemBase
 		Name = NewName;
 		ItemType = EItemTypes::Blueprint;
 		BlueprintData = NewBlueprintData;
+		WeaponData = FWeapon();
+		PartData = FPart();
 	}
 };

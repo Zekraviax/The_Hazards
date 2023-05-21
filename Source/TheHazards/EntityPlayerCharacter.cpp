@@ -18,6 +18,8 @@
 
 void AEntityPlayerCharacter::Tick(float DeltaTime)
 {
+	Super::Tick(DeltaTime);
+
 	// Line trace to find the actor/object the entity is directly looking at
 	FHitResult Hit;
 	TArray<AActor*> ActorsToIgnore;
@@ -182,7 +184,7 @@ void AEntityPlayerCharacter::ClientCreateWidgets_Implementation()
 		WidgetMenuCraftingWindowReference = CreateWidget<UWidgetMenuCraftingWindow>(GetWorld(), WidgetMenuCraftingWindowClass);
 
 		// To-do: Figure out why this line causes the game to crash when inspecting the player BP while playing-in-editor
-		//WidgetMenuCraftingWindowReference->OwningEntityInventoryComponent = GetInventoryComponent();
+		WidgetMenuCraftingWindowReference->OwningEntityInventoryComponent = GetInventoryComponent();
 
 		ValidWidgets.Add(WidgetMenuCraftingWindowReference);
 	}

@@ -51,7 +51,7 @@ void UWidgetMenuCraftingWindow::OnCraftingWindowItemSlotHoverBegin(UWidgetCrafti
 			UWidgetCraftingWindowDescription* FoundCraftingWindowDescriptionWidget = Cast<UWidgetCraftingWindowDescription>(FoundCraftingWindowDescriptionWidgets[0]);
 
 			FoundCraftingWindowDescriptionWidget->SetVisibility(ESlateVisibility::SelfHitTestInvisible);
-			FoundCraftingWindowDescriptionWidget->SetText(HoveredItemSlot->CraftingWindowSlotData);
+			FoundCraftingWindowDescriptionWidget->SetText(HoveredItemSlot->CraftingWindowSlotData, HoveredItemSlot->ItemData);
 		} else {
 			UE_LOG(LogTemp, Warning, TEXT("UWidgetMenuCraftingWindow / OnCraftingWindowItemSlotHoverBegin() / Error: Widget at index 0 in FoundCraftingWindowDescriptionWidgets array is not a UWidgetCraftingWindowDescription."));
 		}
@@ -84,13 +84,19 @@ void UWidgetMenuCraftingWindow::OnCraftingWindowItemSlotHoverEnd(UWidgetCrafting
 void UWidgetMenuCraftingWindow::BlueprintSelected(FItemBase SelectedBlueprint)
 {
 	if (SelectedBlueprint.BlueprintData.CraftingWindowSlots.Num() > 0) {
+		for (int i = 0; i < CraftingSlotsGridPanel->GetChildrenCount(); i++) {
+			if (Cast<UWidgetCraftingWindowItemSlot>(CraftingSlotsGridPanel->GetChildAt(i))) {
+				CraftingSlotsGridPanel->GetChildAt(i)->SetVisibility(ESlateVisibility::Hidden);
+			}
+		}
+
 		// Find the main crafting window widget
 		TArray<UUserWidget*> FoundCraftingWindowItemSlotWidgets;
 		UWidgetBlueprintLibrary::GetAllWidgetsOfClass(GetWorld(), FoundCraftingWindowItemSlotWidgets, UWidgetCraftingWindowItemSlot::StaticClass(), false);
 
-		for (int i = 0; i < FoundCraftingWindowItemSlotWidgets.Num(); i++) {
-			FoundCraftingWindowItemSlotWidgets[i]->SetVisibility(ESlateVisibility::Hidden);
-		}
+		//for (int i = 0; i < FoundCraftingWindowItemSlotWidgets.Num(); i++) {
+		//	FoundCraftingWindowItemSlotWidgets[i]->SetVisibility(ESlateVisibility::Hidden);
+		//}
 
 		for (int i = 0; i < FoundCraftingWindowItemSlotWidgets.Num(); i++) {
 			UWidgetCraftingWindowItemSlot* FoundItemSlot = Cast<UWidgetCraftingWindowItemSlot>(FoundCraftingWindowItemSlotWidgets[i]);
@@ -104,7 +110,7 @@ void UWidgetMenuCraftingWindow::BlueprintSelected(FItemBase SelectedBlueprint)
 
 					// Set slot's accepted part type
 					FoundItemSlot->PartSlot = SelectedBlueprint.BlueprintData.CraftingWindowSlots[j].PartType;
-					FoundItemSlot->ItemData = SelectedBlueprint;
+					//FoundItemSlot->ItemData = SelectedBlueprint;
 					FoundItemSlot->CraftingWindowSlotData = SelectedBlueprint.BlueprintData.CraftingWindowSlots[j];
 					break;
 				} else {

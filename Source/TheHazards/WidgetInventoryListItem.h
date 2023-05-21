@@ -19,7 +19,7 @@ public:
 	FItemBase ItemReference;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	EItemSlotTypes ItemSlot = EItemSlotTypes::Default;
+	EItemSlotTypes ItemSlot = EItemSlotTypes::None;
 
 	UFUNCTION(BlueprintCallable)
 	void OnCursorBeginHover();

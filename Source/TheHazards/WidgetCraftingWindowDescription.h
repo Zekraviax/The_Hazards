@@ -20,5 +20,5 @@ public:
 	UTextBlock* Description;
 
 	UFUNCTION()
-	void SetText(FCraftingBlueprintSlotData InCraftingWindowSlotData);
+	void SetText(FCraftingBlueprintSlotData InCraftingWindowSlotData, FItemBase InItemData);
 };

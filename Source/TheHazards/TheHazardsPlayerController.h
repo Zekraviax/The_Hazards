@@ -17,4 +17,10 @@ class THEHAZARDS_API ATheHazardsPlayerController : public APlayerController
 public:
 	// Return this controller's pawn, cast as an EntityBaseCharacter
 	AEntityBaseCharacter* GetPawnAsEntityBaseCharacter();
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	UUserWidget* CurrentDraggingWidget;
+
+	UFUNCTION(BlueprintCallable)
+	void OnMouseButtonUpOnWidget();
 };

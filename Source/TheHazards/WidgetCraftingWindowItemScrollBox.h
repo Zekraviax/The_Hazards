@@ -10,6 +10,9 @@
 #include "WidgetCraftingWindowItemScrollBox.generated.h"
 
 
+class UWidgetCraftingWindowItemSlot;
+
+
 
 UCLASS()
 class THEHAZARDS_API UWidgetCraftingWindowItemScrollBox : public UUserWidget
@@ -17,8 +20,14 @@ class THEHAZARDS_API UWidgetCraftingWindowItemScrollBox : public UUserWidget
 	GENERATED_BODY()
 	
 public:
-	UPROPERTY()
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	FItemBase ItemData;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TSubclassOf<UWidgetCraftingWindowItemSlot> WidgetCraftingWindowItemSlotBlueprintClass;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	UWidgetCraftingWindowItemSlot* DragItemSlot;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget))
 	UTextBlock* Name;
