@@ -62,6 +62,10 @@ void UWidgetCraftingWindowItemScrollBox::OnDragItemBegin()
 		DragItemSlot->SetDesiredSizeInViewport(FVector2D(100.f, 100.f));
 		DragItemSlot->FollowCursor = true;
 
+		DragItemSlot->ItemData = ItemData;
+		DragItemSlot->AttachedWidget = this;
+		DragItemSlot->RemoveAttachedWidgetFromParent = true;
+
 		Cast<ATheHazardsPlayerController>(GetWorld()->GetFirstPlayerController())->CurrentDraggingWidget = DragItemSlot;
 
 		DragItemSlot->AddToViewport();

@@ -31,9 +31,15 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	bool FollowCursor = false;
 
-	// WHen a player starts dragging a widget, this is the widget they clicked on
+	// When a player starts dragging a widget, this is the widget they clicked on
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	UUserWidget* AttachedWidget;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	UClass* AttachedWidgetClass;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	bool RemoveAttachedWidgetFromParent;
 
 	void NativeTick(const FGeometry& MyGeometry, float InDeltaTime) override;
 

@@ -8,6 +8,7 @@
 #include "Runtime/Engine/Classes/GameFramework/PlayerController.h"
 #include "TheHazardsPlayerController.h"
 #include "WidgetCraftingWindowDescription.h"
+#include "WidgetCraftingWindowItemScrollBox.h"
 #include "WidgetCraftingWindowItemSlot.h"
 #include "WidgetMenuCraftingWindow.h"
 
@@ -82,9 +83,13 @@ void UWidgetCraftingWindowItemSlot::OnMouseButtonDownBegin()
 		// Create a clone of this widget that follows the player's mouse cursor
 		UWidgetCraftingWindowItemSlot* DragItemSlot = CreateWidget<UWidgetCraftingWindowItemSlot>(GetWorld(), this->GetClass());
 
-		DragItemSlot->FollowCursor = true;
-		DragItemSlot->ItemData = ItemData;
 		DragItemSlot->SetVisibility(ESlateVisibility::HitTestInvisible);
+		DragItemSlot->SetDesiredSizeInViewport(FVector2D(100.f, 100.f));
+		DragItemSlot->FollowCursor = true;
+
+		DragItemSlot->ItemData = ItemData;
+		DragItemSlot->AttachedWidget = this;
+		DragItemSlot->RemoveAttachedWidgetFromParent = false;
 
 		Cast<ATheHazardsPlayerController>(GetWorld()->GetFirstPlayerController())->CurrentDraggingWidget = DragItemSlot;
 
@@ -99,11 +104,37 @@ void UWidgetCraftingWindowItemSlot::OnMouseButtonUpBegin(UWidgetCraftingWindowIt
 {
 	UE_LOG(LogTemp, Warning, TEXT("UWidgetCraftingWindowItemSlot / OnMouseButtonUpBegin() / Begin function."));
 
+	FItemBase TemporaryItemDataCopy = ItemData;
+
 	if (DraggedWidget) {
 		ItemData = DraggedWidget->ItemData;
 
 		Cast<ATheHazardsPlayerController>(GetWorld()->GetFirstPlayerController())->OnMouseButtonUpOnWidget();
+
+		if (DraggedWidget->RemoveAttachedWidgetFromParent) {
+			DraggedWidget->AttachedWidget->RemoveFromParent();
+		} else {
+			if (Cast<UWidgetCraftingWindowItemSlot>(DraggedWidget->AttachedWidget)) {
+				Cast<UWidgetCraftingWindowItemSlot>(DraggedWidget->AttachedWidget)->ItemData = TemporaryItemDataCopy;
+			} else if (Cast<UWidgetCraftingWindowItemScrollBox>(DraggedWidget->AttachedWidget)) {
+				Cast<UWidgetCraftingWindowItemScrollBox>(DraggedWidget->AttachedWidget)->ItemData = TemporaryItemDataCopy;
+			}
+		}
 	} else {
 		UE_LOG(LogTemp, Warning, TEXT("UWidgetCraftingWindowItemSlot / OnMouseButtonUpBegin() / Error: DraggedWidget widget is not valid."));
+	}
+
+	// Tell the main crafting menu to check whether or not something can be crafted
+	TArray<UUserWidget*> FoundCraftingWindowWidgets;
+
+	UWidgetBlueprintLibrary::GetAllWidgetsOfClass(GetWorld(), FoundCraftingWindowWidgets, UWidgetMenuCraftingWindow::StaticClass(), false);
+	if (FoundCraftingWindowWidgets.Num() > 0) {
+		if (Cast<UWidgetMenuCraftingWindow>(FoundCraftingWindowWidgets[0])) {
+			Cast<UWidgetMenuCraftingWindow>(FoundCraftingWindowWidgets[0])->OnCraftingWindowItemSlotHoverBegin(this);
+		} else {
+			UE_LOG(LogTemp, Warning, TEXT("UWidgetCraftingWindowItemSlot / OnMouseHoverEnd() / Error: Widget at index 0 in FoundCraftingWindowWidgets array is not a UWidgetMenuCraftingWindow."));
+		}
+	} else {
+		UE_LOG(LogTemp, Warning, TEXT("UWidgetCraftingWindowItemSlot / OnMouseHoverEnd() / Error: Could not find any UWidgetMenuCraftingWindow widgets."));
 	}
 }

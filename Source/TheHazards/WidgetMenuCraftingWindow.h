@@ -3,6 +3,7 @@
 
 #include "CoreMinimal.h"
 
+#include "Components/Button.h"
 #include "Components/ScrollBox.h"
 #include "Components/UniformGridPanel.h"
 #include "Blueprint/UserWidget.h"
@@ -41,6 +42,9 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	UWidgetCraftingWindowItemScrollBox* CraftingWindowItemScrollBoxReference;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget))
+	UButton* CraftWeaponButton;
+
 	UFUNCTION()
 	void PopulateScrollBoxes();
 
@@ -52,4 +56,7 @@ public:
 
 	UFUNCTION()
 	void BlueprintSelected(FItemBase SelectedBlueprint);
+
+	UFUNCTION()
+	void CheckIfCraftingIsReady();
 };

@@ -90,13 +90,8 @@ void UWidgetMenuCraftingWindow::BlueprintSelected(FItemBase SelectedBlueprint)
 			}
 		}
 
-		// Find the main crafting window widget
 		TArray<UUserWidget*> FoundCraftingWindowItemSlotWidgets;
 		UWidgetBlueprintLibrary::GetAllWidgetsOfClass(GetWorld(), FoundCraftingWindowItemSlotWidgets, UWidgetCraftingWindowItemSlot::StaticClass(), false);
-
-		//for (int i = 0; i < FoundCraftingWindowItemSlotWidgets.Num(); i++) {
-		//	FoundCraftingWindowItemSlotWidgets[i]->SetVisibility(ESlateVisibility::Hidden);
-		//}
 
 		for (int i = 0; i < FoundCraftingWindowItemSlotWidgets.Num(); i++) {
 			UWidgetCraftingWindowItemSlot* FoundItemSlot = Cast<UWidgetCraftingWindowItemSlot>(FoundCraftingWindowItemSlotWidgets[i]);
@@ -120,5 +115,15 @@ void UWidgetMenuCraftingWindow::BlueprintSelected(FItemBase SelectedBlueprint)
 		}
 	} else {
 		UE_LOG(LogTemp, Warning, TEXT("UWidgetMenuCraftingWindow / BlueprintSelected() / Error: Selected blueprint doesn't have any slots!"));
+	}
+}
+
+
+void UWidgetMenuCraftingWindow::CheckIfCraftingIsReady()
+{
+	TArray<UUserWidget*> FoundCraftingWindowItemSlotWidgets;
+	UWidgetBlueprintLibrary::GetAllWidgetsOfClass(GetWorld(), FoundCraftingWindowItemSlotWidgets, UWidgetCraftingWindowItemSlot::StaticClass(), false);
+
+	for (int i = 0; i < FoundCraftingWindowItemSlotWidgets.Num(); i++) {
 	}
 }
