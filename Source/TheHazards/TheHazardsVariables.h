@@ -90,12 +90,18 @@ struct THEHAZARDS_API FPart
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	EPartTypes PartType;
 
+	// Parts shouldn't have variables that are exact copies of other item types' variables
+	// because we can just use those variables instead
+	// For example, we don't need this DamagePerShot variable because the WeaponType struct already has it
+	//UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	//float DamagePerShot;
+
 	FPart()
 	{
 		PartType = EPartTypes::None;
 	}
 
-	FPart(EPartTypes NewPartType)
+	FPart(EPartTypes NewPartType, float NewDPS)
 	{
 		PartType = NewPartType;
 	}
@@ -142,10 +148,14 @@ struct THEHAZARDS_API FCraftingBlueprint
 	TArray<FCraftingBlueprintSlotData> CraftingWindowSlots;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	EItemTypes CraftedItemType;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	EWeaponTypes WeaponType;
 
 	FCraftingBlueprint()
 	{
+		CraftedItemType = EItemTypes::Weapon;
 		WeaponType = EWeaponTypes::None;
 	}
 };
@@ -176,6 +186,7 @@ struct THEHAZARDS_API FItemBase
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	FCraftingBlueprint BlueprintData;
 
+	// Default constructor
 	FItemBase()
 	{
 		Name = "Default";
@@ -186,12 +197,25 @@ struct THEHAZARDS_API FItemBase
 		BlueprintData = FCraftingBlueprint();
 	}
 
+	// Comparator
+	FORCEINLINE bool operator== (const FItemBase& OtherItem) 
+	{
+		if (Name == OtherItem.Name &&
+			ItemType == OtherItem.ItemType &&
+			EquipSlot == OtherItem.EquipSlot) {
+			return true;
+		}
+
+		return false;
+	}
+
+
 	// Constructor for weapons
-	FItemBase(FString NewName, FWeapon NewWeaponData)
+	FItemBase(FString NewName, FWeapon CraftedItemData)
 	{
 		Name = NewName;
 		ItemType = EItemTypes::Weapon;
-		WeaponData = NewWeaponData;
+		WeaponData = CraftedItemData;
 		EquipSlot = EItemSlotTypes::PrimaryWeapon;
 		PartData = FPart();
 		BlueprintData = FCraftingBlueprint();

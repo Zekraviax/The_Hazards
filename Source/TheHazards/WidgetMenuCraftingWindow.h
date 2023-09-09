@@ -45,6 +45,8 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget))
 	UButton* CraftWeaponButton;
 
+	FItemBase CurrentSelectedBlueprint;
+
 	UFUNCTION()
 	void PopulateScrollBoxes();
 
@@ -57,6 +59,9 @@ public:
 	UFUNCTION()
 	void BlueprintSelected(FItemBase SelectedBlueprint);
 
-	UFUNCTION()
-	void CheckIfCraftingIsReady();
+	UFUNCTION(BlueprintCallable)
+	bool ItemCraftingCheck();
+
+	UFUNCTION(BlueprintCallable)
+	void CraftItem();
 };

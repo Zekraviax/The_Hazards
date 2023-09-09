@@ -4,6 +4,8 @@
 #include "ActorComponentInventory.h"
 #include "Blueprint/WidgetBlueprintLibrary.h"
 #include "Components/UniformGridSlot.h"
+#include "EntityBaseCharacter.h"
+#include "TheHazardsPlayerController.h"
 #include "WidgetCraftingWindowDescription.h"
 #include "WidgetCraftingWindowItemScrollBox.h"
 #include "WidgetCraftingWindowItemSlot.h"
@@ -113,17 +115,80 @@ void UWidgetMenuCraftingWindow::BlueprintSelected(FItemBase SelectedBlueprint)
 				}
 			}
 		}
+
+		CurrentSelectedBlueprint = SelectedBlueprint;
 	} else {
 		UE_LOG(LogTemp, Warning, TEXT("UWidgetMenuCraftingWindow / BlueprintSelected() / Error: Selected blueprint doesn't have any slots!"));
 	}
 }
 
 
-void UWidgetMenuCraftingWindow::CheckIfCraftingIsReady()
+bool UWidgetMenuCraftingWindow::ItemCraftingCheck()
 {
+	bool CanCraftItem = true;
 	TArray<UUserWidget*> FoundCraftingWindowItemSlotWidgets;
 	UWidgetBlueprintLibrary::GetAllWidgetsOfClass(GetWorld(), FoundCraftingWindowItemSlotWidgets, UWidgetCraftingWindowItemSlot::StaticClass(), false);
 
 	for (int i = 0; i < FoundCraftingWindowItemSlotWidgets.Num(); i++) {
+		UWidgetCraftingWindowItemSlot* FoundSlot = Cast<UWidgetCraftingWindowItemSlot>(FoundCraftingWindowItemSlotWidgets[i]);
+		if (FoundSlot) {
+			if (FoundSlot->Visibility == ESlateVisibility::Visible) {
+				FString SlotPartTypeString = UEnum::GetValueAsString(FoundSlot->PartSlot);
+				GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("UWidgetMenuCraftingWindow / ItemCraftingCheck / Part Missing: %s"), *SlotPartTypeString));
+
+				// Does this slot have a crafting component that is listed on the blueprint?
+				if (FoundSlot->ItemData.PartData.PartType == EPartTypes::None) {
+					CanCraftItem = false;
+
+					// Break out of the for loop if even one slot returns false, because that means the item is missing at least one necessary part to craft it
+					//break;
+				}
+			}
+		}
+	}
+
+	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("UWidgetMenuCraftingWindow / ItemCraftingCheck / Can Item Be Crafted: %s"), CanCraftItem ? TEXT("True") : TEXT("False")));
+	return CanCraftItem;
+}
+
+
+void UWidgetMenuCraftingWindow::CraftItem()
+{
+	TArray<FItemBase> PartsUsed;
+
+	// Find all the parts in the player's inventory and delete them
+	TArray<UUserWidget*> FoundCraftingWindowItemSlotWidgets;
+	UWidgetBlueprintLibrary::GetAllWidgetsOfClass(GetWorld(), FoundCraftingWindowItemSlotWidgets, UWidgetCraftingWindowItemSlot::StaticClass(), false);
+
+	for (int i = 0; i < FoundCraftingWindowItemSlotWidgets.Num(); i++) {
+		UWidgetCraftingWindowItemSlot* FoundSlot = Cast<UWidgetCraftingWindowItemSlot>(FoundCraftingWindowItemSlotWidgets[i]);
+		if (FoundSlot) {
+			if (FoundSlot->Visibility == ESlateVisibility::Visible) {
+				PartsUsed.Add(FoundSlot->ItemData);
+			}
+		}
+	}
+
+	// Create weapon based on the parts used
+	FItemBase CraftedItem;
+	CraftedItem.ItemType = CurrentSelectedBlueprint.BlueprintData.CraftedItemType;
+	CraftedItem.Name = "Crafted Item";
+
+	// Switch based on item types
+	if (CurrentSelectedBlueprint.BlueprintData.CraftedItemType == EItemTypes::Weapon) {
+		CraftedItem.WeaponData.WeaponType = CurrentSelectedBlueprint.BlueprintData.WeaponType;
+
+		// For weapons, get all the component parts and add their stats together
+		for (int i = 0; i < PartsUsed.Num(); i++) {
+			CraftedItem.WeaponData.DamagePerShot += PartsUsed[i].WeaponData.DamagePerShot;
+		}
+	}
+	
+	UActorComponentInventory* PlayerInventory = Cast<ATheHazardsPlayerController>(GetWorld()->GetFirstPlayerController())->GetPawnAsEntityBaseCharacter()->GetInventoryComponent();
+	PlayerInventory->ItemsList.Add(CraftedItem);
+
+	// Delete the parts used from the player's inventory
+	for (int i = 0; i < PartsUsed.Num(); i++) {
+		PlayerInventory->ItemsList.Remove(PartsUsed[i]);
 	}
 }

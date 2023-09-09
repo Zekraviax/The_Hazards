@@ -9,6 +9,16 @@
 void UWidgetMenuInventory::PopulateUnequippedItemsScrollBox(UActorComponentInventory* Inventory)
 {
 	if (IsValid(InventoryListItemClass)) {
+		// Don't delete all the children, just overwrite the item data
+		//UnequippedInventoryItemsGridPanel->ClearChildren();
+
+		for (int i = UnequippedInventoryItemsGridPanel->GetAllChildren().Num() - 1; i >= 0; i--) {
+			UWidgetInventoryListItem* InventorySlot = Cast<UWidgetInventoryListItem>(EquippedInventoryItemsGridPanel->GetChildAt(i));
+			if (InventorySlot) {
+				UnequippedInventoryItemsGridPanel->RemoveChild(InventorySlot);
+			}
+		}
+
 		for (int i = 0; i < Inventory->ItemsList.Num(); i++) {
 			InventoryListItemReference = CreateWidget<UWidgetInventoryListItem>(GetWorld(), InventoryListItemClass);
 
