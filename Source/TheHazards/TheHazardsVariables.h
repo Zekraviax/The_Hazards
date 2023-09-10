@@ -25,14 +25,26 @@ enum class EItemTypes : uint8
 };
 
 
+// -------- Weapons
 UENUM(BlueprintType)
 enum class EWeaponTypes : uint8
 {
 	None,
-	Shotgun
+	Shotgun,
+	Sickle
 };
 
 
+UENUM(BlueprintType)
+enum class EWeaponAttackStyles : uint8
+{
+	Melee,
+	Ranged,
+	Thrown
+};
+
+
+// -------- Crafting Parts/Components
 UENUM(BlueprintType)
 enum class EPartTypes : uint8
 {

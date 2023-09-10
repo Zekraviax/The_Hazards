@@ -56,6 +56,13 @@ AEntityBaseCharacter::AEntityBaseCharacter()
 	FP_MuzzleLocation->SetupAttachment(FP_Gun);
 	FP_MuzzleLocation->SetRelativeLocation(FVector(0.2f, 48.4f, -10.6f));
 
+	// Create a melee weapon component
+	MeleeWeaponHitbox = CreateDefaultSubobject<UBoxComponent>(TEXT("MeleeWeaponHitbox"));
+	MeleeWeaponHitbox->SetGenerateOverlapEvents(false);
+	MeleeWeaponHitbox->SetupAttachment(RootComponent);
+	MeleeWeaponHitbox->bHiddenInGame = false;
+	MeleeWeaponHitbox->OnComponentBeginOverlap.AddDynamic(this, &AEntityBaseCharacter::BoxComponentBeginOverlap);
+
 	// Default offset from the character location for projectiles to spawn
 	GunOffset = FVector(100.0f, 0.0f, 10.0f);
 
@@ -78,6 +85,7 @@ void AEntityBaseCharacter::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>&
 	// Each property of the character that is replicated needs to be specified here
 	DOREPLIFETIME(AEntityBaseCharacter, Mesh1P);
 	DOREPLIFETIME(AEntityBaseCharacter, FP_Gun);
+	//DOREPLIFETIME(AEntityBaseCharacter, MeleeWeaponHitbox);
 }
 
 
@@ -89,8 +97,11 @@ void AEntityBaseCharacter::BeginPlay()
 	// Bind delegates
 	GetCapsuleComponent()->OnComponentHit.AddDynamic(this, &AEntityBaseCharacter::OnCapsuleComponentHit);
 
-	//Attach gun mesh component to Skeleton, doing it here because the skeleton is not yet created in the constructor
+	// Attach gun mesh component to Skeleton, doing it here because the skeleton is not yet created in the constructor
 	FP_Gun->AttachToComponent(Mesh1P, FAttachmentTransformRules(EAttachmentRule::SnapToTarget, true), TEXT("GripPoint"));
+	MeleeWeaponHitbox->AttachToComponent(Mesh1P, FAttachmentTransformRules(EAttachmentRule::SnapToTarget, true), TEXT("GripPoint"));
+	MeleeWeaponHitbox->AddRelativeLocation(FVector(0.f, 100.f, 0.f));
+	MeleeWeaponHitbox->SetWorldScale3D(FVector(1.f, 3.f, 1.f));
 }
 
 
@@ -113,10 +124,41 @@ void AEntityBaseCharacter::OnCapsuleComponentHit(UPrimitiveComponent* HitCompone
 }
 
 
+void AEntityBaseCharacter::BoxComponentBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+{
+	MeleeWeaponHit(OtherActor);
+}
+
+
+void AEntityBaseCharacter::MeleeWeaponHit(AActor * OtherActor)
+{
+	if (OtherActor != this && !ActorsToIgnore.Contains(OtherActor)) {
+		float WeaponDamage = 1.f;
+
+		// Use this entity's inventory component to get their weapon's stats, sounds, etc.
+		if (GetInventoryComponent()) {
+			GetInventoryComponent()->ReturnEquippedWeaponsData(WeaponDamage);
+		}
+
+		GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Red, FString::Printf(TEXT("AEntityBaseCharacter / BoxComponentBeginOverlap / Overlapped With Actor: %s"), *OtherActor->GetName()));
+
+		Cast<AEntityBaseCharacter>(OtherActor)->ReceiveDamage(WeaponDamage, this);
+		ActorsToIgnore.Add(OtherActor);
+	}
+}
+
+
 void AEntityBaseCharacter::OnFire()
 {
+	EWeaponAttackStyles AttackStyle = EWeaponAttackStyles::Melee;
+
+	if (AttackStyle == EWeaponAttackStyles::Melee) {
+	}
+
 	float WeaponDamagePerShot = 1.f;
 	float DelayUntilNextAttack = 0.25f;
+	float MeleeWeaponAnimationTime = 1.f;
+
 
 	// Use LineTraces for to determine where weapon shot will land
 	// Two FHitResults will store all data returned by our line traces
@@ -126,28 +168,55 @@ void AEntityBaseCharacter::OnFire()
 	FCollisionQueryParams QueryParams;
 	QueryParams.AddIgnoredActor(this);
 
-	// First line trace: Find the actor/object the entity is directly looking at
-	TArray<AActor*> ActorsToIgnore;
-
-	FVector TraceStart = FirstPersonCameraComponent->GetComponentLocation();
-	FVector TraceEnd = FirstPersonCameraComponent->GetComponentLocation() + FirstPersonCameraComponent->GetForwardVector() * 10000.0f;
-	UKismetSystemLibrary::LineTraceSingle(this, TraceStart, TraceEnd, UEngineTypes::ConvertToTraceType(ECC_Camera), false, ActorsToIgnore, EDrawDebugTrace::None, FirstHit, true);
-
-	// Second line trace: Simulate firing a weapon
-	// Draw a line starting from this entity's gun muzzle position and finishing at the thing directly ahead
-	TraceStart = ((FP_MuzzleLocation != nullptr) ? FP_MuzzleLocation->GetComponentLocation() : GetActorLocation()) + GetControlRotation().RotateVector(GunOffset);
-	TraceEnd = FirstHit.Location;
-
-	// LineTraceSingleByChannel returns the first actor hit within the chosen collision channel
-	GetWorld()->LineTraceSingleByChannel(Hit, TraceStart, TraceEnd, ECollisionChannel::ECC_Pawn);
-
-	// Use DrawDebugLine to show the line trace
-	DrawDebugLine(GetWorld(), TraceStart, TraceEnd, FColor::Red, false, 2.5f);
-
-
 	// Use this entity's inventory component to get their weapon's stats, sounds, etc.
 	if (GetInventoryComponent()) {
 		GetInventoryComponent()->ReturnEquippedWeaponsData(WeaponDamagePerShot);
+	}
+
+	ActorsToIgnore.Empty();
+
+	if (AttackStyle == EWeaponAttackStyles::Ranged) {
+		// First line trace: Find the actor/object the entity is directly looking at
+
+		FVector TraceStart = FirstPersonCameraComponent->GetComponentLocation();
+		FVector TraceEnd = FirstPersonCameraComponent->GetComponentLocation() + FirstPersonCameraComponent->GetForwardVector() * 1000000.0f;
+		UKismetSystemLibrary::LineTraceSingle(this, TraceStart, TraceEnd, UEngineTypes::ConvertToTraceType(ECC_Camera), false, ActorsToIgnore, EDrawDebugTrace::None, FirstHit, true);
+
+		// Second line trace: Simulate firing a weapon
+		// Draw a line starting from this entity's gun muzzle position and finishing at the thing directly ahead
+		TraceStart = ((FP_MuzzleLocation != nullptr) ? FP_MuzzleLocation->GetComponentLocation() : GetActorLocation()) + GetControlRotation().RotateVector(GunOffset);
+		TraceEnd = FirstHit.Location;
+
+		// LineTraceSingleByChannel returns the first actor hit within the chosen collision channel
+		GetWorld()->LineTraceSingleByChannel(Hit, TraceStart, TraceEnd, ECollisionChannel::ECC_Pawn);
+
+		// Use DrawDebugLine to show the line trace
+		DrawDebugLine(GetWorld(), TraceStart, TraceEnd, FColor::Red, false, 2.5f);
+
+		// try and play a firing animation if specified
+		if (FireAnimation != NULL) {
+			// Get the animation object for the arms mesh
+			UAnimInstance* AnimInstance = Mesh1P->GetAnimInstance();
+			if (AnimInstance != NULL) {
+				AnimInstance->Montage_Play(FireAnimation, 1.f);
+			}
+		}
+
+		// If the line trace connects with a valid entity, deal damage to them
+		if (Cast<AEntityBaseCharacter>(Hit.Actor.Get())) {
+			Cast<AEntityBaseCharacter>(Hit.Actor.Get())->ReceiveDamage(WeaponDamagePerShot, this);
+		}
+	} else if (AttackStyle == EWeaponAttackStyles::Melee) {
+		GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Red, FString::Printf(TEXT("AEntityBaseCharacter / OnFire / Begin Melee Attack")));
+
+		MeleeWeaponHitbox->SetGenerateOverlapEvents(true);
+
+		// Set a timer which prevents the player from swinging a melee weapon if they're currently mid-swing
+		GetWorld()->GetTimerManager().SetTimer(MeleeWeaponSwingTimerHandle, this, &AEntityBaseCharacter::OnMeleeWeaponSwingEnd, MeleeWeaponAnimationTime, false);
+		
+		// The delay until the next attack is always slightly longer than the attack time itself
+		// in order to pre-emptively avoid issues with the melee hitbox not being overlappable
+		DelayUntilNextAttack = MeleeWeaponAnimationTime + 0.02f;
 	}
 
 	
@@ -156,28 +225,25 @@ void AEntityBaseCharacter::OnFire()
 		UGameplayStatics::PlaySoundAtLocation(this, FireSound, GetActorLocation());
 	}
 
-	// try and play a firing animation if specified
-	if (FireAnimation != NULL) {
-		// Get the animation object for the arms mesh
-		UAnimInstance* AnimInstance = Mesh1P->GetAnimInstance();
-		if (AnimInstance != NULL) {
-			AnimInstance->Montage_Play(FireAnimation, 1.f);
-		}
-	}
-
-	// If the line trace connects with a valid entity, deal damage to them
-	if (Cast<AEntityBaseCharacter>(Hit.Actor.Get())) {
-		Cast<AEntityBaseCharacter>(Hit.Actor.Get())->ReceiveDamage(WeaponDamagePerShot, this);
-	}
-
-	// Set a timer to automatically fire the weapon
-	GetWorld()->GetTimerManager().SetTimer(AutomaticWeaponFireTimerHandle, this, &AEntityBaseCharacter::OnFire, DelayUntilNextAttack, false);
+	// Set a timer to automatically fire the weapon again for as long as the fire button is held
+	GetWorld()->GetTimerManager().SetTimer(RangedWeaponFireTimerHandle, this, &AEntityBaseCharacter::OnFire, DelayUntilNextAttack, false);
 }
 
 
 void AEntityBaseCharacter::OnStopFiring()
 {
-	GetWorld()->GetTimerManager().ClearTimer(AutomaticWeaponFireTimerHandle);
+	GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Red, FString::Printf(TEXT("AEntityBaseCharacter / OnStopFiring / Player Released Fire Button")));
+
+	GetWorld()->GetTimerManager().ClearTimer(RangedWeaponFireTimerHandle);
+	GetWorld()->GetTimerManager().ClearTimer(MeleeWeaponSwingTimerHandle);
+}
+
+
+void AEntityBaseCharacter::OnMeleeWeaponSwingEnd()
+{
+	GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Red, FString::Printf(TEXT("AEntityBaseCharacter / OnMeleeWeaponSwingEnd / Melee Attack Animation Finished")));
+
+	MeleeWeaponHitbox->SetGenerateOverlapEvents(false);
 }
 
 
@@ -456,4 +522,15 @@ void AEntityBaseCharacter::Tick(float DeltaTime)
 	}
 
 	// if 
+
+	// For any entities that are already overlapping the melee hitbox at the start attack,
+	// damage them immediately
+	if (MeleeWeaponHitbox->GetGenerateOverlapEvents()) {
+		MeleeWeaponHitbox->GetOverlappingActors(MeleeHitboxOverlappingActors);
+		for (int i = 0; i < MeleeHitboxOverlappingActors.Num(); i++) {
+			if (Cast<AEntityBaseCharacter>(MeleeHitboxOverlappingActors[i])) {
+				MeleeWeaponHit(MeleeHitboxOverlappingActors[i]);
+			}
+		}
+	}
 }

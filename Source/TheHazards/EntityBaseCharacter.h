@@ -3,6 +3,7 @@
 
 #include "CoreMinimal.h"
 
+#include "Components/BoxComponent.h"
 #include "GameFramework/Character.h"
 #include "Net/UnrealNetwork.h"
 #include "TheHazardsPlayerController.h"
@@ -32,6 +33,10 @@ class AEntityBaseCharacter : public ACharacter
 	/** Location on gun mesh where projectiles should spawn. */
 	UPROPERTY(VisibleDefaultsOnly, Category = Mesh)
 	class USceneComponent* FP_MuzzleLocation;
+
+	// Melee weapon Hitbox
+	UPROPERTY(VisibleDefaultsOnly, Category = Mesh)
+	class UBoxComponent* MeleeWeaponHitbox;
 
 	// Entity's statistics
 	UPROPERTY(VisibleDefaultsOnly, Category = Gameplay)
@@ -78,7 +83,12 @@ public:
 	class UAnimMontage* FireAnimation;
 
 	// TimerHandle for automatically firing a weapon
-	FTimerHandle AutomaticWeaponFireTimerHandle;
+	UPROPERTY()
+	FTimerHandle RangedWeaponFireTimerHandle;
+
+	// TimerHandle for a melee weapon's swing
+	UPROPERTY()
+	FTimerHandle MeleeWeaponSwingTimerHandle;
 
 	// Used to position the camera off the ground
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Gameplay)
@@ -108,32 +118,56 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Gameplay)
 	FTimerHandle ChargeTimerHandle;
 
+	UPROPERTY()
 	bool IsStunned;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Gameplay)
 	FTimerHandle StunTimerHandle;
 
+	UPROPERTY()
 	float MoveForwardValue;
+	UPROPERTY()
 	float MoveRightValue;
 
+	UPROPERTY()
 	bool MoveForwardHeldDown;
+	UPROPERTY()
 	bool MoveRightHeldDown;
 
 	// Used for crouching in the Tick() function
+	UPROPERTY()
 	float LerpValue;
 
 	// Used for values that are adjusted over time in the Tick() function,
 	// such as crouch height and HP/AP regeneration per tick
+	UPROPERTY()
 	float LerpRate = 0.05f;
-
-	/** Fires a projectile. */
-	void OnFire();
 
 	UFUNCTION()
 	void OnCapsuleComponentHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);
 
+	UFUNCTION()
+	void BoxComponentBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult &SweepResult);
+
+	UFUNCTION()
+	void MeleeWeaponHit(AActor* OtherActor);
+
+	UPROPERTY()
+	TArray<AActor*> ActorsToIgnore;
+
+	UPROPERTY()
+	TArray<AActor*> MeleeHitboxOverlappingActors;
+
+	/** Fires a projectile. */
+	void OnFire();
+
 	// Clear any automatic firing TimerHandles when the fire button is de-pressed
 	void OnStopFiring();
+
+
+
+	// When a melee weapon animation is finished, set the melee weapon hitbox to not overlap anything anymore
+	void OnMeleeWeaponSwingEnd();
 
 	/** Handles moving forward/backward */
 	void MoveForward(float Val);

@@ -22,7 +22,6 @@ void AEntityPlayerCharacter::Tick(float DeltaTime)
 
 	// Line trace to find the actor/object the entity is directly looking at
 	FHitResult Hit;
-	TArray<AActor*> ActorsToIgnore;
 
 	FVector TraceStart = FirstPersonCameraComponent->GetComponentLocation();
 	FVector TraceEnd = FirstPersonCameraComponent->GetComponentLocation() + FirstPersonCameraComponent->GetForwardVector() * 10000.0f;
