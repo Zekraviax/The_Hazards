@@ -43,4 +43,7 @@ public:
 	// Entities must be within this box in order to interact with this object
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	UBoxComponent* InteractBounds;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	USceneComponent* Root;
 };

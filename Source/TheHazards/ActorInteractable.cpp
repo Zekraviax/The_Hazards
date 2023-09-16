@@ -10,9 +10,12 @@ AActorInteractable::AActorInteractable()
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = false;
 
+	Root = CreateDefaultSubobject<USceneComponent>(TEXT("Root"));
+	Root->SetupAttachment(GetRootComponent());
+
 	// Setup interact bounds
 	InteractBounds = CreateDefaultSubobject<UBoxComponent>(TEXT("InteractBounds"));
-	InteractBounds->SetupAttachment(GetRootComponent());
+	//InteractBounds->SetupAttachment(GetRootComponent());
 }
 
 // Called when the game starts or when spawned

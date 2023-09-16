@@ -9,6 +9,7 @@
 #include "Components/InputComponent.h"
 #include "DrawDebugHelpers.h"
 #include "EntityPlayerCharacter.h"
+#include "FunctionLibrarySpecialAttacks.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/InputSettings.h"
 #include "Kismet/GameplayStatics.h"
@@ -130,14 +131,14 @@ void AEntityBaseCharacter::BoxComponentBeginOverlap(UPrimitiveComponent* Overlap
 }
 
 
-void AEntityBaseCharacter::MeleeWeaponHit(AActor * OtherActor)
+void AEntityBaseCharacter::MeleeWeaponHit(AActor* OtherActor)
 {
 	if (OtherActor != this && !ActorsToIgnore.Contains(OtherActor)) {
 		float WeaponDamage = 1.f;
 
 		// Use this entity's inventory component to get their weapon's stats, sounds, etc.
 		if (GetInventoryComponent()) {
-			GetInventoryComponent()->ReturnEquippedWeaponsData(WeaponDamage);
+			GetInventoryComponent()->ReturnEquippedWeaponNormalDamage(WeaponDamage);
 		}
 
 		GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Red, FString::Printf(TEXT("AEntityBaseCharacter / BoxComponentBeginOverlap / Overlapped With Actor: %s"), *OtherActor->GetName()));
@@ -170,7 +171,7 @@ void AEntityBaseCharacter::OnFire()
 
 	// Use this entity's inventory component to get their weapon's stats, sounds, etc.
 	if (GetInventoryComponent()) {
-		GetInventoryComponent()->ReturnEquippedWeaponsData(WeaponDamagePerShot);
+		GetInventoryComponent()->ReturnEquippedWeaponNormalDamage(WeaponDamagePerShot);
 	}
 
 	ActorsToIgnore.Empty();
@@ -184,6 +185,7 @@ void AEntityBaseCharacter::OnFire()
 
 		// Second line trace: Simulate firing a weapon
 		// Draw a line starting from this entity's gun muzzle position and finishing at the thing directly ahead
+		// (Dev note: line traces fail if they don't hit anything, so each level needs invisible boxes around it.)
 		TraceStart = ((FP_MuzzleLocation != nullptr) ? FP_MuzzleLocation->GetComponentLocation() : GetActorLocation()) + GetControlRotation().RotateVector(GunOffset);
 		TraceEnd = FirstHit.Location;
 
@@ -244,6 +246,43 @@ void AEntityBaseCharacter::OnMeleeWeaponSwingEnd()
 	GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Red, FString::Printf(TEXT("AEntityBaseCharacter / OnMeleeWeaponSwingEnd / Melee Attack Animation Finished")));
 
 	MeleeWeaponHitbox->SetGenerateOverlapEvents(false);
+}
+
+
+void AEntityBaseCharacter::OnLaunchSpecialAttack()
+{
+	if (MeleeWeaponHitbox->GetGenerateOverlapEvents() == false) {
+		// Get the player's weapon data here
+		EWeaponTypes WeaponType = EWeaponTypes::Sickle;
+		FVector SpecialAttackMeleeHitBoxScale = FVector(4.f, 2.f, 4.f);
+		float SpecialAttackDuration = 1.f;
+
+		GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Red, FString::Printf(TEXT("AEntityBaseCharacter / OnLaunchSpecialAttack / Begin Special Attack")));
+
+		switch (WeaponType) {
+		case (EWeaponTypes::Sickle):
+			//UFunctionLibrarySpecialAttacks::SickleSpecialAttackBegin(this);
+
+			MeleeWeaponHitbox->SetWorldScale3D(SpecialAttackMeleeHitBoxScale);
+			MeleeWeaponHitbox->SetGenerateOverlapEvents(true);
+			break;
+		default:
+			break;
+		}
+
+		GetWorld()->GetTimerManager().SetTimer(SpecialAttackTimerHandle, this, &AEntityBaseCharacter::OnSpecialAttackEnd, SpecialAttackDuration, false);
+	}
+}
+
+
+void AEntityBaseCharacter::OnSpecialAttackEnd()
+{
+	FVector NormalMeleeHitBoxScale = FVector(2.f, 1.f, 1.f);
+
+	MeleeWeaponHitbox->SetWorldScale3D(NormalMeleeHitBoxScale);
+	MeleeWeaponHitbox->SetGenerateOverlapEvents(false);
+
+	ActorsToIgnore.Empty();
 }
 
 
@@ -512,7 +551,6 @@ void AEntityBaseCharacter::Tick(float DeltaTime)
 	//GEngine->AddOnScreenDebugMessage(-1, 0.15f, FColor::Red, FString::Printf(TEXT("AEntityBaseCharacter / Tick / IsSprinting?: %s"), IsSprinting ? TEXT("True") : TEXT("False")));
 	//GEngine->AddOnScreenDebugMessage(-1, 0.15f, FColor::Red, FString::Printf(TEXT("AEntityBaseCharacter / Tick / IsMovingOnGround?: %s"), GetMovementComponent()->IsMovingOnGround() ? TEXT("True") : TEXT("False")));
 	//GEngine->AddOnScreenDebugMessage(-1, 0.15f, FColor::Red, FString::Printf(TEXT("AEntityBaseCharacter / Tick / Velocity: %d"), GetVelocity().Size()));
-
 	if (IsSprinting && GetMovementComponent()->IsMovingOnGround() && GetVelocity().Size() > 0.f) {
 		if (GetBaseStatsComponent()->CurrentAuraPoints > 0.f) {
 			BaseStatsComponent->UpdateCurrentAuraPoints(LerpRate * -1);
@@ -525,12 +563,10 @@ void AEntityBaseCharacter::Tick(float DeltaTime)
 
 	// For any entities that are already overlapping the melee hitbox at the start attack,
 	// damage them immediately
-	if (MeleeWeaponHitbox->GetGenerateOverlapEvents()) {
-		MeleeWeaponHitbox->GetOverlappingActors(MeleeHitboxOverlappingActors);
-		for (int i = 0; i < MeleeHitboxOverlappingActors.Num(); i++) {
-			if (Cast<AEntityBaseCharacter>(MeleeHitboxOverlappingActors[i])) {
-				MeleeWeaponHit(MeleeHitboxOverlappingActors[i]);
-			}
+	MeleeWeaponHitbox->GetOverlappingActors(MeleeHitboxOverlappingActors);
+	for (int i = 0; i < MeleeHitboxOverlappingActors.Num(); i++) {
+		if (Cast<AEntityBaseCharacter>(MeleeHitboxOverlappingActors[i])) {
+			MeleeWeaponHit(MeleeHitboxOverlappingActors[i]);
 		}
 	}
 }

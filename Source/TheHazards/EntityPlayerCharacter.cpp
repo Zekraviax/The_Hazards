@@ -50,9 +50,10 @@ void AEntityPlayerCharacter::SetupPlayerInputComponent(class UInputComponent* Pl
 	PlayerInputComponent->BindAction("Jump", IE_Pressed, this, &AEntityBaseCharacter::OnJumpBegin);
 	PlayerInputComponent->BindAction("Jump", IE_Released, this, &ACharacter::StopJumping);
 
-	// Bind fire event
+	// Bind attack events
 	PlayerInputComponent->BindAction("Fire", IE_Pressed, this, &AEntityBaseCharacter::OnFire);
 	PlayerInputComponent->BindAction("Fire", IE_Released, this, &AEntityBaseCharacter::OnStopFiring);
+	PlayerInputComponent->BindAction("SpecialAttack", IE_Pressed, this, &AEntityBaseCharacter::OnLaunchSpecialAttack);
 
 	// Bind movement events
 	PlayerInputComponent->BindAxis("MoveForward", this, &AEntityBaseCharacter::MoveForward);

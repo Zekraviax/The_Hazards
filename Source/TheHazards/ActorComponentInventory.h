@@ -36,7 +36,7 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TArray<FItemBase> ItemsList;
 
-	// ?
-	UFUNCTION()
-	void ReturnEquippedWeaponsData(float& DamagePerShot);
+	// Easy access to the player's equipped gear data
+	void ReturnEquippedWeaponNormalDamage(float &DamagePerShot) { DamagePerShot = EquippedPrimaryWeapon.WeaponData.DamagePerShot; }
+	void ReturnEquippedWeaponSpecialDamage(float &DamagePerShot) { DamagePerShot = EquippedPrimaryWeapon.WeaponData.SpecialAttackDamagePerShot; }
 };

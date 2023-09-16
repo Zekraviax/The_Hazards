@@ -158,16 +158,27 @@ public:
 	UPROPERTY()
 	TArray<AActor*> MeleeHitboxOverlappingActors;
 
+	UPROPERTY()
+	bool IsUsingNormalAttack;
+
+	UPROPERTY()
+	bool IsUsingSpecialAttack;
+
 	/** Fires a projectile. */
 	void OnFire();
 
 	// Clear any automatic firing TimerHandles when the fire button is de-pressed
 	void OnStopFiring();
 
-
-
 	// When a melee weapon animation is finished, set the melee weapon hitbox to not overlap anything anymore
 	void OnMeleeWeaponSwingEnd();
+
+	UPROPERTY()
+	FTimerHandle SpecialAttackTimerHandle;
+
+	void OnLaunchSpecialAttack();
+
+	void OnSpecialAttackEnd();
 
 	/** Handles moving forward/backward */
 	void MoveForward(float Val);
@@ -238,4 +249,6 @@ public:
 	FORCEINLINE class UActorComponentInventory* GetInventoryComponent() const { return InventoryComponent; }
 	// Return this entity's player controller, cast as a TheHazardsPlayerController
 	FORCEINLINE class ATheHazardsPlayerController* GetTheHazardsPlayerController() const { return Cast<ATheHazardsPlayerController>(GetController()); }
+	// Return this entity's melee weapon hitbox
+	FORCEINLINE class UBoxComponent* GetMeleeWeaponHitboxComponent() const { return MeleeWeaponHitbox; }
 };

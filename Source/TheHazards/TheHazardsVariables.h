@@ -82,15 +82,20 @@ struct THEHAZARDS_API FWeapon
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float DamagePerShot;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float SpecialAttackDamagePerShot;
+
 	FWeapon()
 	{
 		WeaponType = EWeaponTypes::None;
 		DamagePerShot = 1.f;
+		SpecialAttackDamagePerShot = 2.f;
 	}
 
-	FWeapon(float NewDamagePerShot) 
+	FWeapon(float NewDamagePerShot, float NewSpecialAttackDamage)
 	{
 		DamagePerShot = NewDamagePerShot;
+		SpecialAttackDamagePerShot = NewSpecialAttackDamage;
 	}
 };
 
