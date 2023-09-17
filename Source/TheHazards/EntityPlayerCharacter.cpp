@@ -6,6 +6,7 @@
 #include "Camera/CameraComponent.h"
 #include "InterfaceInteractions.h"
 #include "Kismet/GameplayStatics.h"
+#include "WidgetDialogue.h"
 #include "WidgetHudBattle.h"
 #include "WidgetMenuCraftingWindow.h"
 #include "WidgetMenuDeveloper.h"
@@ -85,11 +86,10 @@ void AEntityPlayerCharacter::SetupPlayerInputComponent(class UInputComponent* Pl
 	PlayerInputComponent->BindAction("DevMenu", IE_Released, this, &AEntityPlayerCharacter::OpenDevMenu).bExecuteWhenPaused = true;
 
 	// Interact with entities in the world
-	PlayerInputComponent->BindAction("Interact", IE_Released, this, &AEntityPlayerCharacter::OnInteract);
+	PlayerInputComponent->BindAction("Interact", IE_Released, this, &AEntityPlayerCharacter::OnInteract).bExecuteWhenPaused = true;
 
-	// Open or close the inventory
+	// Open or close the windows
 	PlayerInputComponent->BindAction("Inventory", IE_Released, this, &AEntityPlayerCharacter::OpenInventory).bExecuteWhenPaused = true;
-
 	PlayerInputComponent->BindAction("CraftingWindow", IE_Released, this, &AEntityPlayerCharacter::OpenCraftingWindow).bExecuteWhenPaused = true;
 }
 
@@ -189,6 +189,13 @@ void AEntityPlayerCharacter::ClientCreateWidgets_Implementation()
 		ValidWidgets.Add(WidgetMenuCraftingWindowReference);
 	}
 
+	// Create the dialogue widget
+	if (WidgetDialogueClass && !WidgetDialogueReference) {
+		WidgetDialogueReference = CreateWidget<UWidgetDialogue>(GetWorld(), WidgetDialogueClass);
+
+		ValidWidgets.Add(WidgetDialogueReference);
+	}
+
 	// Set the input mode
 	GetTheHazardsPlayerController()->SetInputMode(FInputModeGameOnly());
 }
@@ -224,6 +231,16 @@ void AEntityPlayerCharacter::OpenCraftingWindow()
 }
 
 
+void AEntityPlayerCharacter::OpenDialogue()
+{
+	if (CurrentOpenWidgetClass != WidgetDialogueClass) {
+		OpenWidgetByClass(WidgetDialogueClass);
+	} else {
+		OpenWidgetByClass(WidgetHudBattleClass);
+	}
+}
+
+
 void AEntityPlayerCharacter::OpenWidgetByClass(TSubclassOf<UUserWidget> WidgetClass)
 {
 	for (UUserWidget* Widget : ValidWidgets) {
@@ -244,6 +261,9 @@ void AEntityPlayerCharacter::OpenWidgetByClass(TSubclassOf<UUserWidget> WidgetCl
 		GetTheHazardsPlayerController()->SetInputMode(FInputModeGameOnly());
 
 		UGameplayStatics::SetGamePaused(GetWorld(), false);
+	//} else if (WidgetClass == WidgetDialogueClass) {
+	//	GetTheHazardsPlayerController()->bShowMouseCursor = true;
+	//	GetTheHazardsPlayerController()->SetInputMode(FInputModeGameAndUI());
 	} else {
 		GetTheHazardsPlayerController()->bShowMouseCursor = true;
 		GetTheHazardsPlayerController()->SetInputMode(FInputModeGameAndUI());
@@ -269,6 +289,11 @@ void AEntityPlayerCharacter::OpenWidgetByClass(TSubclassOf<UUserWidget> WidgetCl
 
 	if (WidgetClass == WidgetMenuCraftingWindowClass) {
 		WidgetMenuCraftingWindowReference->PopulateScrollBoxes();
+	}
+
+	// Fetch the NPC's first line of dialogue here
+	if (WidgetClass == WidgetDialogueClass) {
+
 	}
 }
 

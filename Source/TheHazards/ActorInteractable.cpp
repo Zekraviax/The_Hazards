@@ -15,7 +15,6 @@ AActorInteractable::AActorInteractable()
 
 	// Setup interact bounds
 	InteractBounds = CreateDefaultSubobject<UBoxComponent>(TEXT("InteractBounds"));
-	//InteractBounds->SetupAttachment(GetRootComponent());
 }
 
 // Called when the game starts or when spawned

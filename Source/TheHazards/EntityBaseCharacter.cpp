@@ -8,7 +8,6 @@
 #include "Components/CapsuleComponent.h"
 #include "Components/InputComponent.h"
 #include "DrawDebugHelpers.h"
-#include "EntityPlayerCharacter.h"
 #include "FunctionLibrarySpecialAttacks.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/InputSettings.h"
@@ -17,6 +16,9 @@
 #include "Kismet/KismetSystemLibrary.h"
 #include "WidgetHudBattle.h"
 #include "WidgetMenuPause.h"
+
+
+class AEntityPlayerCharacter;
 
 
 DEFINE_LOG_CATEGORY_STATIC(LogFPChar, Warning, All);
@@ -66,6 +68,9 @@ AEntityBaseCharacter::AEntityBaseCharacter()
 
 	// Default offset from the character location for projectiles to spawn
 	GunOffset = FVector(100.0f, 0.0f, 10.0f);
+
+	InteractBounds = CreateDefaultSubobject<UBoxComponent>(TEXT("InteractBounds"));
+	InteractBounds->SetupAttachment(GetRootComponent());
 
 	// Gameplay components
 	BaseStatsComponent = CreateDefaultSubobject<UActorComponentBaseStats>(TEXT("EntityBaseStats"));
@@ -569,4 +574,20 @@ void AEntityBaseCharacter::Tick(float DeltaTime)
 			MeleeWeaponHit(MeleeHitboxOverlappingActors[i]);
 		}
 	}
+}
+
+
+bool AEntityBaseCharacter::OnInteract_Implementation()
+{
+	if (CurrentDialogueStage == -1) {
+		Cast<ATheHazardsPlayerController>(GetWorld()->GetFirstPlayerController())->GetPawnAsEntityPlayerCharacter()->OpenDialogue();
+		CurrentDialogueStage++;
+	} else if (CurrentDialogueStage >= 1) {
+		Cast<ATheHazardsPlayerController>(GetWorld()->GetFirstPlayerController())->GetPawnAsEntityPlayerCharacter()->OpenDialogue();
+		CurrentDialogueStage = -1;
+	} else {
+		CurrentDialogueStage++;
+	}
+
+	return true;
 }

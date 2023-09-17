@@ -5,6 +5,7 @@
 
 #include "Components/BoxComponent.h"
 #include "GameFramework/Character.h"
+#include "InterfaceInteractions.h"
 #include "Net/UnrealNetwork.h"
 #include "TheHazardsPlayerController.h"
 
@@ -18,7 +19,7 @@ class UWidgetHudBattle;
 
 
 UCLASS(config=Game)
-class AEntityBaseCharacter : public ACharacter
+class AEntityBaseCharacter : public ACharacter, public IInterfaceInteractions
 {
 	GENERATED_BODY()
 
@@ -37,6 +38,10 @@ class AEntityBaseCharacter : public ACharacter
 	// Melee weapon Hitbox
 	UPROPERTY(VisibleDefaultsOnly, Category = Mesh)
 	class UBoxComponent* MeleeWeaponHitbox;
+
+	// Entities must be within this box in order to talk to this NPC
+	UPROPERTY(VisibleDefaultsOnly, Category = Gameplay)
+	UBoxComponent* InteractBounds;
 
 	// Entity's statistics
 	UPROPERTY(VisibleDefaultsOnly, Category = Gameplay)
@@ -238,6 +243,12 @@ public:
 
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
+
+	// Dialogue
+	UPROPERTY()
+	int CurrentDialogueStage = -1;
+
+	virtual bool OnInteract_Implementation() override;
 
 	/** Returns Mesh1P subobject **/
 	FORCEINLINE class USkeletalMeshComponent* GetMesh1P() const { return Mesh1P; }

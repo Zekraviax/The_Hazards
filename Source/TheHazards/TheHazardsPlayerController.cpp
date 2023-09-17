@@ -4,12 +4,7 @@
 #include "ActorComponentBaseStats.h"
 #include "Blueprint/UserWidget.h"
 #include "EntityBaseCharacter.h"
-
-
-AEntityBaseCharacter* ATheHazardsPlayerController::GetPawnAsEntityBaseCharacter()
-{
-	return Cast<AEntityBaseCharacter>(GetPawn());
-}
+#include "EntityPlayerCharacter.h"
 
 
 void ATheHazardsPlayerController::OnMouseButtonUpOnWidget()
@@ -19,4 +14,10 @@ void ATheHazardsPlayerController::OnMouseButtonUpOnWidget()
 	} else {
 		UE_LOG(LogTemp, Warning, TEXT("ATheHazardsPlayerController / OnMouseButtonUpOnWidget() / Error: CurrentDraggingWidget reference is not valid."));
 	}
+}
+
+
+AEntityPlayerCharacter* ATheHazardsPlayerController::GetPawnAsEntityPlayerCharacter()
+{
+	return Cast<AEntityPlayerCharacter>(GetPawn());
 }

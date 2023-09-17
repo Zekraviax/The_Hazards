@@ -20,6 +20,8 @@ public class TheHazards : ModuleRules
             "OnlineSubsystemUtils",
             "Networking",
             "UMG",
+            "Json",
+            "JsonUtilities"
         });
 
         DynamicallyLoadedModuleNames.Add("OnlineSubsystemNull");

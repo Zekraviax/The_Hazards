@@ -7,6 +7,7 @@
 
 
 class AActorInteractable;
+class UWidgetDialogue;
 class UWidgetHudBattle;
 class UWidgetMenuCraftingWindow;
 class UWidgetMenuDeveloper;
@@ -33,6 +34,9 @@ public:
 	// Classes
 
 	// Used to add the widget to the players' screen whenever their character is spawned
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Interface)
+	TSubclassOf<UWidgetDialogue> WidgetDialogueClass;
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Interface)
 	TSubclassOf<UWidgetHudBattle> WidgetHudBattleClass;
 
@@ -61,8 +65,10 @@ public:
 	TSubclassOf<UWidgetSessionListEntry> WidgetSessionListEntryClass;
 
 	// References
-
 	// Keep a reference to the widget itself so we can show and hide it instead of creating and destroying it every time
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Interface)
+	UWidgetDialogue* WidgetDialogueReference;
+
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Interface)
 	UWidgetHudBattle* WidgetHudBattleReference;
 
@@ -124,6 +130,9 @@ public:
 
 	UFUNCTION()
 	void OpenCraftingWindow();
+
+	UFUNCTION()
+	void OpenDialogue();
 
 	// Loop through all valid widgets, opening the designated widget and closing all others
 	UFUNCTION()
