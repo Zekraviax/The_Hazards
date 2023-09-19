@@ -12,6 +12,7 @@
 #include "EntityBaseCharacter.generated.h"
 
 
+class UActorComponentBaseData;
 class UActorComponentBaseStats;
 class UActorComponentInventory;
 class UInputComponent;
@@ -43,7 +44,10 @@ class AEntityBaseCharacter : public ACharacter, public IInterfaceInteractions
 	UPROPERTY(VisibleDefaultsOnly, Category = Gameplay)
 	UBoxComponent* InteractBounds;
 
-	// Entity's statistics
+	// Entity's core data
+	UPROPERTY(VisibleDefaultsOnly, Category = Gameplay)
+	UActorComponentBaseData* BaseDataComponent;
+
 	UPROPERTY(VisibleDefaultsOnly, Category = Gameplay)
 	UActorComponentBaseStats* BaseStatsComponent;
 
@@ -254,9 +258,9 @@ public:
 	FORCEINLINE class USkeletalMeshComponent* GetMesh1P() const { return Mesh1P; }
 	/** Returns FirstPersonCameraComponent subobject **/
 	FORCEINLINE class UCameraComponent* GetFirstPersonCameraComponent() const { return FirstPersonCameraComponent; }
-	// Return entity's BaseStatsComponent
+	// Return entity's components
+	FORCEINLINE class UActorComponentBaseData* GetBaseDataComponent() const { return BaseDataComponent; }
 	FORCEINLINE class UActorComponentBaseStats* GetBaseStatsComponent() const { return BaseStatsComponent; }
-	// Return entity's InventoryComponent
 	FORCEINLINE class UActorComponentInventory* GetInventoryComponent() const { return InventoryComponent; }
 	// Return this entity's player controller, cast as a TheHazardsPlayerController
 	FORCEINLINE class ATheHazardsPlayerController* GetTheHazardsPlayerController() const { return Cast<ATheHazardsPlayerController>(GetController()); }

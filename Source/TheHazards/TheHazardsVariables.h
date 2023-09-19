@@ -258,3 +258,20 @@ struct THEHAZARDS_API FItemBase
 		PartData = FPart();
 	}
 };
+
+
+// Entity Data
+USTRUCT(BlueprintType)
+struct THEHAZARDS_API FEntityBaseData
+{
+	GENERATED_BODY()
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FString Name;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FString Level;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FVector Location;
+};

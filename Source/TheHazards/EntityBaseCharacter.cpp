@@ -1,6 +1,7 @@
 #include "EntityBaseCharacter.h"
 
 
+#include "ActorComponentBaseData.h"
 #include "ActorComponentBaseStats.h"
 #include "ActorComponentInventory.h"
 #include "Animation/AnimInstance.h"
@@ -73,6 +74,9 @@ AEntityBaseCharacter::AEntityBaseCharacter()
 	InteractBounds->SetupAttachment(GetRootComponent());
 
 	// Gameplay components
+	BaseDataComponent = CreateDefaultSubobject<UActorComponentBaseData>(TEXT("EntityBaseData"));
+	BaseDataComponent->SetIsReplicated(true);
+
 	BaseStatsComponent = CreateDefaultSubobject<UActorComponentBaseStats>(TEXT("EntityBaseStats"));
 	BaseStatsComponent->SetIsReplicated(true);
 

@@ -22,4 +22,10 @@ public:
 	// Open the multiplayer menu
 	UFUNCTION(BlueprintCallable)
 	void OpenMultiplayerMenu();
+
+	UFUNCTION(BlueprintCallable)
+	void SaveGame();
+
+	UFUNCTION(BlueprintCallable)
+	void LoadGame();
 };

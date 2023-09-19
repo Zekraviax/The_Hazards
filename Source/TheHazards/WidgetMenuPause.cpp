@@ -2,6 +2,8 @@
 
 
 #include "EntityPlayerCharacter.h"
+#include "Kismet/GameplayStatics.h"
+#include "SaveGamePlayerData.h"
 #include "WidgetMenuMultiplayer.h"
 
 
@@ -13,4 +15,22 @@ void UWidgetMenuPause::OpenMultiplayerMenu()
 	if (PlayerCharacter->IsValidLowLevel()) {
 		PlayerCharacter->OpenWidgetByClass(PlayerCharacter->WidgetMenuMultiplayerClass);
 	}
+}
+
+
+void UWidgetMenuPause::SaveGame()
+{
+	AEntityPlayerCharacter* const PlayerCharacter = Cast<AEntityPlayerCharacter>(GetGameInstance()->GetFirstLocalPlayerController()->GetPawn());
+
+	USaveGamePlayerData* PlayerSaveObject = Cast<USaveGamePlayerData>(UGameplayStatics::CreateSaveGameObject(USaveGamePlayerData::StaticClass()));
+	PlayerSaveObject->SavePlayerDataToJson(PlayerCharacter);
+}
+
+
+void UWidgetMenuPause::LoadGame()
+{
+	AEntityPlayerCharacter* const PlayerCharacter = Cast<AEntityPlayerCharacter>(GetGameInstance()->GetFirstLocalPlayerController()->GetPawn());
+
+	USaveGamePlayerData* PlayerSaveObject = Cast<USaveGamePlayerData>(UGameplayStatics::CreateSaveGameObject(USaveGamePlayerData::StaticClass()));
+	PlayerSaveObject->LoadPlayerDataFromJson(PlayerCharacter, "");
 }
