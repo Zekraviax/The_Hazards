@@ -160,10 +160,10 @@ void AEntityBaseCharacter::MeleeWeaponHit(AActor* OtherActor)
 
 void AEntityBaseCharacter::OnFire()
 {
-	EWeaponAttackStyles AttackStyle = EWeaponAttackStyles::Melee;
+	EWeaponAttackStyles AttackStyle = EWeaponAttackStyles::Ranged;
 
-	if (AttackStyle == EWeaponAttackStyles::Melee) {
-	}
+	//if (AttackStyle == EWeaponAttackStyles::Melee) {
+	//}
 
 	float WeaponDamagePerShot = 1.f;
 	float DelayUntilNextAttack = 0.25f;
