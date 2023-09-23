@@ -174,6 +174,7 @@ public:
 	bool IsUsingSpecialAttack;
 
 	/** Fires a projectile. */
+	UFUNCTION(BlueprintCallable)
 	void OnFire();
 
 	// Clear any automatic firing TimerHandles when the fire button is de-pressed

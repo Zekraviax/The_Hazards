@@ -34,3 +34,9 @@ void UWidgetMenuPause::LoadGame()
 	USaveGamePlayerData* PlayerSaveObject = Cast<USaveGamePlayerData>(UGameplayStatics::CreateSaveGameObject(USaveGamePlayerData::StaticClass()));
 	PlayerSaveObject->LoadPlayerDataFromJson(PlayerCharacter, "");
 }
+
+
+void UWidgetMenuPause::QuitGame()
+{
+	FGenericPlatformMisc::RequestExit(false);
+}

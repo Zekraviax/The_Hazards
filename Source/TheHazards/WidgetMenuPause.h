@@ -28,4 +28,7 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	void LoadGame();
+
+	UFUNCTION(BlueprintCallable)
+	void QuitGame();
 };

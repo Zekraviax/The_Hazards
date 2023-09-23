@@ -237,7 +237,9 @@ void AEntityBaseCharacter::OnFire()
 	}
 
 	// Set a timer to automatically fire the weapon again for as long as the fire button is held
-	GetWorld()->GetTimerManager().SetTimer(RangedWeaponFireTimerHandle, this, &AEntityBaseCharacter::OnFire, DelayUntilNextAttack, false);
+	if (Cast<AEntityPlayerCharacter>(this)) {
+		GetWorld()->GetTimerManager().SetTimer(RangedWeaponFireTimerHandle, this, &AEntityBaseCharacter::OnFire, DelayUntilNextAttack, false);
+	}
 }
 
 
