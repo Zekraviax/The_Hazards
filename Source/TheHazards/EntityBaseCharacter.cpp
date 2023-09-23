@@ -4,7 +4,9 @@
 #include "ActorComponentBaseData.h"
 #include "ActorComponentBaseStats.h"
 #include "ActorComponentInventory.h"
+#include "AIController.h"
 #include "Animation/AnimInstance.h"
+#include "BehaviorTree/BlackboardComponent.h"
 #include "Camera/CameraComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "Components/InputComponent.h"
@@ -187,7 +189,6 @@ void AEntityBaseCharacter::OnFire()
 
 	if (AttackStyle == EWeaponAttackStyles::Ranged) {
 		// First line trace: Find the actor/object the entity is directly looking at
-
 		FVector TraceStart = FirstPersonCameraComponent->GetComponentLocation();
 		FVector TraceEnd = FirstPersonCameraComponent->GetComponentLocation() + FirstPersonCameraComponent->GetForwardVector() * 1000000.0f;
 		UKismetSystemLibrary::LineTraceSingle(this, TraceStart, TraceEnd, UEngineTypes::ConvertToTraceType(ECC_Camera), false, ActorsToIgnore, EDrawDebugTrace::None, FirstHit, true);
@@ -512,6 +513,13 @@ void AEntityBaseCharacter::ReceiveDamage(float Damage, AEntityBaseCharacter* Sou
 			Cast<AEntityPlayerCharacter>(Source)->GetBaseStatsComponent()->UpdateCurrentExperiencePoints(50);
 			Cast<AEntityPlayerCharacter>(Source)->GetBaseStatsComponent()->UpdateCredits(50);
 			Cast<AEntityPlayerCharacter>(Source)->GetBaseStatsComponent()->UpdateScrap(50);
+		}
+	}
+
+	// For Defensive AIs, tell them if the player has attacked them.
+	if (Cast<AEntityPlayerCharacter>(Source)) {
+		if (Cast<AAIController>(GetController())) {
+			Cast<AAIController>(GetController())->GetBlackboardComponent()->SetValueAsBool("PlayerHasAttacked", true);
 		}
 	}
 }
