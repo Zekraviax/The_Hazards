@@ -14,6 +14,7 @@
 #include "WidgetMenuHostSession.h"
 #include "WidgetMenuInventory.h"
 #include "WidgetMenuMultiplayer.h"
+#include "WidgetMenuOptions.h"
 #include "WidgetMenuPause.h"
 
 
@@ -114,6 +115,9 @@ void AEntityPlayerCharacter::PauseGame()
 	} else if (CurrentOpenWidgetClass == WidgetMenuFindSessionsClass) {
 		// If the 'create host session' menu is on-screen, go back to the main multiplayer menu
 		OpenWidgetByClass(WidgetMenuMultiplayerClass);
+	} else if (CurrentOpenWidgetClass == WidgetMenuOptionsClass) {
+		// If the options menu is open, go back to the main pause menu
+		OpenWidgetByClass(WidgetMenuPauseClass);
 	}
 }
 
@@ -170,6 +174,12 @@ void AEntityPlayerCharacter::ClientCreateWidgets_Implementation()
 		WidgetMenuPauseReference = CreateWidget<UWidgetMenuPause>(GetWorld(), WidgetMenuPauseClass);
 
 		ValidWidgets.Add(WidgetMenuPauseReference);
+	}
+
+	if (WidgetMenuOptionsClass && !WidgetMenuOptionsReference) {
+		WidgetMenuOptionsReference = CreateWidget<UWidgetMenuOptions>(GetWorld(), WidgetMenuOptionsClass);
+
+		ValidWidgets.Add(WidgetMenuOptionsReference);
 	}
 
 	// Create other menus
@@ -294,6 +304,10 @@ void AEntityPlayerCharacter::OpenWidgetByClass(TSubclassOf<UUserWidget> WidgetCl
 	// Fetch the NPC's first line of dialogue here
 	if (WidgetClass == WidgetDialogueClass) {
 
+	}
+
+	if (WidgetClass == WidgetMenuOptionsClass) {
+		WidgetMenuOptionsReference->LoadOptions();
 	}
 }
 

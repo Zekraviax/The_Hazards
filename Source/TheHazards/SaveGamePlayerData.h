@@ -18,6 +18,7 @@ class THEHAZARDS_API USaveGamePlayerData : public USaveGame
 	GENERATED_BODY()
 
 public:
+	// To-Do: Put this variable somewhere global, so it can easily be changed and accessed
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	FString PlayerDataSaveFilePath = "C:\\users\\zekra\\documents\\My Games\\The Hazards\\zekra";
 

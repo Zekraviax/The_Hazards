@@ -15,6 +15,7 @@ class UWidgetMenuFindSessions;
 class UWidgetMenuHostSession;
 class UWidgetMenuInventory;
 class UWidgetMenuMultiplayer;
+class UWidgetMenuOptions;
 class UWidgetMenuPause;
 class UWidgetSessionListEntry;
 
@@ -59,6 +60,9 @@ public:
 	TSubclassOf<UWidgetMenuMultiplayer> WidgetMenuMultiplayerClass;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Interface)
+	TSubclassOf<UWidgetMenuOptions> WidgetMenuOptionsClass;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Interface)
 	TSubclassOf<UWidgetMenuPause> WidgetMenuPauseClass;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Interface)
@@ -89,6 +93,9 @@ public:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Interface)
 	UWidgetMenuMultiplayer* WidgetMenuMultiplayerReference;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Interface)
+	UWidgetMenuOptions* WidgetMenuOptionsReference;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Interface)
 	UWidgetMenuPause* WidgetMenuPauseReference;
@@ -135,7 +142,7 @@ public:
 	void OpenDialogue();
 
 	// Loop through all valid widgets, opening the designated widget and closing all others
-	UFUNCTION()
+	UFUNCTION(BlueprintCallable)
 	void OpenWidgetByClass(TSubclassOf<UUserWidget> WidgetClass);
 
 	// Attempt to interact with an entity

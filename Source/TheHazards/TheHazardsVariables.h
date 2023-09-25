@@ -275,3 +275,14 @@ struct THEHAZARDS_API FEntityBaseData
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	FVector Location;
 };
+
+
+// Options
+USTRUCT(BlueprintType)
+struct THEHAZARDS_API FOptionsData
+{
+	GENERATED_BODY()
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float MasterVolumeValue = 0.5f;
+};

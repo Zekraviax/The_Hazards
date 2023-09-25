@@ -17,6 +17,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "Kismet/KismetSystemLibrary.h"
+#include "TheHazardsGameInstance.h"
 #include "WidgetHudBattle.h"
 #include "WidgetMenuPause.h"
 
@@ -234,7 +235,7 @@ void AEntityBaseCharacter::OnFire()
 	
 	// try and play the sound if specified
 	if (FireSound != NULL) {
-		UGameplayStatics::PlaySoundAtLocation(this, FireSound, GetActorLocation());
+		UGameplayStatics::PlaySoundAtLocation(this, FireSound, GetActorLocation(), Cast<UTheHazardsGameInstance>(GetGameInstance())->GetOptionsSaveObject()->OptionsData.MasterVolumeValue);
 	}
 
 	// Set a timer to automatically fire the weapon again for as long as the fire button is held

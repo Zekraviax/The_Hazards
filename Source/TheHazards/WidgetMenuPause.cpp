@@ -4,6 +4,7 @@
 #include "EntityPlayerCharacter.h"
 #include "Kismet/GameplayStatics.h"
 #include "SaveGamePlayerData.h"
+#include "WidgetMenuOptions.h"
 #include "WidgetMenuMultiplayer.h"
 
 
@@ -14,6 +15,16 @@ void UWidgetMenuPause::OpenMultiplayerMenu()
 
 	if (PlayerCharacter->IsValidLowLevel()) {
 		PlayerCharacter->OpenWidgetByClass(PlayerCharacter->WidgetMenuMultiplayerClass);
+	}
+}
+
+
+void UWidgetMenuPause::OpenOptionsMenu()
+{
+	AEntityPlayerCharacter* const PlayerCharacter = Cast<AEntityPlayerCharacter>(GetGameInstance()->GetFirstLocalPlayerController()->GetPawn());
+
+	if (PlayerCharacter->IsValidLowLevel()) {
+		PlayerCharacter->OpenWidgetByClass(PlayerCharacter->WidgetMenuOptionsClass);
 	}
 }
 

@@ -24,6 +24,9 @@ public:
 	void OpenMultiplayerMenu();
 
 	UFUNCTION(BlueprintCallable)
+	void OpenOptionsMenu();
+
+	UFUNCTION(BlueprintCallable)
 	void SaveGame();
 
 	UFUNCTION(BlueprintCallable)

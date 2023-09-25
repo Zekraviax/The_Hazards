@@ -49,6 +49,8 @@ void USaveGamePlayerData::SavePlayerDataToJson(AEntityBaseCharacter* PlayerEntit
 	} else {
 		UE_LOG(LogTemp, Error, TEXT("Error: Could not save Player's data."));
 	}
+
+	BeginDestroy();
 }
 
 
@@ -73,7 +75,6 @@ void USaveGamePlayerData::LoadPlayerDataFromJson(AEntityBaseCharacter* PlayerEnt
 	FEntityBaseData PlayerDataAsStruct;
 
 	FFileHelper::LoadFileToString(PlayerDataAsJson, *FileName);
-
 	FJsonObjectConverter::JsonObjectStringToUStruct(PlayerDataAsJson, &PlayerDataAsStruct, 0, 0);
 
 	// Apply player data
@@ -81,4 +82,5 @@ void USaveGamePlayerData::LoadPlayerDataFromJson(AEntityBaseCharacter* PlayerEnt
 	PlayerEntity->SetActorLocation(PlayerDataAsStruct.Location);
 
 	// To-Do: Close the pause menu and unpause the level
+	BeginDestroy();
 }
