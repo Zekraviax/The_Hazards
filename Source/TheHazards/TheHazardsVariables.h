@@ -260,7 +260,30 @@ struct THEHAZARDS_API FItemBase
 };
 
 
-// Entity Data
+// Entity
+UENUM(BlueprintType)
+enum class EElements : uint8
+{
+	Aer,
+	Aqua,
+	Ignis,
+	Terra,
+	Vita
+};
+
+
+UENUM(BlueprintType)
+enum class ERaces : uint8
+{
+	Kyro,
+	Frostine,
+	Celestial,
+	Detoling
+};
+
+
+// These structs are used for saving and loading data
+// Entity
 USTRUCT(BlueprintType)
 struct THEHAZARDS_API FEntityBaseData
 {
@@ -270,10 +293,19 @@ struct THEHAZARDS_API FEntityBaseData
 	FString Name;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	ERaces Race;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	EElements Element;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	FString Level;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	FVector Location;
+	FTransform Transform;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FRotator ControllerRotation;
 };
 
 

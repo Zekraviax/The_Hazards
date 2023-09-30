@@ -9,6 +9,7 @@
 class AActorInteractable;
 class UWidgetDialogue;
 class UWidgetHudBattle;
+class UWidgetMenuCharacterCreator;
 class UWidgetMenuCraftingWindow;
 class UWidgetMenuDeveloper;
 class UWidgetMenuFindSessions;
@@ -18,6 +19,7 @@ class UWidgetMenuMultiplayer;
 class UWidgetMenuOptions;
 class UWidgetMenuPause;
 class UWidgetSessionListEntry;
+class UWidgetSkillTree;
 
 
 UCLASS()
@@ -40,6 +42,9 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Interface)
 	TSubclassOf<UWidgetHudBattle> WidgetHudBattleClass;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Interface)
+	TSubclassOf<UWidgetMenuCharacterCreator> WidgetMenuCharacterCreatorClass;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Interface)
 	TSubclassOf<UWidgetMenuCraftingWindow> WidgetMenuCraftingWindowClass;
@@ -68,6 +73,9 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Interface)
 	TSubclassOf<UWidgetSessionListEntry> WidgetSessionListEntryClass;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Interface)
+	TSubclassOf<UWidgetSkillTree> WidgetSkillTreeClass;
+
 	// References
 	// Keep a reference to the widget itself so we can show and hide it instead of creating and destroying it every time
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Interface)
@@ -75,6 +83,9 @@ public:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Interface)
 	UWidgetHudBattle* WidgetHudBattleReference;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Interface)
+	UWidgetMenuCharacterCreator* WidgetMenuCharacterCreatorReference;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Interface)
 	UWidgetMenuCraftingWindow* WidgetMenuCraftingWindowReference;
@@ -100,6 +111,9 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Interface)
 	UWidgetMenuPause* WidgetMenuPauseReference;
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Interface)
+	UWidgetSkillTree* WidgetSkillTreeReference;
+
 	// Use the variable to track what widgets need to be opened when one is closed
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Interface)
 	TSubclassOf<UUserWidget> CurrentOpenWidgetClass;
@@ -115,6 +129,8 @@ protected:
 
 
 public:
+	virtual void BeginPlay();
+
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
@@ -128,18 +144,15 @@ public:
 
 	// Open the dev menu
 	// Or close the dev menu and return the HUD
-	UFUNCTION()
 	void OpenDevMenu();
 
 	// Open or close the inventory and return the HUD
-	UFUNCTION()
 	void OpenInventory();
 
-	UFUNCTION()
 	void OpenCraftingWindow();
-
-	UFUNCTION()
 	void OpenDialogue();
+	void OpenSkillTree();
+	void OpenCharacterCreator();
 
 	// Loop through all valid widgets, opening the designated widget and closing all others
 	UFUNCTION(BlueprintCallable)

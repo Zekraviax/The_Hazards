@@ -4,6 +4,7 @@
 #include "EntityPlayerCharacter.h"
 #include "Kismet/GameplayStatics.h"
 #include "SaveGamePlayerData.h"
+#include "TheHazardsGameInstance.h"
 #include "WidgetMenuOptions.h"
 #include "WidgetMenuMultiplayer.h"
 
@@ -31,10 +32,7 @@ void UWidgetMenuPause::OpenOptionsMenu()
 
 void UWidgetMenuPause::SaveGame()
 {
-	AEntityPlayerCharacter* const PlayerCharacter = Cast<AEntityPlayerCharacter>(GetGameInstance()->GetFirstLocalPlayerController()->GetPawn());
-
-	USaveGamePlayerData* PlayerSaveObject = Cast<USaveGamePlayerData>(UGameplayStatics::CreateSaveGameObject(USaveGamePlayerData::StaticClass()));
-	PlayerSaveObject->SavePlayerDataToJson(PlayerCharacter);
+	Cast<UTheHazardsGameInstance>(GetGameInstance())->GetPlayerSaveObject()->SavePlayerDataToJson();
 }
 
 

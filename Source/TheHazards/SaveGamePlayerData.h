@@ -22,8 +22,14 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	FString PlayerDataSaveFilePath = "C:\\users\\zekra\\documents\\My Games\\The Hazards\\zekra";
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FEntityBaseData PlayerData;
+
+	UPROPERTY()
+	AEntityBaseCharacter* PlayerEntityReference;
+
 	UFUNCTION(BlueprintCallable)
-	void SavePlayerDataToJson(AEntityBaseCharacter* PlayerEntity);
+	void SavePlayerDataToJson();
 
 	UFUNCTION(BlueprintCallable)
 	void LoadPlayerDataFromJson(AEntityBaseCharacter* PlayerEntity, FString PlayerSaveDataFolderName);

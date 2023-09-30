@@ -6,8 +6,10 @@
 #include "Camera/CameraComponent.h"
 #include "InterfaceInteractions.h"
 #include "Kismet/GameplayStatics.h"
+#include "TheHazardsGameInstance.h"
 #include "WidgetDialogue.h"
 #include "WidgetHudBattle.h"
+#include "WidgetMenuCharacterCreator.h"
 #include "WidgetMenuCraftingWindow.h"
 #include "WidgetMenuDeveloper.h"
 #include "WidgetMenuFindSessions.h"
@@ -16,6 +18,16 @@
 #include "WidgetMenuMultiplayer.h"
 #include "WidgetMenuOptions.h"
 #include "WidgetMenuPause.h"
+#include "WidgetSkillTree.h"
+
+
+void AEntityPlayerCharacter::BeginPlay()
+{
+	Super::BeginPlay();
+
+	//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("AEntityPlayerCharacter / BeginPlay / The Player Entity Exists!")));
+	Cast<UTheHazardsGameInstance>(GetGameInstance())->GetPlayerSaveObject()->PlayerEntityReference = this;
+}
 
 
 void AEntityPlayerCharacter::Tick(float DeltaTime)
@@ -92,6 +104,8 @@ void AEntityPlayerCharacter::SetupPlayerInputComponent(class UInputComponent* Pl
 	// Open or close the windows
 	PlayerInputComponent->BindAction("Inventory", IE_Released, this, &AEntityPlayerCharacter::OpenInventory).bExecuteWhenPaused = true;
 	PlayerInputComponent->BindAction("CraftingWindow", IE_Released, this, &AEntityPlayerCharacter::OpenCraftingWindow).bExecuteWhenPaused = true;
+	PlayerInputComponent->BindAction("SkillTree", IE_Released, this, &AEntityPlayerCharacter::OpenSkillTree).bExecuteWhenPaused = true;
+	PlayerInputComponent->BindAction("CharacterCreator", IE_Released, this, &AEntityPlayerCharacter::OpenCharacterCreator).bExecuteWhenPaused = true;
 }
 
 
@@ -199,11 +213,25 @@ void AEntityPlayerCharacter::ClientCreateWidgets_Implementation()
 		ValidWidgets.Add(WidgetMenuCraftingWindowReference);
 	}
 
-	// Create the dialogue widget
-	if (WidgetDialogueClass && !WidgetDialogueReference) {
-		WidgetDialogueReference = CreateWidget<UWidgetDialogue>(GetWorld(), WidgetDialogueClass);
+	if (WidgetMenuInventoryClass && !WidgetMenuInventoryReference) {
+		WidgetMenuInventoryReference = CreateWidget<UWidgetMenuInventory>(GetWorld(), WidgetMenuInventoryClass);
 
-		ValidWidgets.Add(WidgetDialogueReference);
+		ValidWidgets.Add(WidgetMenuInventoryReference);
+	}
+
+	// Create the dialogue widget
+	if (WidgetMenuCharacterCreatorClass && !WidgetMenuCharacterCreatorReference) {
+		WidgetMenuCharacterCreatorReference = CreateWidget<UWidgetMenuCharacterCreator>(GetWorld(), WidgetMenuCharacterCreatorClass);
+		WidgetMenuCharacterCreatorReference->PopulateDropdowns();
+
+		ValidWidgets.Add(WidgetMenuCharacterCreatorReference);
+	}
+
+	// Create skill tree
+	if (WidgetSkillTreeClass && !WidgetSkillTreeReference) {
+		WidgetSkillTreeReference = CreateWidget<UWidgetSkillTree>(GetWorld(), WidgetSkillTreeClass);
+
+		ValidWidgets.Add(WidgetSkillTreeReference);
 	}
 
 	// Set the input mode
@@ -245,6 +273,26 @@ void AEntityPlayerCharacter::OpenDialogue()
 {
 	if (CurrentOpenWidgetClass != WidgetDialogueClass) {
 		OpenWidgetByClass(WidgetDialogueClass);
+	} else {
+		OpenWidgetByClass(WidgetHudBattleClass);
+	}
+}
+
+
+void AEntityPlayerCharacter::OpenSkillTree()
+{
+	if (CurrentOpenWidgetClass != WidgetSkillTreeClass) {
+		OpenWidgetByClass(WidgetSkillTreeClass);
+	} else {
+		OpenWidgetByClass(WidgetHudBattleClass);
+	}
+}
+
+
+void AEntityPlayerCharacter::OpenCharacterCreator()
+{
+	if (CurrentOpenWidgetClass != WidgetMenuCharacterCreatorClass) {
+		OpenWidgetByClass(WidgetMenuCharacterCreatorClass);
 	} else {
 		OpenWidgetByClass(WidgetHudBattleClass);
 	}

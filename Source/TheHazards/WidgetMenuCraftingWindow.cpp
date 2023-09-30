@@ -16,6 +16,10 @@ void UWidgetMenuCraftingWindow::PopulateScrollBoxes()
 {
 	if (OwningEntityInventoryComponent->IsValidLowLevel()) {
 		if (CraftingWindowItemScrollBoxClass->IsValidLowLevel()) {
+			// Clear all the scroll boxes before populating them again
+			BlueprintsInventoryScrollBox->ClearChildren();
+			ComponentsInventoryScrollBox->ClearChildren();
+
 			for (int i = 0; i < OwningEntityInventoryComponent->ItemsList.Num(); i++) {
 				if (OwningEntityInventoryComponent->ItemsList[i].ItemType == EItemTypes::Blueprint ||
 					OwningEntityInventoryComponent->ItemsList[i].ItemType == EItemTypes::Part) {

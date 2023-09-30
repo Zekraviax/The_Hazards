@@ -2,26 +2,33 @@
 
 
 #include "ActorComponentBaseData.h"
+#include "Engine/World.h"
 #include "EntityBaseCharacter.h"
 #include "EntityPlayerCharacter.h"
 #include "Runtime/JsonUtilities/Public/JsonObjectConverter.h"
+#include "TheHazardsGameInstance.h"
+#include "TheHazardsPlayerController.h"
 
 
-void USaveGamePlayerData::SavePlayerDataToJson(AEntityBaseCharacter* PlayerEntity)
+void USaveGamePlayerData::SavePlayerDataToJson()
 {
+	if (PlayerEntityReference == NULL) {
+		PlayerEntityReference = Cast<ATheHazardsPlayerController>(GetWorld()->GetFirstPlayerController())->GetPawnAsEntityPlayerCharacter();
+	}
+
 	// Get the project's save folder directory
 	PlayerDataSaveFilePath = FPaths::ProjectSavedDir();
 	UE_LOG(LogTemp, Warning, TEXT("FilePaths: ProjectSavedDir: %s"), *PlayerDataSaveFilePath);
-	PlayerDataSaveFilePath.Append(PlayerEntity->GetBaseDataComponent()->Name);
+	PlayerDataSaveFilePath.Append(PlayerData.Name);
 	UE_LOG(LogTemp, Warning, TEXT("FilePaths: Player's Save Data Folder: %s"), *PlayerDataSaveFilePath);
 
-	FEntityBaseData PlayerDataAsStruct;
 	FString PlayerDataAsJson;
 
-	PlayerDataAsStruct.Name = PlayerEntity->GetBaseDataComponent()->Name;
-	PlayerDataAsStruct.Location = PlayerEntity->GetActorLocation();
+	//PlayerData.Name = PlayerEntity->GetBaseDataComponent()->Name;
+	PlayerData.Transform = PlayerEntityReference->GetActorTransform();
+	PlayerData.ControllerRotation = PlayerEntityReference->GetControlRotation();
 
-	FJsonObjectConverter::UStructToJsonObjectString(PlayerDataAsStruct, PlayerDataAsJson, 0, 0);
+	FJsonObjectConverter::UStructToJsonObjectString(PlayerData, PlayerDataAsJson, 0, 0);
 	
 	// Before we save the json file, we need to check if the player's save data folder exists
 	// If it doesn't, we make it first
@@ -50,7 +57,7 @@ void USaveGamePlayerData::SavePlayerDataToJson(AEntityBaseCharacter* PlayerEntit
 		UE_LOG(LogTemp, Error, TEXT("Error: Could not save Player's data."));
 	}
 
-	BeginDestroy();
+	//BeginDestroy();
 }
 
 
@@ -79,8 +86,9 @@ void USaveGamePlayerData::LoadPlayerDataFromJson(AEntityBaseCharacter* PlayerEnt
 
 	// Apply player data
 	PlayerEntity->GetBaseDataComponent()->Name = PlayerDataAsStruct.Name;
-	PlayerEntity->SetActorLocation(PlayerDataAsStruct.Location);
+	PlayerEntity->SetActorTransform(PlayerDataAsStruct.Transform);
+	PlayerEntity->GetController()->SetControlRotation(PlayerDataAsStruct.ControllerRotation);
 
 	// To-Do: Close the pause menu and unpause the level
-	BeginDestroy();
+	//BeginDestroy();
 }
