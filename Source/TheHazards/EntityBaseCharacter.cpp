@@ -165,13 +165,9 @@ void AEntityBaseCharacter::OnFire()
 {
 	EWeaponAttackStyles AttackStyle = EWeaponAttackStyles::Ranged;
 
-	//if (AttackStyle == EWeaponAttackStyles::Melee) {
-	//}
-
 	float WeaponDamagePerShot = 1.f;
 	float DelayUntilNextAttack = 0.25f;
 	float MeleeWeaponAnimationTime = 1.f;
-
 
 	// Use LineTraces for to determine where weapon shot will land
 	// Two FHitResults will store all data returned by our line traces

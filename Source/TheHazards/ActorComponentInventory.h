@@ -26,17 +26,37 @@ public:
 	// Called every frame
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
+	// Armour
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	FItemBase EquippedHeadItem;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FItemBase EquippedChestItem;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FItemBase EquippedGlovesItem;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FItemBase EquippedLegsItem;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FItemBase EquippedBootsItem;
+
+	// Weapons
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	FItemBase EquippedPrimaryWeapon;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FItemBase EquippedSecondaryWeapon;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FItemBase EquippedTertiaryWeapon;
 
 	// List of uneqipped items in this character's inventory
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TArray<FItemBase> ItemsList;
 
-	// Easy access to the player's equipped gear data
+	// Easy access to the player's equipped gear and data
 	void ReturnEquippedWeaponNormalDamage(float &DamagePerShot) { DamagePerShot = EquippedPrimaryWeapon.WeaponData.DamagePerShot; }
 	void ReturnEquippedWeaponSpecialDamage(float &DamagePerShot) { DamagePerShot = EquippedPrimaryWeapon.WeaponData.SpecialAttackDamagePerShot; }
 };
