@@ -2,6 +2,7 @@
 
 
 #include "ActorComponentBaseStats.h"
+#include "ActorComponentInventory.h"
 #include "ActorInteractable.h"
 #include "Camera/CameraComponent.h"
 #include "InterfaceInteractions.h"
@@ -88,6 +89,9 @@ void AEntityPlayerCharacter::SetupPlayerInputComponent(class UInputComponent* Pl
 	// Begin and end sprinting
 	PlayerInputComponent->BindAction("Sprint", IE_Pressed, this, &AEntityBaseCharacter::OnSprintBegin);
 	PlayerInputComponent->BindAction("Sprint", IE_Released, this, &AEntityBaseCharacter::OnSprintEnd);
+
+	PlayerInputComponent->BindAction("SwapWeaponUp", IE_Released, this, &AEntityPlayerCharacter::PlayerSwapWeaponUp);
+	PlayerInputComponent->BindAction("SwapWeaponDown", IE_Released, this, &AEntityPlayerCharacter::PlayerSwapWeaponDown);
 
 	// To-Do: Add binds for escape key to both:
 	// Open pause menu
@@ -372,5 +376,49 @@ void AEntityPlayerCharacter::OnInteract()
 			Cast<IInterfaceInteractions>(LookAtInteractableActor)->Execute_OnInteract(LookAtInteractableActor);
 			//}
 		}
+	}
+}
+
+
+void AEntityPlayerCharacter::PlayerSwapWeaponUp()
+{
+	switch (GetInventoryComponent()->ReturnEquippedWeaponSlotEnum()) 
+	{
+	case(ECurrentWeaponEquippedSlot::Primary):
+		GetInventoryComponent()->SetEquippedWeaponSlotEnum(ECurrentWeaponEquippedSlot::Tertiary);
+		CurrentEquippedWeapon = GetInventoryComponent()->EquippedTertiaryWeapon;
+		break;
+	case(ECurrentWeaponEquippedSlot::Secondary):
+		GetInventoryComponent()->SetEquippedWeaponSlotEnum(ECurrentWeaponEquippedSlot::Primary);
+		CurrentEquippedWeapon = GetInventoryComponent()->EquippedPrimaryWeapon;
+		break;
+	case(ECurrentWeaponEquippedSlot::Tertiary):
+		GetInventoryComponent()->SetEquippedWeaponSlotEnum(ECurrentWeaponEquippedSlot::Secondary);
+		CurrentEquippedWeapon = GetInventoryComponent()->EquippedSecondaryWeapon;
+		break;
+	default:
+		GetInventoryComponent()->SetEquippedWeaponSlotEnum(ECurrentWeaponEquippedSlot::Primary);
+		CurrentEquippedWeapon = GetInventoryComponent()->EquippedPrimaryWeapon;
+		break;
+	}
+}
+
+
+void AEntityPlayerCharacter::PlayerSwapWeaponDown()
+{
+	switch (GetInventoryComponent()->ReturnEquippedWeaponSlotEnum())
+	{
+	case(ECurrentWeaponEquippedSlot::Primary):
+		GetInventoryComponent()->SetEquippedWeaponSlotEnum(ECurrentWeaponEquippedSlot::Secondary);
+		break;
+	case(ECurrentWeaponEquippedSlot::Secondary):
+		GetInventoryComponent()->SetEquippedWeaponSlotEnum(ECurrentWeaponEquippedSlot::Tertiary);
+		break;
+	case(ECurrentWeaponEquippedSlot::Tertiary):
+		GetInventoryComponent()->SetEquippedWeaponSlotEnum(ECurrentWeaponEquippedSlot::Primary);
+		break;
+	default:
+		GetInventoryComponent()->SetEquippedWeaponSlotEnum(ECurrentWeaponEquippedSlot::Primary);
+		break;
 	}
 }

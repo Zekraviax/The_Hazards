@@ -9,6 +9,15 @@
 #include "ActorComponentInventory.generated.h"
 
 
+UENUM(BlueprintType)
+enum class ECurrentWeaponEquippedSlot : uint8
+{
+	Primary,
+	Secondary,
+	Tertiary
+};
+
+
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class THEHAZARDS_API UActorComponentInventory : public UActorComponent
 {
@@ -55,6 +64,13 @@ public:
 	// List of uneqipped items in this character's inventory
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TArray<FItemBase> ItemsList;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	ECurrentWeaponEquippedSlot CurrentEquippedWeaponSlotEnum;
+
+	void SetEquippedWeaponSlotEnum(ECurrentWeaponEquippedSlot NewSlotEnum);
+	ECurrentWeaponEquippedSlot ReturnEquippedWeaponSlotEnum();
+	FItemBase ReturnEquippedWeapon();
 
 	// Easy access to the player's equipped gear and data
 	void ReturnEquippedWeaponNormalDamage(float &DamagePerShot) { DamagePerShot = EquippedPrimaryWeapon.WeaponData.DamagePerShot; }

@@ -161,4 +161,10 @@ public:
 	// Attempt to interact with an entity
 	UFUNCTION()
 	void OnInteract();
+
+	UFUNCTION()
+	void PlayerSwapWeaponUp();
+
+	UFUNCTION()
+	void PlayerSwapWeaponDown();
 };

@@ -115,6 +115,9 @@ void AEntityBaseCharacter::BeginPlay()
 	MeleeWeaponHitbox->AttachToComponent(Mesh1P, FAttachmentTransformRules(EAttachmentRule::SnapToTarget, true), TEXT("GripPoint"));
 	MeleeWeaponHitbox->AddRelativeLocation(FVector(0.f, 100.f, 0.f));
 	MeleeWeaponHitbox->SetWorldScale3D(FVector(1.f, 3.f, 1.f));
+
+	GetInventoryComponent()->SetEquippedWeaponSlotEnum(ECurrentWeaponEquippedSlot::Primary);
+	CurrentEquippedWeapon = GetInventoryComponent()->ReturnEquippedWeapon();
 }
 
 
@@ -164,8 +167,6 @@ void AEntityBaseCharacter::MeleeWeaponHit(AActor* OtherActor)
 void AEntityBaseCharacter::OnFire()
 {
 	EWeaponAttackStyles AttackStyle = EWeaponAttackStyles::Ranged;
-
-	float WeaponDamagePerShot = 1.f;
 	float DelayUntilNextAttack = 0.25f;
 	float MeleeWeaponAnimationTime = 1.f;
 
@@ -176,11 +177,6 @@ void AEntityBaseCharacter::OnFire()
 	// Use QueryParams to prevent this entity from being hit by it's own line trace
 	FCollisionQueryParams QueryParams;
 	QueryParams.AddIgnoredActor(this);
-
-	// Use this entity's inventory component to get their weapon's stats, sounds, etc.
-	if (GetInventoryComponent()) {
-		GetInventoryComponent()->ReturnEquippedWeaponNormalDamage(WeaponDamagePerShot);
-	}
 
 	ActorsToIgnore.Empty();
 
@@ -213,7 +209,7 @@ void AEntityBaseCharacter::OnFire()
 
 		// If the line trace connects with a valid entity, deal damage to them
 		if (Cast<AEntityBaseCharacter>(Hit.Actor.Get())) {
-			Cast<AEntityBaseCharacter>(Hit.Actor.Get())->ReceiveDamage(WeaponDamagePerShot, this);
+			Cast<AEntityBaseCharacter>(Hit.Actor.Get())->ReceiveDamage(CurrentEquippedWeapon.WeaponData.DamagePerShot, this);
 		}
 	} else if (AttackStyle == EWeaponAttackStyles::Melee) {
 		GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Red, FString::Printf(TEXT("AEntityBaseCharacter / OnFire / Begin Melee Attack")));

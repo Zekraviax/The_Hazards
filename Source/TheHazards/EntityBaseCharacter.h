@@ -8,6 +8,7 @@
 #include "InterfaceInteractions.h"
 #include "Net/UnrealNetwork.h"
 #include "TheHazardsPlayerController.h"
+#include "TheHazardsVariables.h"
 
 #include "EntityBaseCharacter.generated.h"
 
@@ -166,6 +167,13 @@ public:
 
 	UPROPERTY()
 	TArray<AActor*> MeleeHitboxOverlappingActors;
+
+	// Creating a duplicate CurrentEquippedWeapon variable so we don't have to
+	// retrieve it everytime an entity attacks. Instead
+	// It will only be retrieved when an entity switches weapons
+	// or loads in to the game
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FItemBase CurrentEquippedWeapon;
 
 	UPROPERTY()
 	bool IsUsingNormalAttack;

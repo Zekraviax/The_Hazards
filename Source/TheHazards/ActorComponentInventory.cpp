@@ -22,3 +22,39 @@ void UActorComponentInventory::TickComponent(float DeltaTime, ELevelTick TickTyp
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 }
+
+
+void UActorComponentInventory::SetEquippedWeaponSlotEnum(ECurrentWeaponEquippedSlot NewSlotEnum)
+{
+	CurrentEquippedWeaponSlotEnum = NewSlotEnum;
+}
+
+
+ECurrentWeaponEquippedSlot UActorComponentInventory::ReturnEquippedWeaponSlotEnum()
+{
+	return CurrentEquippedWeaponSlotEnum;
+}
+
+
+FItemBase UActorComponentInventory::ReturnEquippedWeapon()
+{
+	FItemBase ReturnItem = FItemBase();
+
+	switch (CurrentEquippedWeaponSlotEnum)
+	{
+	case (ECurrentWeaponEquippedSlot::Primary):
+		ReturnItem = EquippedPrimaryWeapon;
+		break;
+	case (ECurrentWeaponEquippedSlot::Secondary):
+		ReturnItem = EquippedSecondaryWeapon;
+		break;
+	case (ECurrentWeaponEquippedSlot::Tertiary):
+		ReturnItem = EquippedTertiaryWeapon;
+		break;
+	default:
+		ReturnItem = EquippedPrimaryWeapon;
+		break;
+	}
+
+	return ReturnItem;
+}
