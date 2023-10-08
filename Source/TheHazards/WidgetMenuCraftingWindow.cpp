@@ -186,6 +186,13 @@ void UWidgetMenuCraftingWindow::CraftItem()
 		for (int i = 0; i < PartsUsed.Num(); i++) {
 			CraftedItem.WeaponData.DamagePerShot += PartsUsed[i].WeaponData.DamagePerShot;
 		}
+	} else if (CurrentSelectedBlueprint.BlueprintData.CraftedItemType == EItemTypes::Armour) {
+		CraftedItem.ArmourData.ArmourType = CurrentSelectedBlueprint.BlueprintData.ArmourType;
+
+		// Armour damage mitigation
+		for (int i = 0; i < PartsUsed.Num(); i++) {
+			CraftedItem.ArmourData.DamageMitigation += PartsUsed[i].ArmourData.DamageMitigation;
+		}
 	}
 	
 	UActorComponentInventory* PlayerInventory = Cast<ATheHazardsPlayerController>(GetWorld()->GetFirstPlayerController())->GetPawnAsEntityBaseCharacter()->GetInventoryComponent();

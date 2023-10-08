@@ -58,3 +58,13 @@ FItemBase UActorComponentInventory::ReturnEquippedWeapon()
 
 	return ReturnItem;
 }
+
+
+float UActorComponentInventory::ReturnTotalDamageMitigation()
+{
+	return (EquippedHeadItem.ArmourData.DamageMitigation + 
+		EquippedChestItem.ArmourData.DamageMitigation + 
+		EquippedGlovesItem.ArmourData.DamageMitigation + 
+		EquippedLegsItem.ArmourData.DamageMitigation + 
+		EquippedBootsItem.ArmourData.DamageMitigation);
+}

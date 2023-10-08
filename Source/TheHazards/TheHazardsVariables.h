@@ -44,16 +44,28 @@ enum class EWeaponAttackStyles : uint8
 };
 
 
+// -------- Armour
+UENUM(BlueprintType)
+enum class EArmourTypes : uint8
+{
+	None,
+	Chest
+};
+
+
 // -------- Crafting Parts/Components
 UENUM(BlueprintType)
 enum class EPartTypes : uint8
 {
+	// Weapons
 	None,
 	Barrel,
 	Trigger,
 	RecoilPad,
 	Magazine,
-	Grip
+	Grip,
+	// Armour
+	Plate
 };
 
 
@@ -98,6 +110,27 @@ struct THEHAZARDS_API FWeapon
 		SpecialAttackDamagePerShot = NewSpecialAttackDamage;
 	}
 };
+
+
+// Armour
+USTRUCT(BlueprintType)
+struct THEHAZARDS_API FArmour
+{
+	GENERATED_BODY()
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	EArmourTypes ArmourType;
+
+	// Damage Mitigation reduces damage taken by a percentage
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float DamageMitigation;
+
+	FArmour()
+	{
+		DamageMitigation = 1.f;
+	}
+};
+
 
 USTRUCT(BlueprintType)
 struct THEHAZARDS_API FPart
@@ -170,10 +203,14 @@ struct THEHAZARDS_API FCraftingBlueprint
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	EWeaponTypes WeaponType;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	EArmourTypes ArmourType;
+
 	FCraftingBlueprint()
 	{
 		CraftedItemType = EItemTypes::Weapon;
 		WeaponType = EWeaponTypes::None;
+		ArmourType = EArmourTypes::None;
 	}
 };
 
@@ -196,6 +233,9 @@ struct THEHAZARDS_API FItemBase
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	FWeapon WeaponData;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FArmour ArmourData;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	FPart PartData;

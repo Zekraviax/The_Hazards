@@ -60,9 +60,15 @@ void UWidgetItemRightClickMenu::EquipButtonPressed()
 			if (Cast<UWidgetMenuInventory>(FoundInventoryWidgets[0])) {
 				UWidgetMenuInventory* InventoryWidget = Cast<UWidgetMenuInventory>(FoundInventoryWidgets[0]);
 
+				// To-Do: Make this work for every type of weapon and armour slot
 				if (SelectedItem.ItemType == EItemTypes::Weapon) {
 					InventoryWidget->OwningEntityInventoryComponent->EquippedPrimaryWeapon = SelectedItem;
+				} else if (SelectedItem.ItemType == EItemTypes::Armour) {
+					InventoryWidget->OwningEntityInventoryComponent->EquippedChestItem = SelectedItem;
 				}
+
+				// Refresh the inventory widget
+				InventoryWidget->PopulateEquippedItemsScrollBox(InventoryWidget->OwningEntityInventoryComponent);
 			}
 		}
 

@@ -65,12 +65,16 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TArray<FItemBase> ItemsList;
 
+	// Weapons
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	ECurrentWeaponEquippedSlot CurrentEquippedWeaponSlotEnum;
 
 	void SetEquippedWeaponSlotEnum(ECurrentWeaponEquippedSlot NewSlotEnum);
 	ECurrentWeaponEquippedSlot ReturnEquippedWeaponSlotEnum();
 	FItemBase ReturnEquippedWeapon();
+
+	// Armour
+	float ReturnTotalDamageMitigation();
 
 	// Easy access to the player's equipped gear and data
 	void ReturnEquippedWeaponNormalDamage(float &DamagePerShot) { DamagePerShot = EquippedPrimaryWeapon.WeaponData.DamagePerShot; }

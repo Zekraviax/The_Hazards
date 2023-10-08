@@ -494,7 +494,13 @@ void AEntityBaseCharacter::OnStunEnd()
 
 void AEntityBaseCharacter::ReceiveDamage(float Damage, AEntityBaseCharacter* Source)
 {
+	GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Red, FString::Printf(TEXT("AEntityBaseCharacter / ReceiveDamage / Pre-Calc Damage: %f"), Damage));
+	GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Red, FString::Printf(TEXT("AEntityBaseCharacter / ReceiveDamage / Damage Mitigation: %f"), GetInventoryComponent()->ReturnTotalDamageMitigation()));
+
+	Damage = FMath::RoundToInt(Damage * ((100 - GetInventoryComponent()->ReturnTotalDamageMitigation()) * 0.01));
 	GetBaseStatsComponent()->UpdateCurrentHealthPoints(Damage * -1.f);
+
+	GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Red, FString::Printf(TEXT("AEntityBaseCharacter / ReceiveDamage / Post-Calc Damage: %f"), Damage));
 
 	// To-Do: Handle deaths for NPCs and players
 	if (GetBaseStatsComponent()->CurrentHealthPoints <= 0.0f) {

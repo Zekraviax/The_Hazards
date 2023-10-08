@@ -46,6 +46,8 @@ void UWidgetMenuInventory::PopulateEquippedItemsScrollBox(UActorComponentInvento
 
 		if (InventoryListItemReference->ItemSlot == EItemSlotTypes::PrimaryWeapon) {
 			InventoryListItemReference->ItemReference = Inventory->EquippedPrimaryWeapon;
+		} else if (InventoryListItemReference->ItemSlot == EItemSlotTypes::Body) {
+			InventoryListItemReference->ItemReference = Inventory->EquippedChestItem;
 		} else {
 			//UE_LOG(LogTemp, Warning, TEXT("UWidgetMenuInventory / PopulateUnequippedItemsScrollBox() / Error: InventoryListItem widget does not have a proper ItemSlotType."));
 		}
