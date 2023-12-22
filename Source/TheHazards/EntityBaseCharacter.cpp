@@ -473,8 +473,7 @@ void AEntityBaseCharacter::OnChargeTimerReachedZero()
 
 	IsCharging = false;
 
-	// To-Do: End a charge if the charger runs in to an obstacle
-	// or if a charging player releases the move forward key
+	// To-Do: End a charge if the charger runs in to an obstacle or if a charging player releases the move forward key
 }
 
 
@@ -603,4 +602,49 @@ bool AEntityBaseCharacter::OnInteract_Implementation()
 	}
 
 	return true;
+}
+
+
+void AEntityBaseCharacter::ConsumableItemUsed()
+{
+	FItemBase ConsumableReference = GetInventoryComponent()->ReturnEquippedQuickUseItem();
+
+	if (ConsumableReference.ConsumableData.CurrentUses > 0) {
+		GetBaseStatsComponent()->UpdateCurrentAuraPoints(5);
+		if (GetBaseStatsComponent()->CurrentAuraPoints > GetBaseStatsComponent()->MaximumAuraPoints) {
+			GetBaseStatsComponent()->CurrentAuraPoints = GetBaseStatsComponent()->MaximumAuraPoints;
+		}
+
+		GetBaseStatsComponent()->UpdateCurrentHealthPoints(5);
+		if (GetBaseStatsComponent()->CurrentHealthPoints > GetBaseStatsComponent()->MaximumHealthPoints) {
+			GetBaseStatsComponent()->CurrentHealthPoints = GetBaseStatsComponent()->MaximumHealthPoints;
+		}
+
+		ConsumableReference.ConsumableData.CurrentUses--;
+	}
+
+	if (ConsumableReference.ConsumableData.CurrentUses < 1) {
+		// Delete this item
+		GetInventoryComponent()->ItemsList.Remove(ConsumableReference);
+		GetInventoryComponent()->EquippedQuickUseItem = FItemBase();
+	} else {
+		//GetInventoryComponent()->EquippedQuickUseItem = ConsumableReference;
+	}
+
+
+	/*
+	// Reduce uses by one
+	// If uses are zero, delete the item
+	FItemBase ConsumableReference = GetInventoryComponent()->ReturnEquippedQuickUseItem();
+	ConsumableReference.ConsumableData.CurrentUses -= 1;
+
+	GetBaseStatsComponent()->CurrentHealthPoints += ConsumableReference.ConsumableData.HealthRestored;
+	GetBaseStatsComponent()->CurrentAuraPoints += ConsumableReference.ConsumableData.AuraRestored;
+
+	if (ConsumableReference.ConsumableData.CurrentUses <= 0) {
+		GetInventoryComponent()->EquippedQuickUseItem = FItemBase();
+	} else {
+		GetInventoryComponent()->EquippedQuickUseItem = ConsumableReference;
+	}
+	*/
 }

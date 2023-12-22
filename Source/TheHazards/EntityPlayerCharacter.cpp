@@ -93,9 +93,11 @@ void AEntityPlayerCharacter::SetupPlayerInputComponent(class UInputComponent* Pl
 	PlayerInputComponent->BindAction("SwapWeaponUp", IE_Released, this, &AEntityPlayerCharacter::PlayerSwapWeaponUp);
 	PlayerInputComponent->BindAction("SwapWeaponDown", IE_Released, this, &AEntityPlayerCharacter::PlayerSwapWeaponDown);
 
+	PlayerInputComponent->BindAction("QuickUseConsumable", IE_Released, this, &AEntityBaseCharacter::ConsumableItemUsed);
+
 	// To-Do: Add binds for escape key to both:
-	// Open pause menu
-	// Close current menu and open a related menu
+	// Open the pause menu
+	// Close the current menu and open a related menu
 	PlayerInputComponent->BindAction("PauseGame", IE_Released, this, &AEntityPlayerCharacter::PauseGame).bExecuteWhenPaused = true;
 
 	// Open or close the dev menu
@@ -110,6 +112,9 @@ void AEntityPlayerCharacter::SetupPlayerInputComponent(class UInputComponent* Pl
 	PlayerInputComponent->BindAction("CraftingWindow", IE_Released, this, &AEntityPlayerCharacter::OpenCraftingWindow).bExecuteWhenPaused = true;
 	PlayerInputComponent->BindAction("SkillTree", IE_Released, this, &AEntityPlayerCharacter::OpenSkillTree).bExecuteWhenPaused = true;
 	PlayerInputComponent->BindAction("CharacterCreator", IE_Released, this, &AEntityPlayerCharacter::OpenCharacterCreator).bExecuteWhenPaused = true;
+
+	// Other actions
+	//PlayerInputComponent->BindAction("SwapWeaponDown", IE_Released, this, &AEntityPlayerCharacter::PlayerSwapWeaponDown);
 }
 
 
@@ -211,7 +216,7 @@ void AEntityPlayerCharacter::ClientCreateWidgets_Implementation()
 	if (WidgetMenuCraftingWindowClass && !WidgetMenuCraftingWindowReference) {
 		WidgetMenuCraftingWindowReference = CreateWidget<UWidgetMenuCraftingWindow>(GetWorld(), WidgetMenuCraftingWindowClass);
 
-		// To-do: Figure out why this line causes the game to crash when inspecting the player BP while playing-in-editor
+		// To-do: Figure out why inspecting the player BP while playing-in-editor causes crashes
 		WidgetMenuCraftingWindowReference->OwningEntityInventoryComponent = GetInventoryComponent();
 
 		ValidWidgets.Add(WidgetMenuCraftingWindowReference);
@@ -368,7 +373,7 @@ void AEntityPlayerCharacter::OnInteract()
 {
 	if (LookAtInteractableActor != NULL) {
 		if (Cast<IInterfaceInteractions>(LookAtInteractableActor)) {
-			// To-Do: Check if entity is overlapping with the lookat actor's box collision component
+			// To-Do: Check if entity is overlapping with the lookAt actor's box collision component
 			//TArray<AActor*> OverlappingActors;
 			//GetOverlappingActors(OverlappingActors, AActor::StaticClass());
 
@@ -421,4 +426,10 @@ void AEntityPlayerCharacter::PlayerSwapWeaponDown()
 		GetInventoryComponent()->SetEquippedWeaponSlotEnum(ECurrentWeaponEquippedSlot::Primary);
 		break;
 	}
+}
+
+
+void AEntityPlayerCharacter::UseConsumableInQuickUseSlot()
+{
+
 }

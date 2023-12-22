@@ -149,6 +149,7 @@ public:
 	// Open or close the inventory and return the HUD
 	void OpenInventory();
 
+	// Open or close other UI windows
 	void OpenCraftingWindow();
 	void OpenDialogue();
 	void OpenSkillTree();
@@ -159,12 +160,10 @@ public:
 	void OpenWidgetByClass(TSubclassOf<UUserWidget> WidgetClass);
 
 	// Attempt to interact with an entity
-	UFUNCTION()
 	void OnInteract();
 
-	UFUNCTION()
+	// Other base player actions
 	void PlayerSwapWeaponUp();
-
-	UFUNCTION()
 	void PlayerSwapWeaponDown();
+	void UseConsumableInQuickUseSlot();
 };

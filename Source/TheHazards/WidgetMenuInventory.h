@@ -35,6 +35,10 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	UActorComponentInventory* OwningEntityInventoryComponent;
 
+	// Consumable item slot
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget))
+	UWidgetInventoryListItem* InventoryListItem_QuickUseItem1;
+
 	UFUNCTION(BlueprintCallable)
 	void PopulateUnequippedItemsScrollBox(UActorComponentInventory* Inventory);
 

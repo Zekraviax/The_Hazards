@@ -79,6 +79,7 @@ enum class EItemSlotTypes : uint8
 	Boots,
 	PrimaryWeapon,
 	SecondaryWeapon,
+	QuickUseItem
 };
 
 
@@ -215,6 +216,32 @@ struct THEHAZARDS_API FCraftingBlueprint
 };
 
 
+USTRUCT(BlueprintType)
+struct THEHAZARDS_API FConsumable
+{
+	GENERATED_BODY()
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	int CurrentUses;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	int MaximumUses;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float HealthRestored;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float AuraRestored;
+
+	FConsumable()
+	{
+		CurrentUses = 0;
+		MaximumUses = 0;
+		HealthRestored = 1.f;
+		AuraRestored = 1.f;
+	}
+};
+
 
 // Items
 USTRUCT(BlueprintType)
@@ -243,6 +270,9 @@ struct THEHAZARDS_API FItemBase
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	FCraftingBlueprint BlueprintData;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FConsumable ConsumableData;
+
 	// Default constructor
 	FItemBase()
 	{
@@ -252,6 +282,7 @@ struct THEHAZARDS_API FItemBase
 		WeaponData = FWeapon();
 		PartData = FPart();
 		BlueprintData = FCraftingBlueprint();
+		ConsumableData = FConsumable();
 	}
 
 	// Comparator
@@ -267,6 +298,7 @@ struct THEHAZARDS_API FItemBase
 	}
 
 
+	// To-Do: Create constructors for each supertype of item
 	// Constructor for weapons
 	FItemBase(FString NewName, FWeapon CraftedItemData)
 	{

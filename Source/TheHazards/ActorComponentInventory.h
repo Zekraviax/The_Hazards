@@ -61,6 +61,10 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	FItemBase EquippedTertiaryWeapon;
 
+	// Other
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FItemBase EquippedQuickUseItem;
+
 	// List of uneqipped items in this character's inventory
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TArray<FItemBase> ItemsList;
@@ -79,4 +83,5 @@ public:
 	// Easy access to the player's equipped gear and data
 	void ReturnEquippedWeaponNormalDamage(float &DamagePerShot) { DamagePerShot = EquippedPrimaryWeapon.WeaponData.DamagePerShot; }
 	void ReturnEquippedWeaponSpecialDamage(float &DamagePerShot) { DamagePerShot = EquippedPrimaryWeapon.WeaponData.SpecialAttackDamagePerShot; }
+	FItemBase ReturnEquippedQuickUseItem() { return EquippedQuickUseItem; }
 };
