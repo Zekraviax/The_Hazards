@@ -55,6 +55,12 @@ void UWidgetMenuInventory::PopulateEquippedItemsScrollBox(UActorComponentInvento
 }
 
 
+void UWidgetMenuInventory::RefreshOtherSlots(UActorComponentInventory* Inventory)
+{
+	InventoryListItem_QuickUseItem1->ItemReference = Inventory->EquippedQuickUseItem;
+}
+
+
 void UWidgetMenuInventory::OnCursorBeginOverItemSlot()
 {
 

@@ -46,6 +46,9 @@ public:
 	void PopulateEquippedItemsScrollBox(UActorComponentInventory* Inventory);
 
 	UFUNCTION()
+	void RefreshOtherSlots(UActorComponentInventory* Inventory);
+
+	UFUNCTION()
 	void OnCursorBeginOverItemSlot();
 
 	UFUNCTION()

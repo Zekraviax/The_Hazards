@@ -352,6 +352,7 @@ void AEntityPlayerCharacter::OpenWidgetByClass(TSubclassOf<UUserWidget> WidgetCl
 	if (WidgetClass == WidgetMenuInventoryClass) {
 		WidgetMenuInventoryReference->PopulateUnequippedItemsScrollBox(GetInventoryComponent());
 		WidgetMenuInventoryReference->PopulateEquippedItemsScrollBox(GetInventoryComponent());
+		WidgetMenuInventoryReference->RefreshOtherSlots(GetInventoryComponent());
 	}
 
 	if (WidgetClass == WidgetMenuCraftingWindowClass) {
