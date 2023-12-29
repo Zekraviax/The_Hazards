@@ -273,6 +273,20 @@ struct THEHAZARDS_API FItemBase
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	FConsumable ConsumableData;
 
+	// 0 = null
+	// 1 = head armour
+	// 2 = chest armour
+	// 3 = hand armour
+	// 4 = leg armour
+	// 5 = foot armour
+	// 6 = primary weapon
+	// 7 = secondary weapon
+	// 8 = tertiary weapon
+	// 9 = quick-use item
+	// 10+ = unequipped items
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	int SlotInInventory = 10;
+
 	// Default constructor
 	FItemBase()
 	{

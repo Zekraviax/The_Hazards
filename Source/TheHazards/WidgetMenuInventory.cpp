@@ -45,9 +45,9 @@ void UWidgetMenuInventory::PopulateEquippedItemsScrollBox(UActorComponentInvento
 		InventoryListItemReference = Cast<UWidgetInventoryListItem>(EquippedInventoryItemsGridPanel->GetChildAt(i));
 
 		if (InventoryListItemReference->ItemSlot == EItemSlotTypes::PrimaryWeapon) {
-			InventoryListItemReference->ItemReference = Inventory->EquippedPrimaryWeapon;
+			InventoryListItemReference->ItemReference = Inventory->ReturnEquippedPrimaryWeapon();
 		} else if (InventoryListItemReference->ItemSlot == EItemSlotTypes::Body) {
-			InventoryListItemReference->ItemReference = Inventory->EquippedChestItem;
+			InventoryListItemReference->ItemReference = Inventory->ReturnEquippedTorsoArmour();
 		} else {
 			//UE_LOG(LogTemp, Warning, TEXT("UWidgetMenuInventory / PopulateUnequippedItemsScrollBox() / Error: InventoryListItem widget does not have a proper ItemSlotType."));
 		}
@@ -57,7 +57,7 @@ void UWidgetMenuInventory::PopulateEquippedItemsScrollBox(UActorComponentInvento
 
 void UWidgetMenuInventory::RefreshOtherSlots(UActorComponentInventory* Inventory)
 {
-	InventoryListItem_QuickUseItem1->ItemReference = Inventory->EquippedQuickUseItem;
+	InventoryListItem_QuickUseItem1->ItemReference = Inventory->ReturnEquippedQuickUseItem();
 }
 
 
@@ -69,4 +69,14 @@ void UWidgetMenuInventory::OnCursorBeginOverItemSlot()
 void UWidgetMenuInventory::OnCursorEndOverItemSlot()
 {
 
+}
+
+
+void UWidgetMenuInventory::SwapItemsBetweenSlots(UWidgetInventoryListItem* ItemSlotOne, UWidgetInventoryListItem* ItemSlotTwo)
+{
+	FItemBase ItemSlotOneTemporaryCopy = ItemSlotOne->ItemReference;
+	FItemBase ItemSlotTwoTemporaryCopy = ItemSlotTwo->ItemReference;
+
+	ItemSlotOne->ItemReference = ItemSlotTwoTemporaryCopy;
+	ItemSlotTwo->ItemReference = ItemSlotOneTemporaryCopy;
 }

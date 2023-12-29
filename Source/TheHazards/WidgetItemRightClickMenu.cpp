@@ -35,16 +35,6 @@ void UWidgetItemRightClickMenu::EquipButtonPressed()
 	UWidgetBlueprintLibrary::GetAllWidgetsOfClass(GetWorld(), FoundInventoryItemWidgets, UWidgetInventoryListItem::StaticClass(), false);
 
 	if (SelectedItem.EquipSlot != EItemSlotTypes::None) {
-		//if (SelectedItem.EquipSlot == EItemSlotTypes::QuickUseItem) {
-		//	UWidgetInventoryListItem* FoundItemQuickUseWidget;
-
-		//	for (int i = 0; i < FoundInventoryItemWidgets.Num(); i++) {
-		//		if (FoundInventoryItemWidgets[i]->GetName().Contains("QuickUseItem1")) {
-		//			FoundItemQuickUseWidget = Cast<UWidgetInventoryListItem>(FoundInventoryItemWidgets[i]);
-		//			break;
-		//		}
-		//	}
-		//} else {
 		for (int i = 0; i < FoundInventoryItemWidgets.Num(); i++) {
 			FoundInventoryListItem = Cast<UWidgetInventoryListItem>(FoundInventoryItemWidgets[i]);
 
@@ -57,12 +47,13 @@ void UWidgetItemRightClickMenu::EquipButtonPressed()
 		if (IsValid(FoundInventoryListItem)) {
 			// Create a temporary item variable of one of the items to be swapped
 			FItemBase TemporaryEquippedItemCopy = EquippedItem;
+			FItemBase TemporaryItemSlotCopy;
 
 			// Overwrite the first item with the second item
-			FoundInventoryListItem->ItemReference = SelectedItem;
+			//FoundInventoryListItem->ItemReference = SelectedItem;
 
 			// Overwrite the second item with the temporary item duplicate variable
-			ClickedWidgetInventoryListItem->ItemReference = TemporaryEquippedItemCopy;
+			//ClickedWidgetInventoryListItem->ItemReference = TemporaryEquippedItemCopy;
 
 			// Apply the new data to the relevant variable
 			TArray<UUserWidget*> FoundInventoryWidgets;
@@ -73,15 +64,17 @@ void UWidgetItemRightClickMenu::EquipButtonPressed()
 
 					// To-Do: Make this work for every type of weapon and armour slot
 					if (SelectedItem.ItemType == EItemTypes::Weapon) {
-						InventoryWidget->OwningEntityInventoryComponent->EquippedPrimaryWeapon = SelectedItem;
+						//InventoryWidget->OwningEntityInventoryComponent->EquippedPrimaryWeapon = SelectedItem;
 					} else if (SelectedItem.ItemType == EItemTypes::Armour) {
-						InventoryWidget->OwningEntityInventoryComponent->EquippedChestItem = SelectedItem;
+						//InventoryWidget->OwningEntityInventoryComponent->EquippedChestItem = SelectedItem;
 					} else if (SelectedItem.ItemType == EItemTypes::Consumable) {
-						InventoryWidget->OwningEntityInventoryComponent->EquippedQuickUseItem = SelectedItem;
+						//InventoryWidget->OwningEntityInventoryComponent->EquippedQuickUseItem = SelectedItem;
 					}
 
 					// Refresh the inventory widget
+					InventoryWidget->PopulateUnequippedItemsScrollBox(InventoryWidget->OwningEntityInventoryComponent);
 					InventoryWidget->PopulateEquippedItemsScrollBox(InventoryWidget->OwningEntityInventoryComponent);
+					InventoryWidget->RefreshOtherSlots(InventoryWidget->OwningEntityInventoryComponent);
 				}
 			}
 		} else {

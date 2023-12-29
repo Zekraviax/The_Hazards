@@ -29,6 +29,7 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TSubclassOf<UWidgetInventoryListItem> InventoryListItemClass;
 
+	// To-Do: Document this
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	UWidgetInventoryListItem* InventoryListItemReference;
 
@@ -45,12 +46,11 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void PopulateEquippedItemsScrollBox(UActorComponentInventory* Inventory);
 
-	UFUNCTION()
 	void RefreshOtherSlots(UActorComponentInventory* Inventory);
 
-	UFUNCTION()
 	void OnCursorBeginOverItemSlot();
-
-	UFUNCTION()
 	void OnCursorEndOverItemSlot();
+
+	// For the item widgets
+	void SwapItemsBetweenSlots(UWidgetInventoryListItem* ItemSlotOne, UWidgetInventoryListItem* ItemSlotTwo);
 };

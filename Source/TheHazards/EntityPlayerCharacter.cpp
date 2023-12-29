@@ -392,19 +392,19 @@ void AEntityPlayerCharacter::PlayerSwapWeaponUp()
 	{
 	case(ECurrentWeaponEquippedSlot::Primary):
 		GetInventoryComponent()->SetEquippedWeaponSlotEnum(ECurrentWeaponEquippedSlot::Tertiary);
-		CurrentEquippedWeapon = GetInventoryComponent()->EquippedTertiaryWeapon;
+		CurrentEquippedWeapon = GetInventoryComponent()->ReturnEquippedTertiaryWeapon();
 		break;
 	case(ECurrentWeaponEquippedSlot::Secondary):
 		GetInventoryComponent()->SetEquippedWeaponSlotEnum(ECurrentWeaponEquippedSlot::Primary);
-		CurrentEquippedWeapon = GetInventoryComponent()->EquippedPrimaryWeapon;
+		CurrentEquippedWeapon = GetInventoryComponent()->ReturnEquippedPrimaryWeapon();
 		break;
 	case(ECurrentWeaponEquippedSlot::Tertiary):
 		GetInventoryComponent()->SetEquippedWeaponSlotEnum(ECurrentWeaponEquippedSlot::Secondary);
-		CurrentEquippedWeapon = GetInventoryComponent()->EquippedSecondaryWeapon;
+		CurrentEquippedWeapon = GetInventoryComponent()->ReturnEquippedSecondaryWeapon();
 		break;
 	default:
 		GetInventoryComponent()->SetEquippedWeaponSlotEnum(ECurrentWeaponEquippedSlot::Primary);
-		CurrentEquippedWeapon = GetInventoryComponent()->EquippedPrimaryWeapon;
+		CurrentEquippedWeapon = GetInventoryComponent()->ReturnEquippedPrimaryWeapon();
 		break;
 	}
 }

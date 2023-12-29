@@ -35,6 +35,7 @@ public:
 	// Called every frame
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
+	/*
 	// Armour
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	FItemBase EquippedHeadItem;
@@ -64,6 +65,7 @@ public:
 	// Other
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	FItemBase EquippedQuickUseItem;
+	*/
 
 	// List of uneqipped items in this character's inventory
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
@@ -73,15 +75,26 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	ECurrentWeaponEquippedSlot CurrentEquippedWeaponSlotEnum;
 
+	//void SwapItems(FItemBase ItemOne, FItemBase ItemTwo, FString ItemOneDestination, FString ItemTwoDestination);
+
 	void SetEquippedWeaponSlotEnum(ECurrentWeaponEquippedSlot NewSlotEnum);
 	ECurrentWeaponEquippedSlot ReturnEquippedWeaponSlotEnum();
 	FItemBase ReturnEquippedWeapon();
+
+	FItemBase ReturnEquippedHeadArmour();
+	FItemBase ReturnEquippedTorsoArmour();
+	FItemBase ReturnEquippedHandArmour();
+	FItemBase ReturnEquippedLegArmour();
+	FItemBase ReturnEquippedBootsArmour();
+	FItemBase ReturnEquippedPrimaryWeapon();
+	FItemBase ReturnEquippedSecondaryWeapon();
+	FItemBase ReturnEquippedTertiaryWeapon();
+	FItemBase ReturnEquippedQuickUseItem();
 
 	// Armour
 	float ReturnTotalDamageMitigation();
 
 	// Easy access to the player's equipped gear and data
-	void ReturnEquippedWeaponNormalDamage(float &DamagePerShot) { DamagePerShot = EquippedPrimaryWeapon.WeaponData.DamagePerShot; }
-	void ReturnEquippedWeaponSpecialDamage(float &DamagePerShot) { DamagePerShot = EquippedPrimaryWeapon.WeaponData.SpecialAttackDamagePerShot; }
-	FItemBase ReturnEquippedQuickUseItem() { return EquippedQuickUseItem; }
+	void ReturnEquippedWeaponNormalDamage(float &DamagePerShot) { DamagePerShot = ReturnEquippedPrimaryWeapon().WeaponData.DamagePerShot; }
+	void ReturnEquippedWeaponSpecialDamage(float &DamagePerShot) { DamagePerShot = ReturnEquippedPrimaryWeapon().WeaponData.SpecialAttackDamagePerShot; }
 };

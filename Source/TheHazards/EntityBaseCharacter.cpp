@@ -626,7 +626,7 @@ void AEntityBaseCharacter::ConsumableItemUsed()
 	if (ConsumableReference.ConsumableData.CurrentUses < 1) {
 		// Delete this item
 		GetInventoryComponent()->ItemsList.Remove(ConsumableReference);
-		GetInventoryComponent()->EquippedQuickUseItem = FItemBase();
+		GetInventoryComponent()->ReturnEquippedTertiaryWeapon() = FItemBase();
 	} else {
 		//GetInventoryComponent()->EquippedQuickUseItem = ConsumableReference;
 	}
